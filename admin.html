@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إعداد المطعم | Configuration Restaurant — QR Salik</title>
+  <meta name="description" content="لوحة إعداد نظام QR للمطاعم والمقاهي — Panneau de configuration du système QR pour restaurants." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- QR Code library — jsDelivr is more reliable than cdnjs for qrcodejs -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --gold:    #F5C842;
+      --amber:   #FF8C42;
+      --bg:      #0D0D0D;
+      --surface: #161616;
+      --card:    #1E1E1E;
+      --card2:   #252525;
+      --border:  rgba(245,200,66,.15);
+      --border2: rgba(255,255,255,.07);
+      --text:    #F5F0E8;
+      --muted:   #888;
+      --success: #66BB6A;
+      --error:   #EF5350;
+      --info:    #4FC3F7;
+      --radius:  16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Cairo', 'Outfit', sans-serif;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -5%, rgba(245,200,66,.1) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* ── Hero ── */
+    .hero { text-align: center; padding: 20px 0 36px; }
+    .hero-icon { font-size: 3rem; margin-bottom: 12px; }
+    .hero h1 {
+      font-size: 1.9rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p { color: var(--muted); margin-top: 8px; font-size: .95rem; }
+
+    /* ── Progress Steps ── */
+    .steps {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 36px;
+    }
+    .step-item {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      flex: 1; min-width: 70px;
+    }
+    .step-circle {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--card2); border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; font-weight: 700; color: var(--muted);
+      transition: all .3s ease;
+    }
+    .step-item.active .step-circle { background: linear-gradient(135deg, var(--gold), var(--amber)); border-color: var(--gold); color: #000; }
+    .step-item.done   .step-circle { background: var(--success); border-color: var(--success); color: #fff; }
+    .step-label { font-size: .72rem; color: var(--muted); text-align: center; font-family: 'Outfit', sans-serif; }
+    .step-item.active .step-label { color: var(--gold); }
+    .step-item.done   .step-label { color: var(--success); }
+    .step-line { flex: 1; height: 2px; background: var(--border2); min-width: 20px; max-width: 60px; transition: background .3s; }
+    .step-line.done { background: var(--success); }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: var(--radius); padding: 28px; margin-bottom: 20px;
+      animation: fadeUp .4s ease both;
+    }
+    .card-title {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 22px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border2);
+    }
+    .card-title .icon {
+      width: 38px; height: 38px; background: rgba(245,200,66,.12);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .card-title .sub { font-size: .8rem; color: var(--muted); font-weight: 400; margin-top: 2px; font-family: 'Outfit', sans-serif; }
+
+    /* ── Form Fields ── */
+    .form-row { margin-bottom: 18px; }
+    .form-row label { display: block; font-size: .88rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .form-row label span { color: var(--muted); font-weight: 400; font-size: .8rem; margin-right: 6px; font-family: 'Outfit', sans-serif; }
+    .form-row input, .form-row select {
+      width: 100%; background: var(--card2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 12px 16px;
+      color: var(--text); font-size: .95rem; font-family: 'Cairo', sans-serif;
+      outline: none; transition: border-color .2s, box-shadow .2s; direction: rtl;
+    }
+    .form-row input:focus, .form-row select:focus {
+      border-color: var(--gold); box-shadow: 0 0 0 3px rgba(245,200,66,.12);
+    }
+    .form-row input::placeholder { color: #555; }
+
+    /* Generated field */
+    .field-generated { display: flex; gap: 8px; align-items: center; }
+    .field-generated input {
+      flex: 1; background: rgba(245,200,66,.05); border-color: rgba(245,200,66,.2);
+      font-size: .85rem; font-family: monospace; direction: ltr; text-align: left;
+    }
+    .copy-btn {
+      padding: 12px 14px; background: rgba(245,200,66,.12); border: 1px solid rgba(245,200,66,.2);
+      border-radius: 10px; color: var(--gold); cursor: pointer; font-size: .85rem;
+      font-family: 'Outfit', sans-serif; transition: background .2s; white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(245,200,66,.2); }
+
+    /* ── Info Box ── */
+    .info-box {
+      background: rgba(79,195,247,.07); border: 1px solid rgba(79,195,247,.2);
+      border-radius: 10px; padding: 14px 16px; font-size: .85rem;
+      color: #9ae0ff; margin-bottom: 18px; line-height: 1.6;
+    }
+    .info-box.warning { background: rgba(255,179,0,.07); border-color: rgba(255,179,0,.2); color: #ffd54f; }
+    .info-box.error   { background: rgba(239,83,80,.07);  border-color: rgba(239,83,80,.2);  color: #ef9a9a; }
+    .info-box strong { display: block; margin-bottom: 4px; font-weight: 700; }
+
+    /* ── Guide Steps ── */
+    .guide-steps { list-style: none; counter-reset: g; }
+    .guide-steps li {
+      counter-increment: g;
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 10px 0; border-bottom: 1px solid var(--border2);
+      font-size: .88rem; color: var(--muted); line-height: 1.5;
+    }
+    .guide-steps li:last-child { border-bottom: none; }
+    .guide-steps li::before {
+      content: counter(g); min-width: 26px; height: 26px;
+      background: rgba(245,200,66,.12); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .78rem; font-weight: 700; color: var(--gold);
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .guide-steps li b { color: var(--text); }
+    .guide-steps li a { color: var(--gold); text-decoration: none; }
+    .guide-steps li code {
+      background: #111; padding: 2px 6px; border-radius: 4px;
+      font-size: .8rem; direction: ltr; display: inline-block;
+    }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn {
+      flex: 1; padding: 12px; background: var(--card2); border: 2px solid var(--border2);
+      border-radius: 10px; color: var(--muted); cursor: pointer;
+      font-size: .9rem; font-weight: 600; font-family: 'Cairo', sans-serif;
+      transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .tab-btn:hover { border-color: rgba(245,200,66,.3); color: var(--text); }
+    .tab-btn.active { background: rgba(245,200,66,.1); border-color: var(--gold); color: var(--gold); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeUp .3s ease both; }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      display: block; width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      border: none; border-radius: 12px; color: #000;
+      font-size: 1rem; font-weight: 700; font-family: 'Cairo', sans-serif;
+      cursor: pointer; transition: opacity .2s, transform .15s; margin-top: 10px;
+    }
+    .btn-primary:hover { opacity: .9; }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-secondary {
+      padding: 10px 20px; background: transparent; border: 1px solid var(--border2);
+      border-radius: 10px; color: var(--muted); cursor: pointer;
+      font-family: 'Cairo', sans-serif; font-size: .9rem; transition: all .2s;
+    }
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Sections ── */
+    .section { display: none; }
+    .section.active { display: block; }
+    .nav-row { display: flex; gap: 12px; margin-top: 16px; }
+
+    /* ── QR Grid ── */
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .qr-item {
+      background: var(--card2); border: 1px solid var(--border2);
+      border-radius: 14px; padding: 16px 14px 14px; text-align: center;
+      transition: transform .2s, border-color .2s;
+    }
+    .qr-item:hover { transform: translateY(-3px); border-color: rgba(245,200,66,.3); }
+    .qr-label-ar { font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
+    .qr-label    { font-size: .78rem; font-weight: 700; color: var(--gold); margin-bottom: 10px; font-family: 'Outfit', sans-serif; text-transform: uppercase; letter-spacing: .5px; }
+    .qr-canvas-wrap { background: #fff; border-radius: 10px; padding: 10px; margin: 0 auto 12px; display: inline-block; }
+    .qr-dl-btn {
+      display: block; width: 100%; padding: 8px;
+      background: rgba(245,200,66,.1); border: 1px solid rgba(245,200,66,.2);
+      border-radius: 8px; color: var(--gold); cursor: pointer;
+      font-size: .8rem; font-weight: 600; font-family: 'Outfit', sans-serif; transition: background .2s;
+    }
+    .qr-dl-btn:hover { background: rgba(245,200,66,.2); }
+
+    /* ── Print Bar ── */
+    .print-bar {
+      display: flex; gap: 12px; align-items: center; padding: 16px 20px;
+      background: rgba(245,200,66,.06); border: 1px solid rgba(245,200,66,.15);
+      border-radius: 12px; margin-bottom: 20px;
+    }
+    .print-bar span { flex: 1; font-size: .9rem; color: var(--muted); }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 50px;
+      font-size: .72rem; font-weight: 700;
+      background: rgba(102,187,106,.15); color: var(--success); font-family: 'Outfit', sans-serif;
+    }
+    .badge.blue { background: rgba(79,195,247,.15); color: var(--info); }
+
+    /* ── URL Preview ── */
+    .url-preview {
+      font-size: .75rem; color: var(--muted); background: var(--card2);
+      border: 1px solid var(--border2); border-radius: 8px; padding: 10px 12px;
+      word-break: break-all; font-family: monospace; direction: ltr; text-align: left; margin-top: 10px;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+    @media (max-width: 560px) {
+      .container { padding: 20px 16px 60px; }
+      .card { padding: 20px 16px; }
+      .qr-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+      .tabs { flex-direction: column; }
+    }
+
+    @media print {
+      body { background: #fff !important; }
+      body::before { display: none; }
+      .hero, .steps, .nav-row, .print-bar, .qr-dl-btn,
+      .card-title, .info-box, .guide-steps, #sec-0, #sec-1, #sec-2 { display: none !important; }
+      #sec-3 { display: block !important; }
+      .qr-item { border: 1px solid #ccc !important; break-inside: avoid; background: #fff !important; }
+      .qr-label, .qr-label-ar { color: #000 !important; }
+    }
+
+    /* ── Password Lock Screen ── */
+    .lock-overlay {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .lock-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      max-width: 400px; width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      animation: fadeUp 0.4s ease both;
+    }
+    .lock-card .lock-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 0 12px var(--gold));
+    }
+    .lock-card h2 {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .lock-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .lock-card input {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 14px;
+      color: var(--text);
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 4px;
+      outline: none;
+      margin-bottom: 16px;
+      font-family: monospace;
+    }
+    .lock-card input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(245,200,66,0.15);
+    }
+    .lock-card .btn-unlock {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      border: none; border-radius: 12px;
+      color: #000; font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+    .lock-card .btn-unlock:active {
+      transform: scale(0.98);
+    }
+    .lock-card .error-msg {
+      color: var(--error);
+      font-size: 0.8rem;
+      margin-top: 12px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Password Protection Overlay -->
+<div class="lock-overlay" id="lockOverlay">
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <h2>الدخول محمي | Accès Protégé</h2>
+    <p>يرجى إدخال كلمة المرور للوصول إلى لوحة الإعداد<br>Veuillez saisir le mot de passe pour accéder au panneau</p>
+    <input type="password" id="adminPassword" placeholder="••••••••" onkeydown="handleLockKey(event)" />
+    <button class="btn-unlock" onclick="unlockAdmin()">دخول | Entrer</button>
+    <div class="error-msg" id="lockError">❌ كلمة المرور غير صحيحة | Mot de passe incorrect</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-icon">🍽️</div>
+    <h1>QR Salik — لوحة الإعداد</h1>
+    <p>أعد نظام QR لمطعمك في 4 خطوات — Configurez votre système QR en 4 étapes</p>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="steps" id="stepsBar">
+    <div class="step-item active" data-step="0">
+      <div class="step-circle" id="sc-0">1</div>
+      <div class="step-label">المطعم</div>
+    </div>
+    <div class="step-line" id="line-0"></div>
+    <div class="step-item" data-step="1">
+      <div class="step-circle" id="sc-1">2</div>
+      <div class="step-label">الإشعارات</div>
+    </div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-item" data-step="2">
+      <div class="step-circle" id="sc-2">3</div>
+      <div class="step-label">رموز QR</div>
+    </div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-item" data-step="3">
+      <div class="step-circle" id="sc-3">4</div>
+      <div class="step-label">الطباعة</div>
+    </div>
+  </div>
+
+  <!-- ═══════ STEP 1: Restaurant Info ═══════ -->
+  <div class="section active" id="sec-0">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">🏪</div>
+        <div>
+          معلومات المطعم
+          <div class="sub">Restaurant Information</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>اسم المطعم <span>Nom du restaurant *</span></label>
+        <input type="text" id="restaurantName" placeholder="مثال: مطعم البهجة — Restaurant Al Bahdja" />
+      </div>
+
+      <div class="form-row">
+        <label>عدد الطاولات <span>Nombre de tables</span></label>
+        <select id="tableCount" onchange="toggleCustom()">
+          <option value="3">3 طاولات — Essai gratuit (recommandé)</option>
+          <option value="5">5 طاولات</option>
+          <option value="8">8 طاولات</option>
+          <option value="10">10 طاولات</option>
+          <option value="15">15 طاولات</option>
+          <option value="20">20 طاولات</option>
+          <option value="custom">عدد مخصص — Personnalisé</option>
+        </select>
+      </div>
+
+      <div class="form-row" id="customTableRow" style="display:none">
+        <label>عدد مخصص <span>Nombre personnalisé</span></label>
+        <input type="number" id="customTableCount" min="1" max="99" placeholder="12" />
+      </div>
+
+      <div class="info-box" style="background: rgba(245,200,66,0.05); border-color: var(--border);">
+        <strong>📖 قائمة الطعام المدمجة الرقمية — Digital Built-in Menu</strong>
+        تمت ترقية النظام! يتم الآن بناء قائمة الطعام الرقمية الجميلة تلقائياً من ملف <code>menu.json</code> الموجود في مستودع GitHub الخاص بك. لا حاجة لإدخال رابط خارجي يدوي بعد الآن.
+      </div>
+
+      <ul class="guide-steps" style="margin-bottom: 20px;">
+        <li>
+          لتعديل الأقسام والأسعار والوجبات، قم ببساطة بفتح وتعديل ملف <b><code>menu.json</code></b> في حساب GitHub الخاص بك.
+        </li>
+        <li>
+          احرص على الحفاظ على صيغة JSON القياسية حتى يتمكن الزبائن من تصفح الأطباق وإضافتها للسلة بسلاسة تامة.
+        </li>
+      </ul>
+
+      <div class="form-row">
+        <label>رقم واتساب للطوارئ <span>WhatsApp secours (optionnel)</span></label>
+        <input type="tel" id="waNum" placeholder="213XXXXXXXXX (بدون + بدون 00)" dir="ltr" style="text-align:left" />
+      </div>
+
+      <button class="btn-primary" id="step1-next" onclick="goStep(1)">التالي — Suivant ›</button>
+      <p id="step1-err" style="color:var(--error);font-size:.85rem;margin-top:8px;text-align:center;display:none">⚠️ الرجاء إدخال اسم المطعم أولاً</p>
+    </div>
+  </div>
+
+  <!-- ═══════ STEP 2: Notifications ═══════ -->
+  <div class="section" id="sec-1">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">🔔</div>
+        <div>
+          إعداد الإشعارات
+          <div class="sub">Configuration des Notifications</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>💡 الطريقتان تعملان معاً — Les deux méthodes fonctionnent ensemble</strong>
+        اضبط ntfy وتيليغرام للحصول على أقصى موثوقية. كل ضغطة تُرسل للاثنين في آن واحد.
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-ntfy-btn" onclick="switchTab('ntfy')">
+          📱 ntfy.sh <span class="badge">مجاني Free</span>
+        </button>
+        <button class="tab-btn" id="tab-tg-btn" onclick="switchTab('tg')">
+          ✈️ Telegram <span class="badge blue">Bot</span>
+        </button>
+      </div>
+
+      <!-- ntfy Tab -->
+      <div class="tab-content active" id="tab-ntfy">
+        <div class="form-row">
+          <label>موضوع ntfy الرئيسي لمطعمك <span>Topic ntfy Principal *</span></label>
+          <div class="field-generated">
+            <input type="text" id="ntfyTopic" readonly />
+            <button class="copy-btn" onclick="copyField('ntfyTopic', this)">📋 نسخ</button>
+            <button class="copy-btn" onclick="regenTopic('ntfyTopic')" title="توليد جديد">🔄</button>
+          </div>
+        </div>
+
+        <div class="info-box warning" style="margin-bottom:24px;">
+          <strong>🔐 اسم الموضوع = كلمة المرور — Le topic = le mot de passe</strong>
+          لا تشاركه مع أحد خارج فريقك. تم توليده عشوائياً.
+          Ne le partagez qu'avec votre équipe.
+        </div>
+
+        <p style="font-size:.9rem;font-weight:700;margin-bottom:12px;color:var(--text)">مواضيع إضافية اختيارية للمناطق/النوادل (Zone partitioning):</p>
+
+        <div class="form-row" style="margin-bottom:12px;">
+          <label>موضوع إضافي 1 <span>Topic Optionnel 1 (مثال: الشرفة / Terrasse)</span></label>
+          <div class="field-generated">
+            <input type="text" id="ntfyTopic1" placeholder="اضغط لتوليد موضوع اختياري" readonly />
+            <button class="copy-btn" onclick="copyField('ntfyTopic1', this)">📋 نسخ</button>
+            <button class="copy-btn" onclick="regenTopic('ntfyTopic1')" title="توليد جديد">🔄</button>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom:12px;">
+          <label>موضوع إضافي 2 <span>Topic Optionnel 2 (مثال: القاعة الداخلية / Salle)</span></label>
+          <div class="field-generated">
+            <input type="text" id="ntfyTopic2" placeholder="اضغط لتوليد موضوع اختياري" readonly />
+            <button class="copy-btn" onclick="copyField('ntfyTopic2', this)">📋 نسخ</button>
+            <button class="copy-btn" onclick="regenTopic('ntfyTopic2')" title="توليد جديد">🔄</button>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom:12px;">
+          <label>موضوع إضافي 3 <span>Topic Optionnel 3 (مثال: طابق العائلات / VIP)</span></label>
+          <div class="field-generated">
+            <input type="text" id="ntfyTopic3" placeholder="اضغط لتوليد موضوع اختياري" readonly />
+            <button class="copy-btn" onclick="copyField('ntfyTopic3', this)">📋 نسخ</button>
+            <button class="copy-btn" onclick="regenTopic('ntfyTopic3')" title="توليد جديد">🔄</button>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom:20px;">
+          <label>موضوع إضافي 4 <span>Topic Optionnel 4</span></label>
+          <div class="field-generated">
+            <input type="text" id="ntfyTopic4" placeholder="اضغط لتوليد موضوع اختياري" readonly />
+            <button class="copy-btn" onclick="copyField('ntfyTopic4', this)">📋 نسخ</button>
+            <button class="copy-btn" onclick="regenTopic('ntfyTopic4')" title="توليد جديد">🔄</button>
+          </div>
+        </div>
+
+        <p style="font-size:.9rem;font-weight:700;margin-bottom:10px;color:var(--text)">كيف تثبّت ntfy على هاتفك ؟</p>
+        <ul class="guide-steps">
+          <li>حمّل تطبيق <b>ntfy</b> مجاناً من <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank">Play Store</a> أو <a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank">App Store</a></li>
+          <li>افتح التطبيق ← اضغط <b>"+"</b> أو <b>"Subscribe to topic"</b></li>
+          <li>في حقل <b>Topic name</b>، الصق الاسم المُولَّد أعلاه ← اضغط <b>Subscribe</b></li>
+          <li>كرر الخطوتين 2 و3 على هاتف <b>كل نادل</b> في فريقك</li>
+        </ul>
+      </div>
+
+      <!-- Telegram Tab -->
+      <div class="tab-content" id="tab-tg">
+        <div class="info-box">
+          <strong>🤖 إنشاء البوت وربط المجموعة — Créer le Bot et lier le groupe</strong>
+          5 خطوات — environ 5 minutes
+        </div>
+
+        <ul class="guide-steps" style="margin-bottom:20px">
+          <li>
+            افتح تيليغرام وابحث عن <b>@BotFather</b> ← أرسل <code>/newbot</code>
+          </li>
+          <li>
+            اختر اسماً للبوت (مثل: <b>AlBahdjaServiceBot</b>) ← ثم <b>username</b> ينتهي بـ <b>Bot</b>
+          </li>
+          <li>
+            ستحصل على <b>توكن</b> مثل:<br>
+            <code>7412856318:AAFxxxxxxxxxxxxxxxxxxxxxxxxxxx</code><br>
+            — انسخه وضعه في حقل <b>Bot Token</b> أدناه
+          </li>
+          <li>
+            أنشئ <b>مجموعة تيليغرام</b> (مثل: 🔔 خدمة المطعم) ← أضف البوت كـ<b>Admin</b>
+          </li>
+          <li>
+            أرسل أي رسالة في المجموعة، ثم افتح هذا الرابط في المتصفح:<br>
+            <code>https://api.telegram.org/bot<b>TOKEN</b>/getUpdates</code><br>
+            ابحث عن <code>"chat":{"id":</code> — الرقم السالب هو <b>Chat ID</b>
+          </li>
+        </ul>
+
+        <div class="form-row">
+          <label>Bot Token <span>التوكن من @BotFather</span></label>
+          <input type="text" id="tgToken" placeholder="7412856318:AAFxxxxxxxxxxxxxxxxxxxxxxxx" dir="ltr" style="text-align:left;font-family:monospace;font-size:.85rem" />
+        </div>
+
+        <div class="form-row">
+          <label>Chat ID <span>معرّف المجموعة (رقم سالب)</span></label>
+          <input type="text" id="tgChat" placeholder="-1001234567890" dir="ltr" style="text-align:left;font-family:monospace;font-size:.85rem" />
+        </div>
+
+        <button class="btn-secondary" style="width:100%;padding:12px" onclick="testTelegram()">
+          🧪 إرسال رسالة اختبار — Tester la connexion
+        </button>
+        <p id="tg-test-result" style="font-size:.83rem;margin-top:10px;text-align:center;min-height:20px"></p>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-secondary" onclick="goStep(0)">‹ رجوع</button>
+        <button class="btn-primary" style="flex:1;margin-top:0" onclick="goStep(2)">التالي — Suivant ›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ STEP 3: QR Codes ═══════ -->
+  <div class="section" id="sec-2">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">📲</div>
+        <div>
+          رموز QR للطاولات
+          <div class="sub">QR Codes générés par table</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>✅ رموز QR جاهزة — QR Codes prêts</strong>
+        كل رمز يحمل رابطاً مُشفَّراً بجميع إعدادات المطعم. لا قاعدة بيانات مطلوبة.
+        Chaque QR contient toute la config dans son URL — pas de base de données.
+      </div>
+
+      <div id="qr-error" class="info-box error" style="display:none">
+        <strong>⚠️ تعذّر تحميل مكتبة QR — Erreur de chargement QR</strong>
+        يبدو أن اتصالك بالإنترنت ضعيف. تأكد من الاتصال وأعد تحميل الصفحة.
+      </div>
+
+      <div id="qr-grid" class="qr-grid" style="margin-top:8px"></div>
+
+      <div class="nav-row">
+        <button class="btn-secondary" onclick="goStep(1)">‹ رجوع</button>
+        <button class="btn-primary" style="flex:1;margin-top:0" onclick="goStep(3)">التالي — Suivant ›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ STEP 4: Print ═══════ -->
+  <div class="section" id="sec-3">
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">🖨️</div>
+        <div>
+          طباعة ملصقات QR
+          <div class="sub">Impression des étiquettes QR</div>
+        </div>
+      </div>
+
+      <div class="print-bar">
+        <span>🖨️ جميع رموز QR جاهزة للطباعة — Tous les QR prêts à imprimer</span>
+        <button class="btn-secondary" onclick="window.print()">طباعة — Imprimer</button>
+      </div>
+
+      <div class="info-box warning">
+        <strong>📌 نصيحة الطباعة — Conseil d'impression</strong>
+        اطبع على ورق لاصق A4، اقطع كل طاولة، وضع الملصق داخل حامل شفاف على الطاولة.
+        Imprimez sur du papier autocollant A4. Découpez et placez dans un porte-carte transparent.
+      </div>
+
+      <div id="print-grid" class="qr-grid"></div>
+
+      <div class="nav-row">
+        <button class="btn-secondary" onclick="goStep(2)">‹ رجوع</button>
+        <button class="btn-primary" style="flex:1;margin-top:0" onclick="openDashboard()">📊 فتح لوحة التحكم — Ouvrir Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- Toast -->
+<div id="toast" style="
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:#1e1e1e;border:1px solid rgba(245,200,66,.3);color:#f5c842;
+  padding:10px 22px;border-radius:50px;font-size:.88rem;z-index:999;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .35s;opacity:0;
+  white-space:nowrap;
+">✅ تم!</div>
+
+<script>
+// ─── Lock Screen Logic ───────────────────────────────────────────────────────
+const LOCK_PASS = "35055166";
+
+function checkAuthorization() {
+  const isAuthorized = sessionStorage.getItem('admin_authorized') === 'true';
+  const overlay = document.getElementById('lockOverlay');
+  if (isAuthorized) {
+    overlay.style.display = 'none';
+  } else {
+    overlay.style.display = 'flex';
+    document.getElementById('adminPassword').focus();
+  }
+}
+
+function unlockAdmin() {
+  const input = document.getElementById('adminPassword').value;
+  const errorMsg = document.getElementById('lockError');
+  if (input === LOCK_PASS) {
+    sessionStorage.setItem('admin_authorized', 'true');
+    document.getElementById('lockOverlay').style.display = 'none';
+    errorMsg.style.display = 'none';
+  } else {
+    errorMsg.style.display = 'block';
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminPassword').focus();
+  }
+}
+
+function handleLockKey(event) {
+  if (event.key === 'Enter') {
+    unlockAdmin();
+  }
+}
+
+// ─── State ──────────────────────────────────────────────────────────────────
+let currentStep = 0;
+const config = { 
+  name: '', 
+  tables: 3, 
+  wa: '', 
+  ntfyTopic: '', 
+  ntfyTopic1: '', 
+  ntfyTopic2: '', 
+  ntfyTopic3: '', 
+  ntfyTopic4: '', 
+  tgToken: '', 
+  tgChat: '' 
+};
+
+// ─── Topic ───────────────────────────────────────────────────────────────────
+function generateTopic() {
+  const prefixes = ['cafe','resto','diner','salik','qr','flash','service'];
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  let rand = '';
+  for (let i = 0; i < 9; i++) rand += chars[Math.floor(Math.random() * chars.length)];
+  return `${prefix}-${rand}`;
+}
+
+function regenTopic(id) {
+  const newTopic = generateTopic();
+  if (id === 'ntfyTopic') { config.ntfyTopic = newTopic; localStorage.setItem('qr_ntfyTopic', newTopic); }
+  else if (id === 'ntfyTopic1') { config.ntfyTopic1 = newTopic; localStorage.setItem('qr_ntfyTopic1', newTopic); }
+  else if (id === 'ntfyTopic2') { config.ntfyTopic2 = newTopic; localStorage.setItem('qr_ntfyTopic2', newTopic); }
+  else if (id === 'ntfyTopic3') { config.ntfyTopic3 = newTopic; localStorage.setItem('qr_ntfyTopic3', newTopic); }
+  else if (id === 'ntfyTopic4') { config.ntfyTopic4 = newTopic; localStorage.setItem('qr_ntfyTopic4', newTopic); }
+  
+  const el = document.getElementById(id);
+  if (el) el.value = newTopic;
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuthorization();
+  
+  // Load from localStorage if exists, else generate
+  config.name = localStorage.getItem('qr_restaurantName') || '';
+  document.getElementById('restaurantName').value = config.name;
+  
+  const savedTables = localStorage.getItem('qr_tableCount');
+  if (savedTables) {
+    config.tables = parseInt(savedTables) || 3;
+    const selectEl = document.getElementById('tableCount');
+    const options = Array.from(selectEl.options).map(o => o.value);
+    if (options.includes(String(config.tables))) {
+      selectEl.value = String(config.tables);
+    } else {
+      selectEl.value = 'custom';
+      document.getElementById('customTableRow').style.display = 'block';
+      document.getElementById('customTableCount').value = config.tables;
+    }
+  } else {
+    config.tables = 3;
+  }
+  
+  config.wa = localStorage.getItem('qr_waNum') || '';
+  document.getElementById('waNum').value = config.wa;
+  
+  config.ntfyTopic = localStorage.getItem('qr_ntfyTopic') || generateTopic();
+  document.getElementById('ntfyTopic').value = config.ntfyTopic;
+  localStorage.setItem('qr_ntfyTopic', config.ntfyTopic);
+  
+  config.ntfyTopic1 = localStorage.getItem('qr_ntfyTopic1') || generateTopic();
+  document.getElementById('ntfyTopic1').value = config.ntfyTopic1;
+  localStorage.setItem('qr_ntfyTopic1', config.ntfyTopic1);
+  
+  config.ntfyTopic2 = localStorage.getItem('qr_ntfyTopic2') || generateTopic();
+  document.getElementById('ntfyTopic2').value = config.ntfyTopic2;
+  localStorage.setItem('qr_ntfyTopic2', config.ntfyTopic2);
+  
+  config.ntfyTopic3 = localStorage.getItem('qr_ntfyTopic3') || generateTopic();
+  document.getElementById('ntfyTopic3').value = config.ntfyTopic3;
+  localStorage.setItem('qr_ntfyTopic3', config.ntfyTopic3);
+  
+  config.ntfyTopic4 = localStorage.getItem('qr_ntfyTopic4') || generateTopic();
+  document.getElementById('ntfyTopic4').value = config.ntfyTopic4;
+  localStorage.setItem('qr_ntfyTopic4', config.ntfyTopic4);
+  
+  config.tgToken = localStorage.getItem('qr_tgToken') || '';
+  document.getElementById('tgToken').value = config.tgToken;
+  
+  config.tgChat = localStorage.getItem('qr_tgChat') || '';
+  document.getElementById('tgChat').value = config.tgChat;
+  
+  // Load table topics assignment
+  try {
+    const savedTableTopics = localStorage.getItem('qr_tableTopics');
+    if (savedTableTopics) {
+      tableTopics = JSON.parse(savedTableTopics);
+    }
+  } catch(e) {}
+});
+
+// ─── Toggle custom table input ────────────────────────────────────────────────
+function toggleCustom() {
+  const v = document.getElementById('tableCount').value;
+  document.getElementById('customTableRow').style.display = v === 'custom' ? 'block' : 'none';
+}
+
+// ─── Copy to clipboard ────────────────────────────────────────────────────────
+function copyField(id, btn) {
+  const val = document.getElementById(id).value;
+  navigator.clipboard.writeText(val).then(() => {
+    showToast('📋 تم النسخ — Copié !');
+    if (btn) { const orig = btn.textContent; btn.textContent = '✅'; setTimeout(() => btn.textContent = orig, 1500); }
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  t.style.opacity = '1';
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(80px)'; t.style.opacity = '0'; }, 2200);
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('tab-ntfy-btn').classList.toggle('active', tab === 'ntfy');
+  document.getElementById('tab-tg-btn').classList.toggle('active', tab === 'tg');
+  document.getElementById('tab-ntfy').classList.toggle('active', tab === 'ntfy');
+  document.getElementById('tab-tg').classList.toggle('active', tab === 'tg');
+}
+
+// ─── Telegram test ────────────────────────────────────────────────────────────
+async function testTelegram() {
+  const token = document.getElementById('tgToken').value.trim();
+  const chat  = document.getElementById('tgChat').value.trim();
+  const res   = document.getElementById('tg-test-result');
+  if (!token || !chat) {
+    res.style.color = 'var(--error)';
+    res.textContent = '⚠️ أدخل التوكن ومعرّف المجموعة أولاً'; return;
+  }
+  res.style.color = 'var(--muted)'; res.textContent = '⏳ جاري الإرسال…';
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chat, parse_mode: 'HTML',
+        text: `🧪 <b>اختبار — Test QR Salik</b>\n━━━━━━━━━━━━━━━━━━\n✅ البوت يعمل بنجاح !\n🏪 <b>${escHtml(config.name || 'مطعمك')}</b>\n<i>Le bot fonctionne correctement.</i>`
+      })
+    });
+    const d = await r.json();
+    res.style.color = d.ok ? 'var(--success)' : 'var(--error)';
+    res.textContent = d.ok ? '✅ تم الإرسال ! تحقق من مجموعة تيليغرام.' : `❌ ${d.description}`;
+  } catch(e) {
+    res.style.color = 'var(--error)';
+    res.textContent = '❌ فشل الاتصال — verifiez votre connexion internet';
+  }
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ─── Collect config ───────────────────────────────────────────────────────────
+function collectConfig() {
+  config.name  = document.getElementById('restaurantName').value.trim();
+  const tc = document.getElementById('tableCount').value;
+  config.tables = tc === 'custom'
+    ? (parseInt(document.getElementById('customTableCount').value) || 3)
+    : parseInt(tc);
+  config.wa        = document.getElementById('waNum').value.trim();
+  config.ntfyTopic = document.getElementById('ntfyTopic').value.trim();
+  config.ntfyTopic1 = document.getElementById('ntfyTopic1').value.trim();
+  config.ntfyTopic2 = document.getElementById('ntfyTopic2').value.trim();
+  config.ntfyTopic3 = document.getElementById('ntfyTopic3').value.trim();
+  config.ntfyTopic4 = document.getElementById('ntfyTopic4').value.trim();
+  config.tgToken   = document.getElementById('tgToken').value.trim();
+  config.tgChat    = document.getElementById('tgChat').value.trim();
+
+  // Persist to localStorage
+  localStorage.setItem('qr_restaurantName', config.name);
+  localStorage.setItem('qr_tableCount', config.tables);
+  localStorage.setItem('qr_waNum', config.wa);
+  localStorage.setItem('qr_ntfyTopic', config.ntfyTopic);
+  localStorage.setItem('qr_ntfyTopic1', config.ntfyTopic1);
+  localStorage.setItem('qr_ntfyTopic2', config.ntfyTopic2);
+  localStorage.setItem('qr_ntfyTopic3', config.ntfyTopic3);
+  localStorage.setItem('qr_ntfyTopic4', config.ntfyTopic4);
+  localStorage.setItem('qr_tgToken', config.tgToken);
+  localStorage.setItem('qr_tgChat', config.tgChat);
+  localStorage.setItem('qr_tableTopics', JSON.stringify(tableTopics));
+}
+
+// ─── Validate ─────────────────────────────────────────────────────────────────
+function validateStep(step) {
+  if (step === 0) {
+    const name = document.getElementById('restaurantName').value.trim();
+    const err = document.getElementById('step1-err');
+    if (!name) { err.style.display = 'block'; return false; }
+    err.style.display = 'none';
+  }
+  return true;
+}
+
+// ─── Navigate steps ───────────────────────────────────────────────────────────
+function goStep(target) {
+  if (target > currentStep && !validateStep(currentStep)) return;
+  collectConfig();
+
+  // Show/hide sections
+  for (let i = 0; i <= 3; i++) {
+    document.getElementById(`sec-${i}`).classList.toggle('active', i === target);
+  }
+
+  // Update step indicators
+  for (let i = 0; i <= 3; i++) {
+    const circle = document.getElementById(`sc-${i}`);
+    const item   = document.querySelector(`.step-item[data-step="${i}"]`);
+    item.classList.remove('active', 'done');
+    if (i < target)  { item.classList.add('done');   circle.textContent = '✓'; }
+    if (i === target){ item.classList.add('active');  circle.textContent = i + 1; }
+    if (i > target)  { circle.textContent = i + 1; }
+
+    if (i < 3) {
+      document.getElementById(`line-${i}`).classList.toggle('done', i < target);
+    }
+  }
+
+  if (target === 2) generateQRs('qr-grid');
+  if (target === 3) generateQRs('print-grid');
+
+  currentStep = target;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Global table to topic assignment state ──────────────────────────────────
+let tableTopics = {}; // { tableNum: 'main'|'1'|'2'|'3'|'4' }
+
+// ─── Build table URL ──────────────────────────────────────────────────────────
+function buildTableUrl(tableNum, topicValue = null) {
+  // Points to index.html in the same folder
+  const base = location.href.replace(/admin\.html.*$/, 'index.html');
+  const params = new URLSearchParams({ table: tableNum, name: config.name || 'مطعمنا' });
+  
+  const chosenTopic = topicValue || config.ntfyTopic;
+  if (chosenTopic) params.set('topic', chosenTopic);
+  
+  if (config.tgToken)   params.set('tg_token', config.tgToken);
+  if (config.tgChat)    params.set('tg_chat',  config.tgChat);
+  if (config.wa)        params.set('wa',       config.wa);
+  return `${base}?${params.toString()}`;
+}
+
+// ─── Handle Table Topic Assignment Dropdown Selection ────────────────────────
+function changeTableTopic(selectEl, containerId, t) {
+  tableTopics[t] = selectEl.value;
+  localStorage.setItem('qr_tableTopics', JSON.stringify(tableTopics));
+  // Regenerate QRs for both screens (preview and print) to synchronize
+  generateQRs('qr-grid');
+  generateQRs('print-grid');
+}
+
+// ─── Generate QR codes ────────────────────────────────────────────────────────
+function generateQRs(containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+
+  // Check if QRCode lib loaded
+  if (typeof QRCode === 'undefined') {
+    document.getElementById('qr-error').style.display = 'block';
+    container.innerHTML = '<p style="color:var(--error);text-align:center;padding:20px">❌ مكتبة QR لم تُحمَّل. تحقق من الاتصال بالإنترنت.</p>';
+    return;
+  }
+  document.getElementById('qr-error') && (document.getElementById('qr-error').style.display = 'none');
+
+  for (let t = 1; t <= config.tables; t++) {
+    // default to 'main' if not assigned
+    if (!tableTopics[t]) tableTopics[t] = 'main';
+    
+    let activeTopic = config.ntfyTopic;
+    const selection = tableTopics[t];
+    if (selection === '1' && config.ntfyTopic1) activeTopic = config.ntfyTopic1;
+    if (selection === '2' && config.ntfyTopic2) activeTopic = config.ntfyTopic2;
+    if (selection === '3' && config.ntfyTopic3) activeTopic = config.ntfyTopic3;
+    if (selection === '4' && config.ntfyTopic4) activeTopic = config.ntfyTopic4;
+
+    const url = buildTableUrl(t, activeTopic);
+
+    const item = document.createElement('div');
+    item.className = 'qr-item';
+
+    item.innerHTML = `
+      <div class="qr-label-ar">الطاولة ${t}</div>
+      <div class="qr-label">Table ${t}</div>
+      <div style="margin-bottom:12px; text-align:right;">
+        <label style="font-size:0.7rem; color:var(--muted); display:block; margin-bottom:4px; font-weight:600;">منطقة الإرسال | Zone / Topic:</label>
+        <select onchange="changeTableTopic(this, '${containerId}', ${t})" style="width:100%; font-size:0.8rem; padding:6px; background:var(--card); color:var(--text); border:1px solid var(--border2); border-radius:6px; outline:none; cursor:pointer;">
+          <option value="main" ${selection === 'main' ? 'selected' : ''}>الرئيسي | Principal</option>
+          <option value="1" ${selection === '1' ? 'selected' : ''}>إضافي 1 | Zone 1</option>
+          <option value="2" ${selection === '2' ? 'selected' : ''}>إضافي 2 | Zone 2</option>
+          <option value="3" ${selection === '3' ? 'selected' : ''}>إضافي 3 | Zone 3</option>
+          <option value="4" ${selection === '4' ? 'selected' : ''}>إضافي 4 | Zone 4</option>
+        </select>
+      </div>
+      <div class="qr-canvas-wrap" id="qr-wrap-${containerId}-${t}"></div>
+      <button class="qr-dl-btn" onclick="downloadQR('${containerId}', ${t})">⬇ تحميل PNG</button>
+      <div class="url-preview" id="url-preview-${containerId}-${t}">${url}</div>
+    `;
+    container.appendChild(item);
+
+    // Generate QR
+    try {
+      new QRCode(document.getElementById(`qr-wrap-${containerId}-${t}`), {
+        text: url,
+        width: 130, height: 130,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch(e) {
+      document.getElementById(`qr-wrap-${containerId}-${t}`).innerHTML = '<p style="color:red;font-size:.7rem">QR error</p>';
+    }
+  }
+}
+
+// ─── Download single QR ───────────────────────────────────────────────────────
+function downloadQR(containerId, t) {
+  const wrap = document.getElementById(`qr-wrap-${containerId}-${t}`);
+  const canvas = wrap ? wrap.querySelector('canvas') : null;
+  if (!canvas) { alert('انتظر لحظة حتى يتم توليد رمز QR'); return; }
+  const a = document.createElement('a');
+  a.download = `table-${t}-qr.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ─── Open dashboard ───────────────────────────────────────────────────────────
+function openDashboard() {
+  const base = location.href.replace(/admin\.html.*$/, 'dashboard.html');
+  
+  // Collect all unique, non-empty active ntfy topics to listen to them all at once in SSE
+  const activeTopics = [config.ntfyTopic];
+  if (config.ntfyTopic1) activeTopics.push(config.ntfyTopic1);
+  if (config.ntfyTopic2) activeTopics.push(config.ntfyTopic2);
+  if (config.ntfyTopic3) activeTopics.push(config.ntfyTopic3);
+  if (config.ntfyTopic4) activeTopics.push(config.ntfyTopic4);
+  
+  const combinedTopics = activeTopics.filter(Boolean).join(',');
+
+  const params = new URLSearchParams({
+    name:   config.name || 'مطعمنا',
+    tables: config.tables,
+    topic:  combinedTopics,
+  });
+  if (config.tgToken) params.set('tg_token', config.tgToken);
+  if (config.tgChat)  params.set('tg_chat',  config.tgChat);
+  window.open(`${base}?${params.toString()}`, '_blank');
+}
+</script>
+
+</body>
+</html>

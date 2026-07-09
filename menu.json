@@ -1,0 +1,33 @@
+{
+  "categories": [
+    {
+      "name": "🐟 الأسماك | Nos Poissons",
+      "items": [
+        { "id": "p1", "name": "Sardine / سردين", "price": 1000 },
+        { "id": "p2", "name": "Rouget / روجي", "price": 2000 },
+        { "id": "p3", "name": "Espadon / إسبرادون", "price": 2000 },
+        { "id": "p4", "name": "Filet de merlan / فيليه ميرلون", "price": 2000 },
+        { "id": "p5", "name": "Merlan / ميرلون", "price": 2000 },
+        { "id": "p6", "name": "Saumon / سومون", "price": 2000 },
+        { "id": "p7", "name": "Crevettes grillées / جمبري مشوي", "price": 2500 }
+      ]
+    },
+    {
+      "name": "☕ مشروبات ساخنة | Boissons Chaudes",
+      "items": [
+        { "id": "c1", "name": "Espresso / إسبريسو", "price": 100 },
+        { "id": "c2", "name": "Cappuccino / كابوتشينو", "price": 150 },
+        { "id": "c3", "name": "Café au Lait / قهوة حليب", "price": 120 },
+        { "id": "c4", "name": "Thé à la Menthe / شاي بالنعناع", "price": 80 }
+      ]
+    },
+    {
+      "name": "🍰 الحلويات | Desserts",
+      "items": [
+        { "id": "d1", "name": "Tartelette aux fruits / تارت الفواكه", "price": 250 },
+        { "id": "d2", "name": "Flan Caramel / فلان كراميل", "price": 180 },
+        { "id": "d3", "name": "Fondant au Chocolat / فوندان الشوكولاتة", "price": 300 }
+      ]
+    }
+  ]
+}

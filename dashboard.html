@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم | Tableau de Bord — QR Salik</title>
+  <meta name="description" content="لوحة التحكم المباشرة لطلبات المطعم — Tableau de bord en temps réel des demandes restaurant." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --gold:    #F5C842;
+      --amber:   #FF8C42;
+      --bg:      #0A0A0A;
+      --surface: #111;
+      --card:    #181818;
+      --card2:   #1F1F1F;
+      --border:  rgba(255,255,255,.07);
+      --text:    #F5F0E8;
+      --muted:   #666;
+      --free:    #2D2D2D;
+      --call-c:  #FFB300;
+      --bill-c:  #EF5350;
+      --menu-c:  #4FC3F7;
+      --order-c: #4CAF50;
+      --done-c:  #81C784;
+      --radius:  16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Cairo','Outfit',sans-serif; overflow-x: hidden; }
+
+    /* ── Ambient glow ── */
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(ellipse 60% 30% at 50% 0%, rgba(245,200,66,.08) 0%, transparent 60%);
+    }
+
+    /* ── Layout ── */
+    .app { position:relative; z-index:1; display:grid; grid-template-rows:auto 1fr; min-height:100dvh; }
+
+    /* ── Topbar ── */
+    .topbar {
+      display:flex; align-items:center; gap:16px;
+      padding:16px 24px;
+      background:rgba(17,17,17,.9);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(12px);
+      position:sticky; top:0; z-index:50;
+    }
+    .topbar-logo { font-size:1.5rem; }
+    .topbar-info { flex:1; }
+    .topbar-info h1 { font-size:1rem; font-weight:900; color:var(--gold); }
+    .topbar-info p  { font-size:.78rem; color:var(--muted); font-family:'Outfit',sans-serif; margin-top:1px; }
+
+    .status-dot {
+      width:10px; height:10px; border-radius:50%;
+      background:var(--order-c);
+      box-shadow:0 0 10px var(--order-c);
+      animation:pulse-dot 2s ease-in-out infinite;
+      flex-shrink:0;
+    }
+    .status-dot.offline { background:var(--bill-c); box-shadow:0 0 10px var(--bill-c); animation:none; }
+
+    @keyframes pulse-dot {
+      0%,100% { box-shadow:0 0 8px var(--order-c); }
+      50%      { box-shadow:0 0 20px var(--order-c); }
+    }
+
+    .status-label { font-size:.78rem; color:var(--muted); font-family:'Outfit',sans-serif; }
+
+    .clear-all-btn {
+      padding:8px 16px;
+      background:rgba(239,83,80,.12);
+      border:1px solid rgba(239,83,80,.25);
+      border-radius:8px;
+      color:#ef9a9a;
+      cursor:pointer;
+      font-size:.8rem;
+      font-family:'Outfit',sans-serif;
+      transition:background .2s;
+    }
+    .clear-all-btn:hover { background:rgba(239,83,80,.22); }
+
+    .sound-btn {
+      padding:8px 12px;
+      background:rgba(245,200,66,.08);
+      border:1px solid rgba(245,200,66,.15);
+      border-radius:8px;
+      color:var(--gold);
+      cursor:pointer;
+      font-size:.9rem;
+      transition:background .2s;
+    }
+    .sound-btn:hover { background:rgba(245,200,66,.16); }
+
+    /* ── Main content ── */
+    .main { padding:24px; }
+
+    /* ── Summary bar ── */
+    .summary {
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-bottom:24px;
+    }
+
+    .stat-card {
+      flex:1; min-width:140px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:16px 18px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .stat-icon { font-size:1.5rem; }
+    .stat-val { font-size:1.6rem; font-weight:900; line-height:1; }
+    .stat-lbl { font-size:.75rem; color:var(--muted); font-family:'Outfit',sans-serif; margin-top:2px; }
+    .stat-card.call-s { border-color:rgba(255,179,0,.2); }
+    .stat-card.bill-s { border-color:rgba(239,83,80,.2); }
+    .stat-card.menu-s { border-color:rgba(79,195,247,.2); }
+    .stat-card.order-s { border-color:rgba(76,175,80,.2); }
+
+    /* ── Table Grid ── */
+    .grid-header {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:16px;
+    }
+    .grid-header h2 { font-size:1rem; font-weight:700; }
+    .grid-header p  { font-size:.8rem; color:var(--muted); font-family:'Outfit',sans-serif; }
+
+    .table-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap:14px;
+      margin-bottom:32px;
+    }
+
+    /* Table Card */
+    .table-card {
+      background:var(--card);
+      border:2px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px 16px 16px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+      transition:transform .25s, border-color .25s, box-shadow .25s;
+      cursor:default;
+    }
+
+    .table-card.free   { border-color:var(--border); }
+    .table-card.call   { border-color:var(--call-c); box-shadow:0 0 24px rgba(255,179,0,.25); animation:shake .4s ease both; }
+    .table-card.bill   { border-color:var(--bill-c); box-shadow:0 0 24px rgba(239,83,80,.35); animation:shake .4s ease both; }
+    .table-card.menu   { border-color:var(--menu-c); box-shadow:0 0 24px rgba(79,195,247,.2); }
+    .table-card.order  { border-color:var(--order-c); box-shadow:0 0 24px rgba(76,175,80,.35); animation:shake .4s ease both; }
+    .table-card.done   { border-color:var(--done-c); box-shadow:0 0 12px rgba(76,175,80,.15); opacity:.75; }
+
+    .table-card.call .status-glow { background:var(--call-c); }
+    .table-card.bill .status-glow { background:var(--bill-c); }
+    .table-card.menu .status-glow { background:var(--menu-c); }
+    .table-card.order .status-glow { background:var(--order-c); }
+    .table-card.done .status-glow { background:var(--done-c); }
+
+    .status-glow {
+      position:absolute; top:0; left:0; right:0; height:3px;
+      background:transparent;
+      transition:background .3s;
+    }
+
+    @keyframes shake {
+      0%,100% { transform:translateX(0); }
+      20%      { transform:translateX(-5px); }
+      40%      { transform:translateX(5px); }
+      60%      { transform:translateX(-3px); }
+      80%      { transform:translateX(3px); }
+    }
+
+    .table-num {
+      font-size:2rem; font-weight:900; line-height:1;
+      margin-bottom:4px;
+    }
+    .table-card.free  .table-num { color:var(--muted); }
+    .table-card.call  .table-num { color:var(--call-c); }
+    .table-card.bill  .table-num { color:var(--bill-c); }
+    .table-card.menu  .table-num { color:var(--menu-c); }
+    .table-card.order .table-num { color:var(--order-c); }
+    .table-card.done  .table-num { color:var(--done-c); }
+
+    .table-label { font-size:.78rem; color:var(--muted); margin-bottom:12px; font-family:'Outfit',sans-serif; }
+
+    .table-status {
+      font-size:.82rem; font-weight:700;
+      padding:5px 10px;
+      border-radius:50px;
+      margin-bottom:12px;
+      display:inline-block;
+    }
+    .table-card.free  .table-status { background:rgba(255,255,255,.04); color:var(--muted); }
+    .table-card.call  .table-status { background:rgba(255,179,0,.15); color:var(--call-c); }
+    .table-card.bill  .table-status { background:rgba(239,83,80,.15); color:var(--bill-c); }
+    .table-card.menu  .table-status { background:rgba(79,195,247,.12); color:var(--menu-c); }
+    .table-card.order .table-status { background:rgba(76,175,80,.15);  color:var(--order-c); }
+    .table-card.done  .table-status { background:rgba(76,175,80,.12);  color:var(--done-c); }
+
+    .table-time {
+      font-size:.72rem; color:var(--muted);
+      font-family:'Outfit',sans-serif;
+      margin-bottom:12px;
+      min-height:18px;
+    }
+
+    .receipt-badge-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(76,175,80,0.15);
+      border: 1px solid rgba(76,175,80,0.3);
+      color: var(--order-c);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 0 auto 10px;
+      width: fit-content;
+      transition: background 0.2s;
+    }
+    .table-card.order .receipt-badge-btn {
+      display: flex;
+    }
+    .receipt-badge-btn:hover {
+      background: rgba(76,175,80,0.25);
+    }
+
+    .ack-btn {
+      width:100%;
+      padding:8px;
+      border:1px solid;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:.8rem; font-weight:600;
+      font-family:'Cairo',sans-serif;
+      transition:all .2s;
+    }
+    .table-card.free .ack-btn,
+    .table-card.done .ack-btn { display:none; }
+    .table-card.call .ack-btn { border-color:var(--call-c); background:rgba(255,179,0,.1); color:var(--call-c); }
+    .table-card.bill .ack-btn { border-color:var(--bill-c); background:rgba(239,83,80,.1); color:var(--bill-c); }
+    .table-card.menu .ack-btn { border-color:var(--menu-c); background:rgba(79,195,247,.1); color:var(--menu-c); }
+    .table-card.order .ack-btn { border-color:var(--order-c); background:rgba(76,175,80,.1); color:var(--order-c); }
+    .ack-btn:hover { opacity:.8; transform:scale(.98); }
+
+    /* ── Log Feed ── */
+    .log-section { margin-top:8px; }
+    .log-section h2 { font-size:.95rem; font-weight:700; margin-bottom:12px; }
+
+    .log-feed {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      max-height:280px;
+      overflow-y:auto;
+    }
+
+    .log-entry {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 16px;
+      border-bottom:1px solid var(--border);
+      font-size:.83rem;
+      animation:slideIn .3s ease both;
+    }
+    .log-entry:last-child { border-bottom:none; }
+
+    @keyframes slideIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
+
+    .log-icon { font-size:1rem; flex-shrink:0; }
+    .log-table { font-weight:700; min-width:60px; }
+    .log-msg { flex:1; color:var(--muted); }
+    .log-time { font-family:'Outfit',sans-serif; font-size:.75rem; color:var(--muted); }
+
+    .log-empty { padding:24px; text-align:center; color:var(--muted); font-size:.88rem; }
+
+    /* ── Connection Banner ── */
+    .conn-banner {
+      display:none;
+      align-items:center; gap:10px;
+      padding:10px 16px;
+      background:rgba(239,83,80,.1);
+      border:1px solid rgba(239,83,80,.2);
+      border-radius:10px;
+      color:#ef9a9a;
+      font-size:.85rem;
+      margin-bottom:16px;
+    }
+    .conn-banner.show { display:flex; }
+
+    /* ── Setup Modal ── */
+    .modal-overlay {
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.8);
+      backdrop-filter:blur(8px);
+      z-index:200;
+      display:flex; align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .modal-overlay.hidden { display:none; }
+
+    .modal {
+      background:var(--card);
+      border:1px solid rgba(245,200,66,.2);
+      border-radius:20px;
+      padding:32px;
+      max-width:460px; width:100%;
+      animation:fadeUp .4s ease both;
+    }
+    .modal h2 { font-size:1.2rem; font-weight:900; margin-bottom:6px; color:var(--gold); }
+    .modal p  { font-size:.88rem; color:var(--muted); margin-bottom:20px; }
+    .modal .form-row { margin-bottom:14px; }
+    .modal label { display:block; font-size:.85rem; font-weight:600; margin-bottom:6px; }
+    .modal input {
+      width:100%;
+      background:var(--card2);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;
+      padding:11px 14px;
+      color:var(--text);
+      font-size:.9rem; font-family:monospace;
+      direction:ltr; text-align:left;
+      outline:none;
+    }
+    .modal input:focus { border-color:var(--gold); }
+    .modal .btn-primary {
+      display:block; width:100%;
+      padding:14px;
+      background:linear-gradient(135deg,var(--gold),var(--amber));
+      border:none; border-radius:12px;
+      color:#000; font-size:1rem; font-weight:700;
+      font-family:'Cairo',sans-serif;
+      cursor:pointer;
+      margin-top:8px;
+    }
+
+    /* ── Cashier Receipt Popup Modal ── */
+    .receipt-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 150;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .receipt-modal {
+      background: #FFFFFF;
+      color: #000000;
+      border-radius: 12px;
+      max-width: 380px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-family: monospace;
+      font-size: 0.9rem;
+      direction: ltr;
+      text-align: left;
+      animation: fadeUp 0.3s ease both;
+    }
+    .receipt-modal .receipt-header {
+      text-align: center;
+      margin-bottom: 16px;
+      border-bottom: 2px dashed #000;
+      padding-bottom: 12px;
+    }
+    .receipt-modal .receipt-header h3 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .receipt-modal .receipt-header p {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 2px;
+    }
+    .receipt-modal .receipt-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .receipt-modal .receipt-items {
+      border-bottom: 2px dashed #000;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      min-height: 40px;
+    }
+    .receipt-modal .receipt-total-row {
+      font-size: 1.1rem;
+      font-weight: 900;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .receipt-modal .cashier-alert-box {
+      background: #F5C842;
+      color: #000000;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+    }
+    .receipt-modal .receipt-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .receipt-modal .receipt-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      background: transparent;
+      color: #000;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      font-family: 'Cairo', sans-serif;
+    }
+    .receipt-modal .receipt-btn.btn-pay {
+      background: #000;
+      color: #FFF;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    @media (max-width:560px) {
+      .main { padding:16px; }
+      .table-grid { grid-template-columns:repeat(auto-fill, minmax(130px,1fr)); gap:10px; }
+      .topbar { padding:12px 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── Setup Modal ── -->
+<div class="modal-overlay" id="setupModal">
+  <div class="modal">
+    <h2>⚙️ إعداد اللوحة — Config Dashboard</h2>
+    <p>أدخل إعدادات المطعم لتشغيل اللوحة المباشرة — Entrez la config pour lancer le tableau en direct.</p>
+
+    <div class="form-row">
+      <label>اسم المطعم <span style="color:#555;font-weight:400;font-size:.78rem">Restaurant name</span></label>
+      <input id="m-name" type="text" placeholder="مطعم البهجة" style="font-family:'Cairo',sans-serif;direction:rtl;text-align:right" />
+    </div>
+
+    <div class="form-row">
+      <label>عدد الطاولات <span style="color:#555;font-weight:400;font-size:.78rem">Number of tables</span></label>
+      <input id="m-tables" type="number" placeholder="10" min="1" max="99" />
+    </div>
+
+    <div class="form-row">
+      <label>موضوع ntfy <span style="color:#555;font-weight:400;font-size:.78rem">ntfy topic (from admin panel)</span></label>
+      <input id="m-topic" type="text" placeholder="cafe-xk7mp2abc" />
+    </div>
+
+    <button class="btn-primary" onclick="startDashboard()">🚀 تشغيل اللوحة — Lancer le tableau</button>
+  </div>
+</div>
+
+<!-- ── Cashier Receipt Popup Modal ── -->
+<div class="receipt-modal-overlay" id="receiptModalOverlay" style="display:none" onclick="closeReceiptModal()">
+  <div class="receipt-modal" onclick="event.stopPropagation()">
+    <div class="receipt-header">
+      <h3 id="rec-rest-name">REST NAME</h3>
+      <p>ZERO BACKEND ORDERING SYSTEM</p>
+      <div class="receipt-line" style="margin-top:10px;">
+        <span id="rec-table-lbl" style="font-weight:900;">TABLE: -</span>
+        <span id="rec-time-lbl">TIME: --:--:--</span>
+      </div>
+    </div>
+    <div class="receipt-items" id="rec-items-list">
+      <!-- Items go here -->
+    </div>
+    <div class="receipt-total-row">
+      <span>TOTAL:</span>
+      <span id="rec-total-lbl">0 DA</span>
+    </div>
+    <div class="cashier-alert-box">
+      ⚠️ لوحة الحسابات خاصة بالكاشير (Caissier). يجب على النادل طلب الفاتورة المطبوعة أو المرئية من الكاشير لتسليمها للزبون.
+    </div>
+    <div class="receipt-actions">
+      <button class="receipt-btn" onclick="closeReceiptModal()">إغلاق | Close</button>
+      <button class="receipt-btn btn-pay" id="rec-pay-btn" onclick="payAndClearReceipt()">تمت الخدمة والدفع</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<div class="app">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-logo">🍽️</div>
+    <div class="topbar-info">
+      <h1 id="dash-name">لوحة التحكم — Dashboard</h1>
+      <p id="dash-sub">QR Salik · مباشر en direct</p>
+    </div>
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-label" id="statusLabel">متصل</span>
+    <button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="تشغيل/إيقاف الصوت">🔔</button>
+    <button class="clear-all-btn" onclick="clearAll()">مسح الكل — Tout effacer</button>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Connection Banner -->
+    <div class="conn-banner" id="connBanner">
+      ⚠️ انقطع الاتصال — Connexion perdue. Reconnexion en cours…
+    </div>
+
+    <!-- Summary -->
+    <div class="summary">
+      <div class="stat-card call-s">
+        <span class="stat-icon">🔔</span>
+        <div>
+          <div class="stat-val" id="stat-call">0</div>
+          <div class="stat-lbl">استدعاء | Serveur</div>
+        </div>
+      </div>
+      <div class="stat-card bill-s">
+        <span class="stat-icon">💳</span>
+        <div>
+          <div class="stat-val" id="stat-bill">0</div>
+          <div class="stat-lbl">حساب | Addition</div>
+        </div>
+      </div>
+      <div class="stat-card menu-s">
+        <span class="stat-icon">📄</span>
+        <div>
+          <div class="stat-val" id="stat-menu">0</div>
+          <div class="stat-lbl">قائمة | Menu</div>
+        </div>
+      </div>
+      <div class="stat-card order-s">
+        <span class="stat-icon">🟢</span>
+        <div>
+          <div class="stat-val" id="stat-order">0</div>
+          <div class="stat-lbl">طلبات | Commandes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Grid -->
+    <div class="grid-header">
+      <div>
+        <h2>الطاولات — Tables</h2>
+        <p id="grid-sub">تنتظر الطلبات — En attente de demandes</p>
+      </div>
+    </div>
+    <div class="table-grid" id="tableGrid"></div>
+
+    <!-- Log -->
+    <div class="log-section">
+      <h2>📋 سجل الطلبات — Historique des demandes</h2>
+      <div class="log-feed" id="logFeed">
+        <div class="log-empty">لا توجد طلبات بعد — Aucune demande pour l'instant</div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /app -->
+
+<!-- Buzzer audio (generated via Web Audio API) -->
+<script>
+// ─── Config from URL params ──────────────────────────────────────────────
+const urlP = new URLSearchParams(location.search);
+let TOPIC    = urlP.get('topic')    || '';
+let DASH_NAME= urlP.get('name')     || '';
+let TABLES   = parseInt(urlP.get('tables')) || 0;
+
+// ─── State ──────────────────────────────────────────────────────────────
+let tableStates = {}; // { 1: { status:'free'|'call'|'bill'|'menu'|'order'|'done', time: Date, orderData: {total, items} } }
+let soundEnabled = true;
+let sse = null;
+let stats = { call:0, bill:0, menu:0, order:0 };
+const ACTION_MAP = {
+  call: { icon:'🔔', ar:'استدعاء النادل', fr:'Serveur demandé', cls:'call' },
+  bill: { icon:'💳', ar:'طلب الحساب',     fr:"L'addition",      cls:'bill' },
+  menu: { icon:'📄', ar:'عرض القائمة',    fr:'Voir le menu',    cls:'menu' },
+  order:{ icon:'🛒', ar:'طلب جديد 🟢',   fr:'Commande reçue',  cls:'order'}
+};
+
+// ─── Init ────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (TOPIC && TABLES) {
+    document.getElementById('setupModal').classList.add('hidden');
+    init();
+  } else {
+    document.getElementById('setupModal').classList.remove('hidden');
+  }
+});
+
+function startDashboard() {
+  DASH_NAME = document.getElementById('m-name').value.trim() || 'المطعم';
+  TABLES    = parseInt(document.getElementById('m-tables').value) || 5;
+  TOPIC     = document.getElementById('m-topic').value.trim();
+  if (!TOPIC) { alert('أدخل موضوع ntfy — Entrez le topic ntfy'); return; }
+  document.getElementById('setupModal').classList.add('hidden');
+  init();
+}
+
+function init() {
+  document.getElementById('dash-name').textContent = DASH_NAME || 'لوحة التحكم';
+  document.title = `${DASH_NAME || 'Dashboard'} — QR Salik`;
+
+  for (let i = 1; i <= TABLES; i++) tableStates[i] = { status:'free', time:null, orderData:null };
+  renderGrid();
+  connectSSE();
+}
+
+// ─── SSE Connection ──────────────────────────────────────────────────────
+function connectSSE() {
+  if (!TOPIC) return;
+  setOnline(true);
+
+  sse = new EventSource(`https://ntfy.sh/${TOPIC}/sse`);
+
+  sse.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.event === 'message') handleNtfyMessage(msg);
+    } catch {}
+  };
+
+  sse.addEventListener('message', (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      handleNtfyMessage(msg);
+    } catch {}
+  });
+
+  sse.onerror = () => {
+    setOnline(false);
+    // Retry after 5s
+    setTimeout(() => {
+      if (sse) { sse.close(); sse = null; }
+      connectSSE();
+    }, 5000);
+  };
+
+  sse.onopen = () => setOnline(true);
+}
+
+function handleNtfyMessage(msg) {
+  const body = msg.message || msg.body || '';
+  const title = msg.title || '';
+  const tags  = (msg.tags || []).join(',');
+
+  // Extract table number
+  const tableMatch = title.match(/Table\s+(\d+)/i) || body.match(/Table\s+(\d+)/i) || body.match(/طاولة\s+(\d+)/i) || body.match(/T(\d+)/i);
+  if (!tableMatch) return;
+  const tableNum = parseInt(tableMatch[1]);
+  if (tableNum < 1 || tableNum > TABLES) return;
+
+  // Detect Action Key
+  let actionKey = 'call';
+  let orderData = null;
+
+  const orderDataIndex = body.indexOf('[ORDER_DATA:');
+  const lastBracketIndex = body.lastIndexOf(']');
+  if (orderDataIndex !== -1 && lastBracketIndex !== -1 && lastBracketIndex > orderDataIndex) {
+    actionKey = 'order';
+    try {
+      const dataStr = body.substring(orderDataIndex + 12, lastBracketIndex);
+      orderData = JSON.parse(dataStr);
+    } catch (e) {
+      console.error('Error parsing order data:', e);
+    }
+  } else if (tags.includes('credit_card')) {
+    actionKey = 'bill';
+  } else if (tags.includes('page_with_curl') || body.toLowerCase().includes('menu') || body.includes('عرض القائمة')) {
+    actionKey = 'menu';
+  } else if (tags.includes('shopping_bags')) {
+    actionKey = 'order';
+  } else if (tags.includes('bell')) {
+    actionKey = 'call';
+  }
+
+  triggerTable(tableNum, actionKey, orderData);
+}
+
+// ─── Trigger a Table ────────────────────────────────────────────────────
+function triggerTable(tableNum, actionKey, orderData = null) {
+  const now = new Date();
+  tableStates[tableNum] = { status: actionKey, time: now, orderData: orderData };
+  stats[actionKey]++;
+  updateStats();
+  renderGrid();
+  addLog(tableNum, actionKey, now, orderData);
+  if (soundEnabled) playBuzzer(actionKey);
+}
+
+// ─── Acknowledge ─────────────────────────────────────────────────────────
+function ackTable(tableNum) {
+  tableStates[tableNum] = { status:'done', time:new Date(), orderData: tableStates[tableNum].orderData };
+  renderGrid();
+}
+
+function clearAll() {
+  for (let i = 1; i <= TABLES; i++) tableStates[i] = { status:'free', time:null, orderData:null };
+  stats = { call:0, bill:0, menu:0, order:0 };
+  updateStats();
+  renderGrid();
+}
+
+// ─── Render Grid ──────────────────────────────────────────────────────────
+function renderGrid() {
+  const grid = document.getElementById('tableGrid');
+  const pending = Object.values(tableStates).filter(s => s.status !== 'free' && s.status !== 'done').length;
+  document.getElementById('grid-sub').textContent = pending
+    ? `⚠️ ${pending} طلب نشط — ${pending} demande(s) active(s)`
+    : 'جميع الطاولات هادئة — Toutes les tables libres';
+
+  grid.innerHTML = '';
+  for (let t = 1; t <= TABLES; t++) {
+    const st = tableStates[t] || { status:'free', time:null, orderData:null };
+    const a = ACTION_MAP[st.status];
+    const card = document.createElement('div');
+    card.className = `table-card ${st.status}`;
+    card.innerHTML = `
+      <div class="status-glow"></div>
+      <div class="table-num">${t}</div>
+      <div class="table-label">Table ${t} | الطاولة ${t}</div>
+      <div class="table-status">${
+        st.status === 'free' ? '✓ حرة — Libre' :
+        st.status === 'done' ? '✅ تم — Traité' :
+        `${a.icon} ${a.ar}`
+      }</div>
+      <div class="table-time">${st.time ? formatTime(st.time) : ''}</div>
+      <button class="receipt-badge-btn" onclick="openReceiptModal(${t})">📄 الفاتورة | Receipt</button>
+      <button class="ack-btn" onclick="ackTable(${t})">✔ تمت الخدمة — Traité</button>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+// ─── Log Feed ─────────────────────────────────────────────────────────────
+function addLog(tableNum, actionKey, time, orderData = null) {
+  const feed = document.getElementById('logFeed');
+  const empty = feed.querySelector('.log-empty');
+  if (empty) empty.remove();
+
+  const a = ACTION_MAP[actionKey];
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  
+  let desc = `${a.ar} | ${a.fr}`;
+  if (actionKey === 'order' && orderData) {
+    const compact = orderData.items.map(it => `${it.qty}x ${it.name}`).join(', ');
+    desc = `طلب جديد: ${compact} (${orderData.total} DA)`;
+  } else if (actionKey === 'menu') {
+    desc = `فتح قائمة الطعام | Menu ouvert`;
+  }
+
+  entry.innerHTML = `
+    <span class="log-icon">${a.icon}</span>
+    <span class="log-table">Table ${tableNum}</span>
+    <span class="log-msg">${desc}</span>
+    <span class="log-time">${formatTime(time)}</span>
+  `;
+  feed.insertBefore(entry, feed.firstChild);
+
+  // Keep max 50 entries
+  while (feed.children.length > 50) feed.removeChild(feed.lastChild);
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-call').textContent = stats.call;
+  document.getElementById('stat-bill').textContent = stats.bill;
+  document.getElementById('stat-menu').textContent = stats.menu;
+  document.getElementById('stat-order').textContent = stats.order;
+}
+
+// ─── Sound ────────────────────────────────────────────────────────────────
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playBuzzer(type) {
+  try {
+    const ctx = getAudioCtx();
+    const freqs = {
+      bill: [880, 1100, 880, 1100],
+      call: [660, 880],
+      menu: [440, 550],
+      order: [523.25, 659.25, 783.99, 1046.50] // high pitch cheerful ring
+    };
+    const sequence = freqs[type] || freqs.call;
+    let t = ctx.currentTime;
+    sequence.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.3, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.18);
+      t += 0.2;
+    });
+  } catch(e) {}
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundBtn').textContent = soundEnabled ? '🔔' : '🔕';
+}
+
+// ─── Online status ────────────────────────────────────────────────────────
+function setOnline(online) {
+  const dot = document.getElementById('statusDot');
+  const lbl = document.getElementById('statusLabel');
+  const banner = document.getElementById('connBanner');
+  dot.classList.toggle('offline', !online);
+  lbl.textContent = online ? 'متصل | En ligne' : 'منقطع | Hors ligne';
+  banner.classList.toggle('show', !online);
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────
+function formatTime(d) {
+  return d.toLocaleTimeString('fr-DZ', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+
+// ─── Cashier Receipt Modal Logic ──────────────────────────────────────────
+let activeReceiptTable = null;
+
+function openReceiptModal(tableNum) {
+  const st = tableStates[tableNum];
+  if (!st || !st.orderData) {
+    alert('لا يوجد تفاصيل طلب لهذه الطاولة | Pas de commande pour cette table');
+    return;
+  }
+
+  activeReceiptTable = tableNum;
+  document.getElementById('rec-rest-name').textContent = DASH_NAME.toUpperCase() || 'MY RESTAURANT';
+  document.getElementById('rec-table-lbl').textContent = `TABLE: ${tableNum}`;
+  document.getElementById('rec-time-lbl').textContent = `TIME: ${formatTime(st.time)}`;
+
+  const itemsListEl = document.getElementById('rec-items-list');
+  itemsListEl.innerHTML = '';
+
+  st.orderData.items.forEach(it => {
+    const row = document.createElement('div');
+    row.className = 'receipt-line';
+    row.innerHTML = `
+      <span>${it.qty}x ${it.name}</span>
+      <span>${it.qty * it.price} DA</span>
+    `;
+    itemsListEl.appendChild(row);
+  });
+
+  document.getElementById('rec-total-lbl').textContent = `${st.orderData.total} DA`;
+  document.getElementById('receiptModalOverlay').style.display = 'flex';
+}
+
+function closeReceiptModal() {
+  document.getElementById('receiptModalOverlay').style.display = 'none';
+  activeReceiptTable = null;
+}
+
+function payAndClearReceipt() {
+  if (activeReceiptTable !== null) {
+    ackTable(activeReceiptTable);
+    closeReceiptModal();
+  }
+}
+
+// ─── Demo Mode (for testing without ntfy) ────────────────────────────────
+// Open browser console and type: demo(3, 'order', {total:300, items:[{name:'Espresso', qty:2, price:100}, {name:'Cappuccino', qty:1, price:150}]})
+window.demo = function(tableNum, actionKey, mockOrder = null) {
+  if (actionKey === 'order' && !mockOrder) {
+    mockOrder = {
+      total: 350,
+      items: [
+        { id: 'c1', name: 'Espresso / إسبريسو', qty: 2, price: 100 },
+        { id: 'c2', name: 'Cappuccino / كابوتشينو', qty: 1, price: 150 }
+      ]
+    };
+  }
+  triggerTable(tableNum || 1, actionKey || 'call', mockOrder);
+};
+</script>
+
+</body>
+</html>
