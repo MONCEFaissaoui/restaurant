@@ -732,7 +732,7 @@
   // ─── Read URL Params ───────────────────────────────────────────────────────
   const p = new URLSearchParams(location.search);
   const TABLE    = p.get('table')    || '?';
-  const NAME     = p.get('name')     || 'مطعمكم | Votre Restaurant';
+  let NAME       = p.get('name')     || 'مطعمكم | Votre Restaurant';
   const TOPIC    = p.get('topic')    || '';          // ntfy topic
   const TG_TOKEN = p.get('tg_token')|| '';          // Telegram bot token
   const TG_CHAT  = p.get('tg_chat') || '';          // Telegram chat ID
@@ -741,6 +741,60 @@
   // ─── Populate UI ──────────────────────────────────────────────────────────
   document.getElementById('restaurantName').textContent = NAME;
   document.getElementById('tableNum').textContent = TABLE;
+
+  // ─── Normalize Menu Data ──────────────────────────────────────────────────
+  function normalizeMenuData(data) {
+    if (!data) return data;
+    if (data.categories && Array.isArray(data.categories)) {
+      return data;
+    }
+    if (Array.isArray(data.menu)) {
+      const normalizedCategories = [];
+      data.menu.forEach((cat, catIdx) => {
+        const catName = (cat.category_ar && cat.category_fr)
+          ? `${cat.category_ar} | ${cat.category_fr}`
+          : (cat.category_ar || cat.category_fr || `Category ${catIdx + 1}`);
+
+        const normalizedItems = [];
+        if (Array.isArray(cat.items)) {
+          cat.items.forEach((item, itemIdx) => {
+            const hasPrices = Array.isArray(item.prices) && item.prices.length > 0;
+            if (hasPrices) {
+              item.prices.forEach((pOpt, optIdx) => {
+                const optName = pOpt.size || pOpt.unit || "";
+                const optSuffix = optName ? ` (${optName})` : "";
+                const bName = `${item.name_ar || ""} | ${item.name_fr || ""}${optSuffix}`;
+                normalizedItems.push({
+                  id: `m_${catIdx}_${itemIdx}_${optIdx}`,
+                  name: bName,
+                  price: pOpt.price || 0
+                });
+              });
+            } else {
+              const bName = (item.name_ar && item.name_fr)
+                ? `${item.name_ar} | ${item.name_fr}`
+                : (item.name_ar || item.name_fr || `Item ${itemIdx + 1}`);
+              normalizedItems.push({
+                id: `m_${catIdx}_${itemIdx}`,
+                name: bName,
+                price: item.price || 0
+              });
+            }
+          });
+        }
+        normalizedCategories.push({
+          name: catName,
+          items: normalizedItems
+        });
+      });
+      return {
+        categories: normalizedCategories,
+        restaurant_name: data.restaurant_name,
+        currency: data.currency
+      };
+    }
+    return data;
+  }
 
   // ─── Notification Payloads ────────────────────────────────────────────────
   const ACTIONS = {
@@ -950,14 +1004,23 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
       // Attempt to load menu via dynamic fetch
       const response = await fetch('./menu.json');
       if (!response.ok) throw new Error('Failed to load menu');
-      menuData = await response.json();
+      const rawMenu = await response.json();
+      menuData = normalizeMenuData(rawMenu);
+
+      // Update restaurant name dynamically from menu.json if not customized in url
+      if (menuData.restaurant_name && (NAME === 'مطعمكم | Votre Restaurant' || p.get('name') === null)) {
+        NAME = menuData.restaurant_name;
+        document.getElementById('restaurantName').textContent = NAME;
+      }
+
       renderMenu();
     } catch (err) {
       console.warn("Could not fetch menu.json, falling back to embedded menu fallback data:", err);
       try {
         const fallbackEl = document.getElementById('menuFallbackData');
         if (fallbackEl) {
-          menuData = JSON.parse(fallbackEl.textContent);
+          const rawFallback = JSON.parse(fallbackEl.textContent);
+          menuData = normalizeMenuData(rawFallback);
           renderMenu();
           return;
         }
