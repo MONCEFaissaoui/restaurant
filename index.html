@@ -399,6 +399,7 @@
     .menu-content {
       flex: 1;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding: 20px 20px 140px; /* space for cart footer */
       position: relative;
       z-index: 1;
@@ -426,9 +427,7 @@
     }
 
     .menu-item-card {
-      background: rgba(30, 30, 30, 0.72);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(26, 26, 26, 0.95);
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 16px;
       padding: 16px;
@@ -437,6 +436,12 @@
       justify-content: space-between;
       gap: 12px;
       transition: border-color 0.2s, background 0.2s;
+      animation: slideUpCard 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes slideUpCard {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .menu-item-card.has-qty {
       border-color: rgba(245,200,66,0.3);
@@ -571,6 +576,7 @@
       gap: 16px;
       backdrop-filter: blur(16px);
       box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
+      z-index: 10;
     }
 
     .cart-info {
@@ -1072,7 +1078,7 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
     }
 
     try {
-      const r = await fetch('https://ntfy.sh', {
+      const r = await fetch('https://ntfy.sh/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1555,9 +1561,10 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
             // Calculate parallax offset
             const translateY = -(scrollTop * depth);
 
-            // Slight 3D rotation and perspective zoom scaling based on scroll
+            // Slight 2D/3D rotation and safe perspective zoom scaling
             const rotateZ = (scrollTop * 0.08 * depth) % 360;
-            const translateZ = (scrollTop * 0.15 * depth) - 50; // move closer/farther
+            const rawTranslateZ = (scrollTop * 0.15 * depth) - 50;
+            const translateZ = Math.max(-100, Math.min(100, rawTranslateZ)); // Clamp to prevent clipping through viewport
 
             // Apply high-performance 3D transform
             layer.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateZ(${rotateZ}deg)`;

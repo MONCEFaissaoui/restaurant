@@ -658,6 +658,7 @@ function connectSSE() {
 }
 
 function handleNtfyMessage(msg) {
+  if (msg.event !== 'message') return;
   const body = msg.message || msg.body || '';
   const title = msg.title || '';
   const tags  = (msg.tags || []).join(',');
