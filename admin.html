@@ -930,8 +930,33 @@ let tableTopics = {}; // { tableNum: 'main'|'1'|'2'|'3'|'4' }
 
 // ─── Build table URL ──────────────────────────────────────────────────────────
 function buildTableUrl(tableNum, topicValue = null) {
-  // Points to index.html in the same folder
-  const base = location.href.replace(/admin\.html.*$/, 'index.html');
+  let base = '';
+  try {
+    const urlObj = new URL(location.href);
+    urlObj.search = '';
+    urlObj.hash = '';
+
+    const pathParts = urlObj.pathname.split('/');
+    const lastPart = pathParts[pathParts.length - 1];
+
+    if (lastPart.toLowerCase().endsWith('.html') || lastPart.toLowerCase().endsWith('.htm')) {
+      pathParts[pathParts.length - 1] = 'index.html';
+    } else if (lastPart !== '') {
+      pathParts.push('index.html');
+    } else {
+      pathParts[pathParts.length - 1] = 'index.html';
+    }
+
+    urlObj.pathname = pathParts.join('/');
+    base = urlObj.toString();
+  } catch (e) {
+    // Fail-safe fallback using regex (case-insensitive)
+    base = location.href.replace(/admin\.html.*/i, 'index.html').split('?')[0].split('#')[0];
+    if (!base.endsWith('index.html')) {
+      base = base.replace(/\/$/, '') + '/index.html';
+    }
+  }
+
   const params = new URLSearchParams({ table: tableNum, name: config.name || 'مطعمنا' });
   
   const chosenTopic = topicValue || config.ntfyTopic;
