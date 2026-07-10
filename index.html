@@ -1064,6 +1064,21 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
+  // ─── Get Arabic Name Helper ───────────────────────────────────────────────
+  function getArabicName(fullName) {
+    if (fullName.includes(' | ')) {
+      const parts = fullName.split(' | ');
+      const arPart = parts[0].trim();
+      const frPart = parts[1];
+      const match = frPart.match(/\(([^)]+)\)$/);
+      if (match) {
+        return `${arPart} (${match[1]})`;
+      }
+      return arPart;
+    }
+    return fullName;
+  }
+
   // ─── ntfy Notification ────────────────────────────────────────────────────
   async function sendNtfy(actionKey, orderDetails = null) {
     if (!TOPIC) return { ok: false, skipped: true };
@@ -1073,8 +1088,8 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
     
     let body = `الطاولة ${TABLE} | Table ${TABLE} — ${a.ar} | ${a.fr} — ${time}`;
     if (orderDetails) {
-      const compactItems = orderDetails.items.map(it => `${it.qty}x ${it.name}`).join(', ');
-      body = `طاولة ${TABLE} | T${TABLE}: ${compactItems} [ORDER_DATA:${JSON.stringify({ table: TABLE, total: orderDetails.total, items: orderDetails.items })}]`;
+      const compactItems = orderDetails.items.map(it => `${getArabicName(it.name)} x${it.qty}`).join(' , ');
+      body = `طاولة ${TABLE} | T${TABLE}: ${compactItems}\n\n[ORDER_DATA:${JSON.stringify({ table: TABLE, total: orderDetails.total, items: orderDetails.items })}]`;
     }
 
     try {
