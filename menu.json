@@ -1,32 +1,427 @@
 {
-  "categories": [
+  "restaurant_name": "La Citadelle",
+  "currency": "DA (Algerian Dinar)",
+  "menu": [
     {
-      "name": "🐟 الأسماك | Nos Poissons",
+      "category_fr": "Nos entrées",
+      "category_ar": "المقبلات",
       "items": [
-        { "id": "p1", "name": "Sardine / سردين", "price": 1000 },
-        { "id": "p2", "name": "Rouget / روجي", "price": 2000 },
-        { "id": "p3", "name": "Espadon / إسبرادون", "price": 2000 },
-        { "id": "p4", "name": "Filet de merlan / فيليه ميرلون", "price": 2000 },
-        { "id": "p5", "name": "Merlan / ميرلون", "price": 2000 },
-        { "id": "p6", "name": "Saumon / سومون", "price": 2000 },
-        { "id": "p7", "name": "Crevettes grillées / جمبري مشوي", "price": 2500 }
+        {
+          "name_fr": "Soupe de lentilles",
+          "name_ar": "شوربة عدس",
+          "price": 300
+        },
+        {
+          "name_fr": "Harira",
+          "name_ar": "حريرة",
+          "price": 300
+        },
+        {
+          "name_fr": "Soupe de poulet",
+          "name_ar": "شوربة دجاج",
+          "price": 300
+        },
+        {
+          "name_fr": "Spaghetti",
+          "name_ar": "سباغيتي",
+          "price": 300
+        },
+        {
+          "name_fr": "Bourek",
+          "name_ar": "بورَاك",
+          "price": 400
+        },
+        {
+          "name_fr": "Salade orientale",
+          "name_ar": "سلطة شرقية",
+          "prices": [
+            { "size": "PM (Petit Modèle)", "price": 250 },
+            { "size": "GM (Grand Modèle)", "price": 350 }
+          ]
+        },
+        {
+          "name_fr": "Fatouche",
+          "name_ar": "فتوش",
+          "price": 300
+        },
+        {
+          "name_fr": "Arayis",
+          "name_ar": "عرائس",
+          "price": 300
+        },
+        {
+          "name_fr": "Maghmour",
+          "name_ar": "مغمور",
+          "price": 300
+        },
+        {
+          "name_fr": "Hummus bil lahme",
+          "name_ar": "حمص بلحمة",
+          "price": 400
+        },
+        {
+          "name_fr": "Kebbé chamia",
+          "name_ar": "كبة شامية",
+          "price": 600
+        },
+        {
+          "name_fr": "Crème de poichiches",
+          "name_ar": "كريم حمص",
+          "price": 300
+        },
+        {
+          "name_fr": "Baba ghennoudj",
+          "name_ar": "بابا غنوج",
+          "price": 300
+        },
+        {
+          "name_fr": "Labné",
+          "name_ar": "لبنة",
+          "price": 300
+        },
+        {
+          "name_fr": "Mtabél",
+          "name_ar": "متبل",
+          "price": 300
+        },
+        {
+          "name_fr": "Crème à l'ail",
+          "name_ar": "كريمة الثوم",
+          "price": 300
+        },
+        {
+          "name_fr": "Mezza sghira",
+          "name_ar": "مزة صغيرة",
+          "price": 300
+        }
       ]
     },
     {
-      "name": "☕ مشروبات ساخنة | Boissons Chaudes",
+      "category_fr": "Nos sandwichs",
+      "category_ar": "سندويشات",
       "items": [
-        { "id": "c1", "name": "Espresso / إسبريسو", "price": 100 },
-        { "id": "c2", "name": "Cappuccino / كابوتشينو", "price": 150 },
-        { "id": "c3", "name": "Café au Lait / قهوة حليب", "price": 120 },
-        { "id": "c4", "name": "Thé à la Menthe / شاي بالنعناع", "price": 80 }
+        {
+          "name_fr": "Sandwich chawarma poulet",
+          "name_ar": "سندويش شاورما دجاج",
+          "price": 250
+        },
+        {
+          "name_fr": "Sandwich chawarma viande",
+          "name_ar": "سندويش شاورما لحم",
+          "price": 300
+        },
+        {
+          "name_fr": "Sandwich kebab viande",
+          "name_ar": "سندويش كباب لحم",
+          "price": 300
+        },
+        {
+          "name_fr": "Sandwich kebab poulet",
+          "name_ar": "سندويش كباب دجاج",
+          "price": 300
+        },
+        {
+          "name_fr": "Sandwich chich taouk",
+          "name_ar": "سندويش شيش طاووق",
+          "price": 300
+        }
       ]
     },
     {
-      "name": "🍰 الحلويات | Desserts",
+      "category_fr": "Nos poulets",
+      "category_ar": "الدجاج",
       "items": [
-        { "id": "d1", "name": "Tartelette aux fruits / تارت الفواكه", "price": 250 },
-        { "id": "d2", "name": "Flan Caramel / فلان كراميل", "price": 180 },
-        { "id": "d3", "name": "Fondant au Chocolat / فوندان الشوكولاتة", "price": 300 }
+        {
+          "name_fr": "Les ailes grillées",
+          "name_ar": "جوانح مشوية",
+          "price": 500
+        },
+        {
+          "name_fr": "Plat fajitas",
+          "name_ar": "وجبة فاهيتا",
+          "price": 900
+        },
+        {
+          "name_fr": "Plat mexicain",
+          "name_ar": "وجبة مكسيكي",
+          "price": 900
+        },
+        {
+          "name_fr": "Plat chawarma",
+          "name_ar": "وجبة شاورما",
+          "price": 1100
+        },
+        {
+          "name_fr": "Cuisse",
+          "name_ar": "كويس",
+          "price": 1000
+        },
+        {
+          "name_fr": "Repas chawarma viande",
+          "name_ar": "وجبة شاورما لحم",
+          "price": 1000
+        },
+        {
+          "name_fr": "Crespy",
+          "name_ar": "كريسبي",
+          "price": 1000
+        },
+        {
+          "name_fr": "Cordon bleu",
+          "name_ar": "كوردون بلو",
+          "price": 1200
+        },
+        {
+          "name_fr": "Escalope panée",
+          "name_ar": "إسكالوب باني",
+          "price": 1200
+        },
+        {
+          "name_fr": "Cuisse biryani",
+          "name_ar": "كويس برياني",
+          "price": 1500
+        }
+      ]
+    },
+    {
+      "category_fr": "Nos machawi",
+      "category_ar": "المشاوي",
+      "items": [
+        {
+          "name_fr": "Escalope grillée",
+          "name_ar": "إسكالوب مشوي",
+          "price": 950
+        },
+        {
+          "name_fr": "Mchakal aadi",
+          "name_ar": "مشكل عادي",
+          "price": 950
+        },
+        {
+          "name_fr": "Kebab poulet",
+          "name_ar": "كباب دجاج",
+          "price": 950
+        },
+        {
+          "name_fr": "Kebab d'aubergine",
+          "name_ar": "كباب باذنجان",
+          "price": 1000
+        },
+        {
+          "name_fr": "Kabab halabi",
+          "name_ar": "كباب حلبي",
+          "price": 1000
+        },
+        {
+          "name_fr": "Kebab champignon",
+          "name_ar": "كباب فطر",
+          "price": 1000
+        },
+        {
+          "name_fr": "Kebab khachekhache",
+          "name_ar": "كباب خشخاش",
+          "price": 1000
+        },
+        {
+          "name_fr": "Faroudj",
+          "name_ar": "فروج",
+          "price": 1000
+        },
+        {
+          "name_fr": "Chich taouk",
+          "name_ar": "شيش طاووق",
+          "price": 1000
+        },
+        {
+          "name_fr": "Steak de viande",
+          "name_ar": "شرحات لحم",
+          "price": 1000
+        },
+        {
+          "name_fr": "Mergaz viande",
+          "name_ar": "نقانق اللحم",
+          "price": 1000
+        },
+        {
+          "name_fr": "Kabab ezmerli",
+          "name_ar": "كباب إزمرلي",
+          "price": 1200
+        },
+        {
+          "name_fr": "Kors El Cham",
+          "name_ar": "قرص الشام",
+          "price": 1300
+        },
+        {
+          "name_fr": "Entrecôtes grillées",
+          "name_ar": "ريش مشوي",
+          "price": 1300
+        },
+        {
+          "name_fr": "Djat machwi",
+          "name_ar": "جاط مشوي",
+          "price": 1100
+        },
+        {
+          "name_fr": "Djat machwi (4 personnes)",
+          "name_ar": "جاط مشوي أربعة أشخاص",
+          "price": 4400
+        },
+        {
+          "name_fr": "Veau",
+          "name_ar": "لحم عجل",
+          "price": 1100
+        },
+        {
+          "name_fr": "Mechwi grillé",
+          "name_ar": "مشوي غنم",
+          "price": 1500
+        },
+        {
+          "name_fr": "Mfawar",
+          "name_ar": "لحم غنم مفور",
+          "price": 1500
+        },
+        {
+          "name_fr": "Gigot de mouton rôti",
+          "name_ar": "كتف مشوي",
+          "price": 4000
+        }
+      ]
+    },
+    {
+      "category_fr": "Nos poissons",
+      "category_ar": "الأسماك",
+      "items": [
+        {
+          "name_fr": "Sardine",
+          "name_ar": "سردين",
+          "price": 1000
+        },
+        {
+          "name_fr": "Rouget",
+          "name_ar": "روجي",
+          "price": 2000
+        },
+        {
+          "name_fr": "Espadon",
+          "name_ar": "إسبرادون",
+          "price": 2000
+        },
+        {
+          "name_fr": "Filet de merlan",
+          "name_ar": "فيليه ميرلون",
+          "price": 2000
+        },
+        {
+          "name_fr": "Merlan",
+          "name_ar": "ميرلون",
+          "price": 2000
+        },
+        {
+          "name_fr": "Saumon",
+          "name_ar": "سومون",
+          "price": 2000
+        },
+        {
+          "name_fr": "Crevettes grillées",
+          "name_ar": "جمبري مشوي",
+          "price": 2500
+        }
+      ]
+    },
+    {
+      "category_fr": "Nos boissons",
+      "category_ar": "المشروبات",
+      "items": [
+        {
+          "name_fr": "Jus de citron & menthe",
+          "name_ar": "عصير الليمون بالنعناع",
+          "prices": [
+            { "unit": "Carafe", "price": 800 },
+            { "unit": "Verre", "price": 300 }
+          ]
+        },
+        {
+          "name_fr": "Jus de fraise",
+          "name_ar": "عصير الفراولة",
+          "prices": [
+            { "unit": "Carafe", "price": 800 },
+            { "unit": "Verre", "price": 300 }
+          ]
+        },
+        {
+          "name_fr": "Jus cocktail",
+          "name_ar": "عصير الكوكتيل",
+          "prices": [
+            { "unit": "Carafe", "price": 800 },
+            { "unit": "Verre", "price": 300 }
+          ]
+        },
+        {
+          "name_fr": "Jus de banane",
+          "name_ar": "عصير الموز",
+          "prices": [
+            { "unit": "Carafe", "price": 1000 },
+            { "unit": "Verre", "price": 300 }
+          ]
+        }
+      ]
+    },
+    {
+      "category_fr": "Nos desserts",
+      "category_ar": "الحلويات",
+      "items": [
+        {
+          "name_fr": "Flan caramel",
+          "name_ar": "فلان كراميل",
+          "price": 230
+        },
+        {
+          "name_fr": "Crème brûlée",
+          "name_ar": "كريم برولي",
+          "price": 300
+        },
+        {
+          "name_fr": "Mehalbi",
+          "name_ar": "محلبي",
+          "price": 200
+        },
+        {
+          "name_fr": "Tiramisu",
+          "name_ar": "تيراميسو",
+          "price": 300
+        },
+        {
+          "name_fr": "Crêpe nutella",
+          "name_ar": "كريب بالنوتيلا",
+          "price": 250
+        },
+        {
+          "name_fr": "Crêpe nutella + Banane",
+          "name_ar": "كريب بالنوتيلا + موز",
+          "price": 300
+        },
+        {
+          "name_fr": "Crêpe nutella + Fraise",
+          "name_ar": "كريب بالنوتيلا + فراولة",
+          "price": 300
+        },
+        {
+          "name_fr": "Mousse au chocolat",
+          "name_ar": "موس بالشوكولاتة",
+          "price": 300
+        },
+        {
+          "name_fr": "Salade de fruits",
+          "name_ar": "سلطة فواكه",
+          "price": 300
+        },
+        {
+          "name_fr": "Fruits de saison",
+          "name_ar": "فواكه الموسم",
+          "price": 300
+        }
       ]
     }
   ]
