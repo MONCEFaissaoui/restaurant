@@ -245,8 +245,7 @@
       font-family:'Cairo',sans-serif;
       transition:all .2s;
     }
-    .table-card.free .ack-btn,
-    .table-card.done .ack-btn { display:none; }
+    .table-card.free .ack-btn { display:none; }
     .table-card.call .ack-btn { border-color:var(--call-c); background:rgba(255,179,0,.1); color:var(--call-c); }
     .table-card.bill .ack-btn { border-color:var(--bill-c); background:rgba(239,83,80,.1); color:var(--bill-c); }
     .table-card.menu .ack-btn { border-color:var(--menu-c); background:rgba(79,195,247,.1); color:var(--menu-c); }
@@ -596,6 +595,43 @@ const ACTION_MAP = {
   order:{ icon:'🛒', ar:'طلب جديد 🟢',   fr:'Commande reçue',  cls:'order'}
 };
 
+// ─── State Loading & Saving ──────────────────────────────────────────────
+function saveTableStates() {
+  localStorage.setItem('qr_dash_table_states', JSON.stringify(tableStates));
+  localStorage.setItem('qr_dash_stats', JSON.stringify(stats));
+}
+
+function loadTableStates() {
+  try {
+    const rawStates = localStorage.getItem('qr_dash_table_states');
+    const rawStats = localStorage.getItem('qr_dash_stats');
+    if (rawStates) {
+      const parsed = JSON.parse(rawStates);
+      for (const t in parsed) {
+        if (parsed[t].time) parsed[t].time = new Date(parsed[t].time);
+      }
+      tableStates = parsed;
+    }
+    if (rawStats) {
+      stats = JSON.parse(rawStats);
+    }
+  } catch(e) {}
+}
+
+function saveLogsToLocalStorage(logsList) {
+  localStorage.setItem('qr_dash_logs', JSON.stringify(logsList));
+}
+
+function loadLogsFromLocalStorage() {
+  try {
+    const raw = localStorage.getItem('qr_dash_logs');
+    if (raw) {
+      return JSON.parse(raw).map(l => ({ ...l, time: new Date(l.time) }));
+    }
+  } catch(e) {}
+  return [];
+}
+
 // ─── Init ────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   if (TOPIC && TABLES) {
@@ -619,8 +655,22 @@ function init() {
   document.getElementById('dash-name').textContent = DASH_NAME || 'لوحة التحكم';
   document.title = `${DASH_NAME || 'Dashboard'} — QR Salik`;
 
-  for (let i = 1; i <= TABLES; i++) tableStates[i] = { status:'free', time:null, orderData:null };
+  for (let i = 1; i <= TABLES; i++) {
+    tableStates[i] = { status:'free', time:null, orderData:null };
+  }
+
+  const savedTopic = localStorage.getItem('qr_dash_topic_config');
+  if (savedTopic === TOPIC) {
+    loadTableStates();
+  } else {
+    localStorage.setItem('qr_dash_topic_config', TOPIC);
+    saveTableStates();
+    localStorage.removeItem('qr_dash_logs');
+  }
+
   renderGrid();
+  renderLogs();
+  updateStats();
   connectSSE();
 }
 
@@ -722,25 +772,43 @@ function handleNtfyMessage(msg) {
 // ─── Trigger a Table ────────────────────────────────────────────────────
 function triggerTable(tableNum, actionKey, orderData = null) {
   const now = new Date();
-  tableStates[tableNum] = { status: actionKey, time: now, orderData: orderData };
+
+  // Preserve existing orderData if the new one is null/empty and we have existing orderData
+  const existingState = tableStates[tableNum] || {};
+  const finalOrderData = orderData || existingState.orderData;
+
+  tableStates[tableNum] = { status: actionKey, time: now, orderData: finalOrderData };
   stats[actionKey]++;
   updateStats();
+  saveTableStates();
   renderGrid();
   addLog(tableNum, actionKey, now, orderData);
   if (soundEnabled) playBuzzer(actionKey);
 }
 
-// ─── Acknowledge ─────────────────────────────────────────────────────────
+// ─── Acknowledge & Reset ──────────────────────────────────────────────────
 function ackTable(tableNum) {
   tableStates[tableNum] = { status:'done', time:new Date(), orderData: tableStates[tableNum].orderData };
+  saveTableStates();
+  renderGrid();
+}
+
+function resetTable(tableNum) {
+  tableStates[tableNum] = { status:'free', time:null, orderData:null };
+  saveTableStates();
   renderGrid();
 }
 
 function clearAll() {
-  for (let i = 1; i <= TABLES; i++) tableStates[i] = { status:'free', time:null, orderData:null };
+  for (let i = 1; i <= TABLES; i++) {
+    tableStates[i] = { status:'free', time:null, orderData:null };
+  }
   stats = { call:0, bill:0, menu:0, order:0 };
+  saveTableStates();
+  localStorage.removeItem('qr_dash_logs');
   updateStats();
   renderGrid();
+  renderLogs();
 }
 
 // ─── Render Grid ──────────────────────────────────────────────────────────
@@ -757,6 +825,10 @@ function renderGrid() {
     const a = ACTION_MAP[st.status];
     const card = document.createElement('div');
     card.className = `table-card ${st.status}`;
+
+    const hasOrder = !!st.orderData;
+    const isPendingPayment = hasOrder && (st.status === 'order' || st.status === 'bill');
+
     card.innerHTML = `
       <div class="status-glow"></div>
       <div class="table-num">${t}</div>
@@ -767,41 +839,63 @@ function renderGrid() {
         `${a.icon} ${a.ar}`
       }</div>
       <div class="table-time">${st.time ? formatTime(st.time) : ''}</div>
-      <button class="receipt-badge-btn" onclick="openReceiptModal(${t})">📄 الفاتورة | Receipt</button>
-      <button class="ack-btn" onclick="ackTable(${t})">✔ تمت الخدمة — Traité</button>
+
+      <!-- Show receipt button if the table has order receipt data -->
+      <button class="receipt-badge-btn" style="${hasOrder ? 'display: flex;' : 'display: none;'}" onclick="openReceiptModal(${t})">📄 الفاتورة | Receipt</button>
+
+      <!-- If table has an active pending payment order, hide standard card-level Traite button to force receipt payment approval -->
+      ${isPendingPayment ? '' : `
+        <button class="ack-btn" onclick="${st.status === 'done' ? `resetTable(${t})` : `ackTable(${t})`}">
+          ${st.status === 'done' ? '🧹 إفراغ الطاولة — Reset' : '✔ تمت الخدمة — Traité'}
+        </button>
+      `}
     `;
     grid.appendChild(card);
   }
 }
 
 // ─── Log Feed ─────────────────────────────────────────────────────────────
-function addLog(tableNum, actionKey, time, orderData = null) {
+function renderLogs() {
   const feed = document.getElementById('logFeed');
-  const empty = feed.querySelector('.log-empty');
-  if (empty) empty.remove();
-
-  const a = ACTION_MAP[actionKey];
-  const entry = document.createElement('div');
-  entry.className = 'log-entry';
+  if (!feed) return;
+  feed.innerHTML = '';
   
-  let desc = `${a.ar} | ${a.fr}`;
-  if (actionKey === 'order' && orderData) {
-    const compact = orderData.items.map(it => `${it.qty}x ${it.name}`).join(', ');
-    desc = `طلب جديد: ${compact} (${orderData.total} DA)`;
-  } else if (actionKey === 'menu') {
-    desc = `فتح قائمة الطعام | Menu ouvert`;
+  const logsList = loadLogsFromLocalStorage();
+  if (logsList.length === 0) {
+    feed.innerHTML = '<div class="log-empty">لا توجد طلبات بعد — Aucune demande pour l\'instant</div>';
+    return;
   }
 
-  entry.innerHTML = `
-    <span class="log-icon">${a.icon}</span>
-    <span class="log-table">Table ${tableNum}</span>
-    <span class="log-msg">${desc}</span>
-    <span class="log-time">${formatTime(time)}</span>
-  `;
-  feed.insertBefore(entry, feed.firstChild);
+  logsList.forEach(log => {
+    const a = ACTION_MAP[log.actionKey];
+    if (!a) return;
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
 
-  // Keep max 50 entries
-  while (feed.children.length > 50) feed.removeChild(feed.lastChild);
+    let desc = `${a.ar} | ${a.fr}`;
+    if (log.actionKey === 'order' && log.orderData) {
+      const compact = log.orderData.items.map(it => `${it.qty}x ${it.name}`).join(', ');
+      desc = `طلب جديد: ${compact} (${log.orderData.total} DA)`;
+    } else if (log.actionKey === 'menu') {
+      desc = `فتح قائمة الطعام | Menu ouvert`;
+    }
+
+    entry.innerHTML = `
+      <span class="log-icon">${a.icon}</span>
+      <span class="log-table">Table ${log.tableNum}</span>
+      <span class="log-msg">${desc}</span>
+      <span class="log-time">${formatTime(log.time)}</span>
+    `;
+    feed.appendChild(entry);
+  });
+}
+
+function addLog(tableNum, actionKey, time, orderData = null) {
+  const logsList = loadLogsFromLocalStorage();
+  logsList.unshift({ tableNum, actionKey, time, orderData });
+  while (logsList.length > 50) logsList.pop();
+  saveLogsToLocalStorage(logsList);
+  renderLogs();
 }
 
 // ─── Stats ────────────────────────────────────────────────────────────────
