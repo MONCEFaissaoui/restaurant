@@ -658,6 +658,7 @@ function connectSSE() {
 }
 
 function handleNtfyMessage(msg) {
+  if (msg.event !== 'message') return;
   const body = msg.message || msg.body || '';
   const title = msg.title || '';
   const tags  = (msg.tags || []).join(',');
@@ -672,6 +673,9 @@ function handleNtfyMessage(msg) {
   let actionKey = 'call';
   let orderData = null;
 
+  const bodyLower = body.toLowerCase();
+  const titleLower = title.toLowerCase();
+
   const orderDataIndex = body.indexOf('[ORDER_DATA:');
   const lastBracketIndex = body.lastIndexOf(']');
   if (orderDataIndex !== -1 && lastBracketIndex !== -1 && lastBracketIndex > orderDataIndex) {
@@ -682,13 +686,33 @@ function handleNtfyMessage(msg) {
     } catch (e) {
       console.error('Error parsing order data:', e);
     }
-  } else if (tags.includes('credit_card')) {
+  } else if (
+    tags.includes('credit_card') ||
+    bodyLower.includes('الحساب') ||
+    bodyLower.includes('addition') ||
+    bodyLower.includes('bill') ||
+    bodyLower.includes('💳') ||
+    titleLower.includes('💳')
+  ) {
     actionKey = 'bill';
-  } else if (tags.includes('page_with_curl') || body.toLowerCase().includes('menu') || body.includes('عرض القائمة')) {
+  } else if (
+    tags.includes('page_with_curl') ||
+    bodyLower.includes('menu') ||
+    bodyLower.includes('عرض القائمة') ||
+    bodyLower.includes('📄') ||
+    titleLower.includes('📄')
+  ) {
     actionKey = 'menu';
-  } else if (tags.includes('shopping_bags')) {
+  } else if (tags.includes('shopping_bags') || tags.includes('order')) {
     actionKey = 'order';
-  } else if (tags.includes('bell')) {
+  } else if (
+    tags.includes('bell') ||
+    bodyLower.includes('استدعاء') ||
+    bodyLower.includes('serveur') ||
+    bodyLower.includes('bell') ||
+    bodyLower.includes('🔔') ||
+    titleLower.includes('🔔')
+  ) {
     actionKey = 'call';
   }
 
