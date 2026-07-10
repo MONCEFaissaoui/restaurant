@@ -359,6 +359,9 @@
       border-radius: 10px;
       margin: 12px auto 8px;
       flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+      transform: translate3d(0, 0, 10px);
     }
 
     .sheet-header {
@@ -368,6 +371,9 @@
       justify-content: space-between;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+      transform: translate3d(0, 0, 10px);
     }
     .sheet-title h3 {
       font-size: 1.15rem;
@@ -402,7 +408,8 @@
       -webkit-overflow-scrolling: touch;
       padding: 20px 20px 140px; /* space for cart footer */
       position: relative;
-      z-index: 1;
+      z-index: 5;
+      transform: translate3d(0, 0, 10px);
     }
 
     .cat-section {
@@ -466,6 +473,7 @@
       filter: drop-shadow(0 0 15px rgba(255, 110, 0, 0.25));
       opacity: 0.25;
       will-change: transform;
+      pointer-events: none !important;
     }
     .layer-1  { top: 5%;   left: 8%;   font-size: 3.2rem; }
     .layer-2  { top: 12%;  right: 10%; font-size: 4rem;   filter: drop-shadow(0 0 20px rgba(255, 100, 0, 0.4)); }
@@ -1082,7 +1090,6 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          topic: TOPIC,
           message: body,
           title: `${a.emoji} ${NAME} — Table ${TABLE}`,
           priority: a.ntfy_priority === 'urgent' ? 5 : 4,
