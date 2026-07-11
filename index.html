@@ -633,11 +633,11 @@
       transform: none;
     }
 
-    /* ── Zen Atoms-inspired Premium Intro Splash Screen ── */
+    /* ── 3D Culinary Fire Splash Screen ── */
     #cuisineSplash {
       position: fixed;
       inset: 0;
-      background: #110c09;
+      background: radial-gradient(circle at center, #1b0a02 0%, #050200 100%);
       z-index: 10000;
       display: flex;
       flex-direction: column;
@@ -649,23 +649,9 @@
     }
     #cuisineSplash.fade-out {
       opacity: 0;
-      transform: scale(1.15) translateZ(50px);
+      transform: scale(1.1) translateZ(100px);
       pointer-events: none;
     }
-
-    /* Elegant Background Circles */
-    .splash-circle {
-      position: absolute;
-      border: 1px solid rgba(245, 200, 66, 0.05);
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    .circle-1 { width: 280px; height: 280px; }
-    .circle-2 { width: 440px; height: 440px; }
-    .circle-3 { width: 620px; height: 620px; }
-    .circle-4 { width: 840px; height: 840px; }
 
     #fireCanvas {
       position: absolute;
@@ -674,140 +660,107 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.35; /* ultra-subtle warm ambient floating embers */
     }
 
     .splash-content {
       position: relative;
       z-index: 2;
       text-align: center;
-      width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+      gap: 16px;
     }
 
-    .splash-header-tag {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.38em;
-      text-transform: uppercase;
-      color: var(--gold-dim);
-      text-shadow: 0 0 10px rgba(245, 200, 66, 0.15);
-      animation: zoomInFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .splash-card {
-      background: rgba(20, 15, 12, 0.75);
-      border: 1px solid rgba(245, 200, 66, 0.1);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-radius: 20px;
-      width: 90%;
-      max-width: 360px;
-      padding: 32px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-      animation: zoomInFade 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .diamond-accent {
-      width: 10px;
-      height: 10px;
-      border: 1.5px solid var(--gold);
-      transform: rotate(45deg);
-      margin-bottom: 20px;
-    }
-
-    .logo-frame {
-      width: 110px;
-      height: 110px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid rgba(245, 200, 66, 0.18);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-      background: #fff;
+    .splash-emblem-wrap {
+      perspective: 800px;
+      width: 150px;
+      height: 150px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 4px;
       margin-bottom: 12px;
-      transition: transform 0.3s ease;
     }
 
-    .logo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    .splash-emblem {
+      font-size: 4.8rem;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: float3D 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 35px rgba(255, 110, 0, 0.85));
     }
 
-    .splash-card-title {
-      font-size: 2.1rem;
-      font-weight: 700;
-      color: #ffffff;
-      font-family: 'Outfit', 'Noto Serif SC', serif;
-      letter-spacing: 0.5px;
-      margin-bottom: 2px;
+    @keyframes float3D {
+      0% {
+        transform: translateY(0) rotateY(0deg) rotateX(15deg);
+      }
+      50% {
+        transform: translateY(-20px) rotateY(180deg) rotateX(-15deg);
+      }
+      100% {
+        transform: translateY(0) rotateY(360deg) rotateX(15deg);
+      }
     }
 
-    .splash-card-subtitle {
-      font-size: 1.4rem;
-      font-weight: 700;
+    .splash-title-ar {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(245, 200, 66, 0.6);
+      margin-bottom: 4px;
+      animation: zoomInFade 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .splash-title-fr {
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--gold);
-      font-family: 'Cairo', sans-serif;
+      letter-spacing: 1px;
+      font-family: 'Outfit', sans-serif;
       margin-bottom: 16px;
-    }
-
-    .splash-divider {
-      width: 80px;
-      height: 1px;
-      background: radial-gradient(circle, var(--gold) 0%, transparent 100%);
-      margin-bottom: 16px;
+      animation: zoomInFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
     .splash-desc {
       font-size: 0.8rem;
-      color: #a89f95;
+      color: var(--muted);
       line-height: 1.6;
-      font-family: 'Outfit', 'Cairo', sans-serif;
-      max-width: 285px;
+      margin-bottom: 24px;
+      animation: zoomInFade 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    .splash-footer {
+    .splash-btn {
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: #000;
+      border: none;
+      border-radius: 40px;
+      padding: 14px 36px;
+      font-size: 0.95rem;
+      font-weight: 900;
+      cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 12px;
-      animation: zoomInFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      gap: 10px;
+      box-shadow: 0 8px 30px rgba(255, 140, 66, 0.4), inset 0 2px 4px rgba(255,255,255,0.4);
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      font-family: 'Cairo', sans-serif;
+      animation: zoomInFade 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    .atoms-spinner {
-      width: 24px;
-      height: 24px;
-      border: 2px solid rgba(245, 200, 66, 0.08);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .splash-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px rgba(255, 140, 66, 0.6);
     }
 
-    .splash-footer-tag {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.45em;
-      text-transform: uppercase;
-      color: #7a7065;
-      margin-top: 4px;
+    .splash-btn:active {
+      transform: scale(0.97);
     }
 
     @keyframes zoomInFade {
       from {
         opacity: 0;
-        transform: scale(0.9) translateY(15px);
+        transform: scale(0.8) translateY(20px);
       }
       to {
         opacity: 1;
@@ -819,36 +772,24 @@
 
 <body>
 
-<!-- ── Zen Atoms-inspired Premium Intro Splash Screen ── -->
+<!-- ── 3D Culinary Fire Splash Screen ── -->
 <div id="cuisineSplash">
-  <div class="splash-circle circle-1"></div>
-  <div class="splash-circle circle-2"></div>
-  <div class="splash-circle circle-3"></div>
-  <div class="splash-circle circle-4"></div>
   <canvas id="fireCanvas"></canvas>
-
   <div class="splash-content">
-    <div class="splash-header-tag">Restaurant & Lounge</div>
-
-    <div class="splash-card">
-      <div class="diamond-accent"></div>
-      <div class="logo-frame">
-        <img src="./logo.jpeg" alt="La Citadelle Logo" />
-      </div>
-      <h1 class="splash-card-title">La Citadelle</h1>
-      <h2 class="splash-card-subtitle">مطعم القلعة</h2>
-      <div class="splash-divider"></div>
-      <p class="splash-desc">
-        Une expérience culinaire d’exception.
-        <br>
-        تجربة طهي استثنائية راقية.
-      </p>
+    <div class="splash-emblem-wrap">
+      <div class="splash-emblem">👨‍🍳🔥🍳</div>
     </div>
-
-    <div class="splash-footer">
-      <div class="atoms-spinner"></div>
-      <div class="splash-footer-tag">Chargement / جاري التحميل</div>
+    <div class="splash-title-ar">مرحباً بكم في مطعمنا</div>
+    <div class="splash-title-fr">Bienvenue dans Notre Restaurant</div>
+    <div class="splash-desc">
+      تذوقوا ألذ المأكولات المحضرة بلهيب المطبخ الحقيقي
+      <br>
+      Savourez nos délices préparés au feu de cuisine authentique.
     </div>
+    <button class="splash-btn" onclick="dismissSplash()">
+      <span>ابدأ التجربة | Découvrir</span>
+      <span>🔥</span>
+    </button>
   </div>
 </div>
 <script>
@@ -1628,15 +1569,6 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
     }, 800);
   }
 
-  // Auto-dismiss the premium intro splash after exactly 2 seconds (2000ms)
-  function initAutoDismissSplash() {
-    const splash = document.getElementById('cuisineSplash');
-    if (!splash || sessionStorage.getItem('splash_dismissed') === 'true') return;
-    setTimeout(() => {
-      dismissSplash();
-    }, 2000);
-  }
-
   // ─── 3D Scroll Parallax Background Logic ──────────────────────────────────
   function initScrollParallax() {
     const menuContent = document.getElementById('menuContent');
@@ -1677,7 +1609,6 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
     initScrollParallax();
     if (sessionStorage.getItem('splash_dismissed') !== 'true') {
       initFireCanvas();
-      initAutoDismissSplash();
     }
   });
 </script>

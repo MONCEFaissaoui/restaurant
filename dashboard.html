@@ -699,13 +699,6 @@ function connectSSE() {
     } catch {}
   };
 
-  sse.addEventListener('message', (e) => {
-    try {
-      const msg = JSON.parse(e.data);
-      handleNtfyMessage(msg);
-    } catch {}
-  });
-
   sse.onerror = () => {
     setOnline(false);
     // Retry after 5s
