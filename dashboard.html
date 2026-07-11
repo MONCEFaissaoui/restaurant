@@ -51,7 +51,16 @@
       backdrop-filter:blur(12px);
       position:sticky; top:0; z-index:50;
     }
-    .topbar-logo { font-size:1.5rem; }
+    .topbar-logo { display: flex; align-items: center; }
+    .topbar-logo-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      background: #fff;
+      object-fit: cover;
+      padding: 1px;
+    }
     .topbar-info { flex:1; }
     .topbar-info h1 { font-size:1rem; font-weight:900; color:var(--gold); }
     .topbar-info p  { font-size:.78rem; color:var(--muted); font-family:'Outfit',sans-serif; margin-top:1px; }
@@ -454,7 +463,7 @@
 
     <div class="form-row">
       <label>اسم المطعم <span style="color:#555;font-weight:400;font-size:.78rem">Restaurant name</span></label>
-      <input id="m-name" type="text" placeholder="مطعم البهجة" style="font-family:'Cairo',sans-serif;direction:rtl;text-align:right" />
+      <input id="m-name" type="text" placeholder="La Citadelle" value="La Citadelle" style="font-family:'Cairo',sans-serif;direction:rtl;text-align:right" />
     </div>
 
     <div class="form-row">
@@ -504,9 +513,11 @@
 
   <!-- Topbar -->
   <header class="topbar">
-    <div class="topbar-logo">🍽️</div>
+    <div class="topbar-logo">
+      <img src="./logo.jpeg" class="topbar-logo-img" alt="La Citadelle Logo" />
+    </div>
     <div class="topbar-info">
-      <h1 id="dash-name">لوحة التحكم — Dashboard</h1>
+      <h1 id="dash-name">لوحة التحكم — La Citadelle</h1>
       <p id="dash-sub">QR Salik · مباشر en direct</p>
     </div>
     <div class="status-dot" id="statusDot"></div>
@@ -643,7 +654,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function startDashboard() {
-  DASH_NAME = document.getElementById('m-name').value.trim() || 'المطعم';
+  DASH_NAME = document.getElementById('m-name').value.trim() || 'La Citadelle';
   TABLES    = parseInt(document.getElementById('m-tables').value) || 5;
   TOPIC     = document.getElementById('m-topic').value.trim();
   if (!TOPIC) { alert('أدخل موضوع ntfy — Entrez le topic ntfy'); return; }
