@@ -767,6 +767,27 @@
         transform: scale(1) translateY(0);
       }
     }
+
+    /* Subtle Author Watermark */
+    .moncef-signature {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      font-family: 'Outfit', 'Cairo', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: rgba(245, 200, 66, 0.45);
+      background: rgba(10, 8, 6, 0.75);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(245, 200, 66, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 9999;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      letter-spacing: 0.2px;
+    }
   </style>
 </head>
 
@@ -1612,6 +1633,10 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
     }
   });
 </script>
+
+<div class="moncef-signature">
+  created and designed by :@Moncef Aissaoui
+</div>
 
 </body>
 </html>
