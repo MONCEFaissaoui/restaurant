@@ -684,11 +684,20 @@
     }
 
     .splash-emblem {
-      font-size: 4.8rem;
       position: relative;
       transform-style: preserve-3d;
       animation: float3D 6s ease-in-out infinite;
-      filter: drop-shadow(0 0 35px rgba(255, 110, 0, 0.85));
+    }
+
+    .splash-emblem-img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      background: #fff;
+      object-fit: cover;
+      padding: 3px;
+      box-shadow: 0 0 45px rgba(245, 200, 66, 0.7);
     }
 
     @keyframes float3D {
@@ -798,10 +807,12 @@
   <canvas id="fireCanvas"></canvas>
   <div class="splash-content">
     <div class="splash-emblem-wrap">
-      <div class="splash-emblem">👨‍🍳🔥🍳</div>
+      <div class="splash-emblem">
+        <img src="./logo.jpeg" class="splash-emblem-img" alt="La Citadelle Logo" />
+      </div>
     </div>
-    <div class="splash-title-ar">مرحباً بكم في مطعمنا</div>
-    <div class="splash-title-fr">Bienvenue dans Notre Restaurant</div>
+    <div class="splash-title-ar">القلعة</div>
+    <div class="splash-title-fr">La Citadelle</div>
     <div class="splash-desc">
       تذوقوا ألذ المأكولات المحضرة بلهيب المطبخ الحقيقي
       <br>
