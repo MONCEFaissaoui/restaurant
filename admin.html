@@ -357,8 +357,10 @@
 
   <!-- Hero -->
   <div class="hero">
-    <div class="hero-icon">🍽️</div>
-    <h1>QR Salik — لوحة الإعداد</h1>
+    <div class="hero-icon">
+      <img src="./logo.jpeg" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold); background: #fff; object-fit: cover; padding: 3px; box-shadow: 0 4px 15px rgba(245,200,66,0.3); display: inline-block;" alt="La Citadelle Logo" />
+    </div>
+    <h1>QR Salik — لوحة الإعداد (La Citadelle)</h1>
     <p>أعد نظام QR لمطعمك في 4 خطوات — Configurez votre système QR en 4 étapes</p>
   </div>
 
@@ -398,7 +400,7 @@
 
       <div class="form-row">
         <label>اسم المطعم <span>Nom du restaurant *</span></label>
-        <input type="text" id="restaurantName" placeholder="مثال: مطعم البهجة — Restaurant Al Bahdja" />
+        <input type="text" id="restaurantName" placeholder="La Citadelle" value="La Citadelle" />
       </div>
 
       <div class="form-row">
@@ -734,7 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
   checkAuthorization();
   
   // Load from localStorage if exists, else generate
-  config.name = localStorage.getItem('qr_restaurantName') || '';
+  config.name = localStorage.getItem('qr_restaurantName') || 'La Citadelle';
   document.getElementById('restaurantName').value = config.name;
   
   const savedTables = localStorage.getItem('qr_tableCount');

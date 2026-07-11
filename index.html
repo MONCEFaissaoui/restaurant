@@ -70,10 +70,20 @@
     }
 
     .restaurant-icon {
-      font-size: 2.8rem;
       margin-bottom: 10px;
       filter: drop-shadow(0 0 18px rgba(245,200,66,.5));
       animation: pulse 3s ease-in-out infinite;
+    }
+
+    .header-logo-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: #fff;
+      object-fit: cover;
+      padding: 2px;
+      display: inline-block;
     }
 
     @keyframes pulse {
@@ -674,22 +684,28 @@
     }
 
     .splash-emblem {
-      font-size: 4.8rem;
+      width: 140px;
+      height: 140px;
       position: relative;
       transform-style: preserve-3d;
       animation: float3D 6s ease-in-out infinite;
       filter: drop-shadow(0 0 35px rgba(255, 110, 0, 0.85));
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      background: #fff;
+      object-fit: cover;
+      padding: 5px;
     }
 
     @keyframes float3D {
       0% {
-        transform: translateY(0) rotateY(0deg) rotateX(15deg);
+        transform: translateY(0) rotateY(0deg) rotateX(10deg);
       }
       50% {
-        transform: translateY(-20px) rotateY(180deg) rotateX(-15deg);
+        transform: translateY(-15px) rotateY(180deg) rotateX(-10deg);
       }
       100% {
-        transform: translateY(0) rotateY(360deg) rotateX(15deg);
+        transform: translateY(0) rotateY(360deg) rotateX(10deg);
       }
     }
 
@@ -767,10 +783,10 @@
   <canvas id="fireCanvas"></canvas>
   <div class="splash-content">
     <div class="splash-emblem-wrap">
-      <div class="splash-emblem">👨‍🍳🔥🍳</div>
+      <img src="./logo.jpeg" class="splash-emblem" alt="La Citadelle Logo" />
     </div>
-    <div class="splash-title-ar">مرحباً بكم في مطعمنا</div>
-    <div class="splash-title-fr">Bienvenue dans Notre Restaurant</div>
+    <div class="splash-title-ar">مرحباً بكم في مطعم القلعة</div>
+    <div class="splash-title-fr">Bienvenue à La Citadelle</div>
     <div class="splash-desc">
       تذوقوا ألذ المأكولات المحضرة بلهيب المطبخ الحقيقي
       <br>
@@ -792,8 +808,10 @@
 
   <!-- Header -->
   <header class="header">
-    <div class="restaurant-icon" id="restaurantIcon">🍽️</div>
-    <div class="restaurant-name" id="restaurantName">مطعمكم | Votre Restaurant</div>
+    <div class="restaurant-icon" id="restaurantIcon">
+      <img src="./logo.jpeg" class="header-logo-img" alt="La Citadelle Logo" />
+    </div>
+    <div class="restaurant-name" id="restaurantName">La Citadelle | مطعم القلعة</div>
     <div class="table-badge">
       <span class="dot"></span>
       <span id="tableLabelAr">الطاولة</span>
@@ -949,7 +967,7 @@
   // ─── Read URL Params ───────────────────────────────────────────────────────
   const p = new URLSearchParams(location.search);
   const TABLE    = p.get('table')    || '?';
-  let NAME       = p.get('name')     || 'مطعمكم | Votre Restaurant';
+  let NAME       = p.get('name')     || 'La Citadelle';
   const TOPIC    = p.get('topic')    || '';          // ntfy topic
   const TG_TOKEN = p.get('tg_token')|| '';          // Telegram bot token
   const TG_CHAT  = p.get('tg_chat') || '';          // Telegram chat ID
@@ -1240,7 +1258,7 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
       menuData = normalizeMenuData(rawMenu);
 
       // Update restaurant name dynamically from menu.json if not customized in url
-      if (menuData.restaurant_name && (NAME === 'مطعمكم | Votre Restaurant' || p.get('name') === null)) {
+      if (menuData.restaurant_name && (NAME === 'La Citadelle' || p.get('name') === null)) {
         NAME = menuData.restaurant_name;
         document.getElementById('restaurantName').textContent = NAME;
       }
