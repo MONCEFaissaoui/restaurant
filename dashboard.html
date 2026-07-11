@@ -713,12 +713,12 @@ function connectSSE() {
 
   sse = new EventSource(`https://ntfy.sh/${TOPIC}/sse`);
 
-  sse.onmessage = (e) => {
+  sse.addEventListener('message', (e) => {
     try {
       const msg = JSON.parse(e.data);
-      if (msg.event === 'message') handleNtfyMessage(msg);
+      handleNtfyMessage(msg);
     } catch {}
-  };
+  });
 
   sse.onerror = () => {
     setOnline(false);
