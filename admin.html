@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- QR Code library — jsDelivr is more reliable than cdnjs for qrcodejs -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-svg@1.1.0/lib/qrcode.min.js"></script>
 
   <style>
     :root {
@@ -1254,7 +1254,7 @@ function generateQRs(containerId) {
         </select>
       </div>
       <div class="qr-canvas-wrap" id="qr-wrap-${containerId}-${t}"></div>
-      <button class="qr-dl-btn" onclick="downloadQR('${containerId}', ${t})">⬇ تحميل PNG</button>
+      <button class="qr-dl-btn" onclick="downloadQR('${containerId}', ${t})">⬇ تحميل SVG</button>
       <div class="url-preview" id="url-preview-${containerId}-${t}">${url}</div>
     `;
     fragment.appendChild(item);
@@ -1273,6 +1273,7 @@ function generateQRs(containerId) {
         colorDark: '#000000', colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
+      document.getElementById(`qr-wrap-${containerId}-${t}`).innerHTML = qrcode.svg();
     } catch(e) {
       document.getElementById(data.id).innerHTML = '<p style="color:red;font-size:.7rem">QR error</p>';
     }
@@ -1282,6 +1283,23 @@ function generateQRs(containerId) {
 // ─── Download single QR ───────────────────────────────────────────────────────
 function downloadQR(containerId, t) {
   const wrap = document.getElementById(`qr-wrap-${containerId}-${t}`);
+  const svg = wrap ? wrap.querySelector('svg') : null;
+
+  if (svg) {
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.download = `table-${t}-qr.svg`;
+    a.href = url;
+    a.click();
+
+    URL.revokeObjectURL(url);
+    return;
+  }
+
+  // Fallback to canvas if SVG generation is not supported or failed
   const canvas = wrap ? wrap.querySelector('canvas') : null;
   if (!canvas) { alert('انتظر لحظة حتى يتم توليد رمز QR'); return; }
   const a = document.createElement('a');
