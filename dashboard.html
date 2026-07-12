@@ -1006,17 +1006,13 @@ function openReceiptModal(tableNum) {
   document.getElementById('rec-time-lbl').textContent = `TIME: ${formatTime(st.time)}`;
 
   const itemsListEl = document.getElementById('rec-items-list');
-  itemsListEl.innerHTML = '';
 
-  st.orderData.items.forEach(it => {
-    const row = document.createElement('div');
-    row.className = 'receipt-line';
-    row.innerHTML = `
+  itemsListEl.innerHTML = st.orderData.items.map(it => `
+    <div class="receipt-line">
       <span>${it.qty}x ${it.name}</span>
       <span>${it.qty * it.price} DA</span>
-    `;
-    itemsListEl.appendChild(row);
-  });
+    </div>
+  `).join('');
 
   document.getElementById('rec-total-lbl').textContent = `${st.orderData.total} DA`;
   document.getElementById('receiptModalOverlay').style.display = 'flex';
