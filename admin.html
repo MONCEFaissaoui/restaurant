@@ -1199,6 +1199,9 @@ function generateQRs(containerId) {
   }
   document.getElementById('qr-error') && (document.getElementById('qr-error').style.display = 'none');
 
+  const fragment = document.createDocumentFragment();
+  const qrData = [];
+
   for (let t = 1; t <= config.tables; t++) {
     // default to 'main' if not assigned
     if (!tableTopics[t]) tableTopics[t] = 'main';
@@ -1254,18 +1257,24 @@ function generateQRs(containerId) {
       <button class="qr-dl-btn" onclick="downloadQR('${containerId}', ${t})">⬇ تحميل PNG</button>
       <div class="url-preview" id="url-preview-${containerId}-${t}">${url}</div>
     `;
-    container.appendChild(item);
+    fragment.appendChild(item);
+    qrData.push({ t: t, url: url, id: `qr-wrap-${containerId}-${t}` });
+  }
 
-    // Generate QR
+  container.appendChild(fragment);
+
+  // Generate QR
+  for (let i = 0; i < qrData.length; i++) {
+    const data = qrData[i];
     try {
-      new QRCode(document.getElementById(`qr-wrap-${containerId}-${t}`), {
-        text: url,
+      new QRCode(document.getElementById(data.id), {
+        text: data.url,
         width: 130, height: 130,
         colorDark: '#000000', colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.M
       });
     } catch(e) {
-      document.getElementById(`qr-wrap-${containerId}-${t}`).innerHTML = '<p style="color:red;font-size:.7rem">QR error</p>';
+      document.getElementById(data.id).innerHTML = '<p style="color:red;font-size:.7rem">QR error</p>';
     }
   }
 }
