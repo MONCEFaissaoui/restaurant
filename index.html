@@ -1272,7 +1272,19 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
 
   // ─── Digital Menu Operations ────────────────────────────────────────────────
   let menuData = null;
+  let itemsById = {}; // { id: item }
   let cart = {}; // { itemId: qty }
+
+  function buildItemsMap() {
+    itemsById = {};
+    if (!menuData || !menuData.categories) return;
+    for (const cat of menuData.categories) {
+      if (!cat.items) continue;
+      for (const item of cat.items) {
+        itemsById[item.id] = item;
+      }
+    }
+  }
 
   async function loadMenuData() {
     const contentEl = document.getElementById('menuContent');
@@ -1282,6 +1294,7 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
       if (!response.ok) throw new Error('Failed to load menu');
       const rawMenu = await response.json();
       menuData = normalizeMenuData(rawMenu);
+      buildItemsMap();
 
       // Update restaurant name dynamically from menu.json if not customized in url
       if (menuData.restaurant_name && (NAME === 'La Citadelle' || p.get('name') === null)) {
@@ -1297,6 +1310,7 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
         if (fallbackEl) {
           const rawFallback = JSON.parse(fallbackEl.textContent);
           menuData = normalizeMenuData(rawFallback);
+          buildItemsMap();
           renderMenu();
           return;
         }
@@ -1404,12 +1418,7 @@ ${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
   }
 
   function getItemById(id) {
-    if (!menuData) return null;
-    for (const cat of menuData.categories) {
-      const item = cat.items.find(it => it.id === id);
-      if (item) return item;
-    }
-    return null;
+    return itemsById[id] || null;
   }
 
   function updateCartSummary() {
