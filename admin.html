@@ -461,6 +461,21 @@
         <input type="tel" id="waNum" placeholder="213XXXXXXXXX (بدون + بدون 00)" dir="ltr" style="text-align:left" />
       </div>
 
+      <div style="margin-top: 24px; padding: 16px; background: var(--card2); border-radius: 10px; border: 1px dashed var(--border2); text-align: center;">
+        <h4 style="margin-bottom: 8px; color: var(--gold); font-size: 0.95rem;">💾 النسخ الاحتياطي ومشاركة الإعدادات</h4>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 12px;">قم بتحميل إعداداتك كملف، أو انسخ رابط اللوحة لمزامنته على هاتفك.</p>
+        <div style="display: flex; gap: 10px; justify-content: center; align-items: center; margin-bottom: 10px;">
+          <button class="btn-secondary" onclick="shareConfigLink()" style="flex:1; font-weight: bold; color: var(--gold); border-color: var(--gold);">🔗 نسخ رابط الإعدادات — Copier le lien</button>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+          <button class="btn-secondary" onclick="downloadConfigBackup()" style="flex:1;">⬇️ تحميل الإعدادات</button>
+          <label class="btn-secondary" style="flex:1; cursor: pointer; margin: 0;">
+            ⬆️ استعادة الإعدادات
+            <input type="file" accept=".json" style="display: none;" onchange="restoreConfigBackup(event)">
+          </label>
+        </div>
+      </div>
+
       <button class="btn-primary" id="step1-next" onclick="goStep(1)">التالي — Suivant ›</button>
       <p id="step1-err" style="color:var(--error);font-size:.85rem;margin-top:8px;text-align:center;display:none">⚠️ الرجاء إدخال اسم المطعم أولاً</p>
     </div>
@@ -1039,6 +1054,98 @@ async function testTelegram() {
 }
 
 function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ─── Backup & Restore ────────────────────────────────────────────────────────
+function downloadConfigBackup() {
+  const backupData = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('qr_')) {
+      backupData[key] = localStorage.getItem(key);
+    }
+  }
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "qrsalik-backup.json");
+  document.body.appendChild(downloadAnchorNode); // required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+  showToast("تم تحميل الإعدادات بنجاح | Sauvegarde réussie");
+}
+
+function shareConfigLink() {
+  collectConfig(); // Ensure current UI values are captured
+  let base = '';
+  try {
+    const urlObj = new URL(location.href);
+    urlObj.search = '';
+    urlObj.hash = '';
+    let newPathname = urlObj.pathname
+      .replace(/\/(index\.html|admin\.html|admin\/?)$/i, '')
+      .replace(/\/admin\/?$/i, '')
+      + '/dashboard.html';
+    newPathname = newPathname.replace(/\/+/g, '/');
+    urlObj.pathname = newPathname;
+    base = urlObj.toString();
+  } catch (e) {
+    base = location.href.replace(/admin(\.html|\/index\.html|\/)?/i, 'dashboard.html').split('?')[0].split('#')[0];
+    if (!base.endsWith('dashboard.html')) {
+      base = base.replace(/\/$/, '') + '/dashboard.html';
+    }
+  }
+
+  const activeTopics = [config.ntfyTopic];
+  for (let i=1; i<=15; i++) {
+    if (config['ntfyTopic'+i]) activeTopics.push(config['ntfyTopic'+i]);
+  }
+  const combinedTopics = activeTopics.filter(Boolean).join(',');
+
+  const params = new URLSearchParams({
+    name:   config.name || 'La Citadelle',
+    tables: config.tables,
+    topic:  combinedTopics,
+  });
+  if (config.tgToken) params.set('tg_token', config.tgToken);
+  if (config.tgChat)  params.set('tg_chat',  config.tgChat);
+
+  const shareUrl = `${base}?${params.toString()}`;
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    alert("✅ تم نسخ رابط الإعدادات! أرسله إلى هاتفك وافتحه لتفعيل اللوحة مباشرة.\n\nLe lien a été copié ! Envoyez-le sur votre téléphone.");
+  }).catch(err => {
+    prompt("انسخ الرابط التالي | Copiez ce lien:", shareUrl);
+  });
+}
+
+function restoreConfigBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const backupData = JSON.parse(e.target.result);
+      let restoredCount = 0;
+      for (const key in backupData) {
+        if (key.startsWith('qr_')) {
+          localStorage.setItem(key, backupData[key]);
+          restoredCount++;
+        }
+      }
+      if (restoredCount > 0) {
+        alert("تمت استعادة الإعدادات بنجاح. سيتم تحديث الصفحة. | Configuration restaurée avec succès. La page va se rafraîchir.");
+        location.reload();
+      } else {
+        alert("ملف النسخ الاحتياطي غير صالح أو فارغ. | Fichier de sauvegarde invalide ou vide.");
+      }
+    } catch (err) {
+      alert("حدث خطأ أثناء قراءة الملف. | Erreur lors de la lecture du fichier.");
+      console.error(err);
+    }
+    event.target.value = ''; // reset input
+  };
+  reader.readAsText(file);
+}
 
 // ─── Collect config ───────────────────────────────────────────────────────────
 function collectConfig() {
