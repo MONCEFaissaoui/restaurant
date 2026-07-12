@@ -1310,7 +1310,31 @@ function downloadQR(containerId, t) {
 
 // ─── Open dashboard ───────────────────────────────────────────────────────────
 function openDashboard() {
-  const base = location.href.replace(/admin\.html.*$/, 'dashboard.html');
+  let base = '';
+  try {
+    const urlObj = new URL(location.href);
+    urlObj.search = '';
+    urlObj.hash = '';
+
+    const pathParts = urlObj.pathname.split('/');
+    const lastPart = pathParts[pathParts.length - 1];
+
+    if (lastPart.toLowerCase().endsWith('.html') || lastPart.toLowerCase().endsWith('.htm')) {
+      pathParts[pathParts.length - 1] = 'dashboard.html';
+    } else if (lastPart !== '') {
+      pathParts.push('dashboard.html');
+    } else {
+      pathParts[pathParts.length - 1] = 'dashboard.html';
+    }
+
+    urlObj.pathname = pathParts.join('/');
+    base = urlObj.toString();
+  } catch (e) {
+    base = location.href.replace(/admin\.html.*/i, 'dashboard.html').split('?')[0].split('#')[0];
+    if (!base.endsWith('dashboard.html')) {
+      base = base.replace(/\/$/, '') + '/dashboard.html';
+    }
+  }
   
   // Collect all unique, non-empty active ntfy topics to listen to them all at once in SSE
   const activeTopics = [config.ntfyTopic];
