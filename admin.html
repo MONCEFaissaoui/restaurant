@@ -1145,22 +1145,23 @@ function buildTableUrl(tableNum, topicValue = null) {
     urlObj.search = '';
     urlObj.hash = '';
 
-    const pathParts = urlObj.pathname.split('/');
-    const lastPart = pathParts[pathParts.length - 1];
+    let pathParts = urlObj.pathname.split('/');
+    if (pathParts[pathParts.length - 1] === '') {
+      pathParts.pop();
+    }
+    const lastPart = pathParts[pathParts.length - 1] || '';
 
-    if (lastPart.toLowerCase().endsWith('.html') || lastPart.toLowerCase().endsWith('.htm')) {
+    if (/^(admin(\.html?)?|index(\.html?)?)$/i.test(lastPart)) {
       pathParts[pathParts.length - 1] = 'index.html';
-    } else if (lastPart !== '') {
-      pathParts.push('index.html');
     } else {
-      pathParts[pathParts.length - 1] = 'index.html';
+      pathParts.push('index.html');
     }
 
     urlObj.pathname = pathParts.join('/');
     base = urlObj.toString();
   } catch (e) {
     // Fail-safe fallback using regex (case-insensitive)
-    base = location.href.replace(/admin\.html.*/i, 'index.html').split('?')[0].split('#')[0];
+    base = location.href.replace(/admin(\.html)?/i, 'index.html').split('?')[0].split('#')[0];
     if (!base.endsWith('index.html')) {
       base = base.replace(/\/$/, '') + '/index.html';
     }
@@ -1310,21 +1311,22 @@ function openDashboard() {
     urlObj.search = '';
     urlObj.hash = '';
 
-    const pathParts = urlObj.pathname.split('/');
-    const lastPart = pathParts[pathParts.length - 1];
+    let pathParts = urlObj.pathname.split('/');
+    if (pathParts[pathParts.length - 1] === '') {
+      pathParts.pop();
+    }
+    const lastPart = pathParts[pathParts.length - 1] || '';
 
-    if (lastPart.toLowerCase().endsWith('.html') || lastPart.toLowerCase().endsWith('.htm')) {
+    if (/^(admin(\.html?)?|index(\.html?)?)$/i.test(lastPart)) {
       pathParts[pathParts.length - 1] = 'dashboard.html';
-    } else if (lastPart !== '') {
-      pathParts.push('dashboard.html');
     } else {
-      pathParts[pathParts.length - 1] = 'dashboard.html';
+      pathParts.push('dashboard.html');
     }
 
     urlObj.pathname = pathParts.join('/');
     base = urlObj.toString();
   } catch (e) {
-    base = location.href.replace(/admin\.html.*/i, 'dashboard.html').split('?')[0].split('#')[0];
+    base = location.href.replace(/admin(\.html)?/i, 'dashboard.html').split('?')[0].split('#')[0];
     if (!base.endsWith('dashboard.html')) {
       base = base.replace(/\/$/, '') + '/dashboard.html';
     }
