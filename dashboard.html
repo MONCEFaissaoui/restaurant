@@ -963,6 +963,7 @@ function renderGrid() {
     : 'جميع الطاولات هادئة — Toutes les tables libres';
 
   grid.innerHTML = '';
+  const fragment = document.createDocumentFragment();
   for (let t = 1; t <= TABLES; t++) {
     const st = tableStates[t] || { status:'free', time:null, orderData:null };
     const a = ACTION_MAP[st.status];
@@ -997,8 +998,9 @@ function renderGrid() {
         </button>
       `}
     `;
-    grid.appendChild(card);
+    fragment.appendChild(card);
   }
+  grid.appendChild(fragment);
 }
 
 // ─── Log Feed ─────────────────────────────────────────────────────────────
