@@ -990,7 +990,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedTableTopics) {
       tableTopics = JSON.parse(savedTableTopics);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error("Error parsing saved table topics from localStorage", e);
+  }
 });
 
 // ─── Toggle custom table input ────────────────────────────────────────────────
