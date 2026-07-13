@@ -796,7 +796,15 @@
 
 <script>
 // ─── Lock Screen Logic ───────────────────────────────────────────────────────
-const LOCK_PASS = "35055166";
+const LOCK_HASH = "48d90bb9e56126bf32330d9e8904771f0193931f562a71fd71aeb183c5f43ca6";
+
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 function checkAuthorization() {
   const isAuthorized = sessionStorage.getItem('admin_authorized') === 'true';
@@ -809,17 +817,24 @@ function checkAuthorization() {
   }
 }
 
-function unlockAdmin() {
+async function unlockAdmin() {
   const input = document.getElementById('adminPassword').value;
   const errorMsg = document.getElementById('lockError');
-  if (input === LOCK_PASS) {
-    sessionStorage.setItem('admin_authorized', 'true');
-    document.getElementById('lockOverlay').style.display = 'none';
-    errorMsg.style.display = 'none';
-  } else {
+  try {
+    const hashedInput = await hashPassword(input);
+    if (hashedInput === LOCK_HASH) {
+      sessionStorage.setItem('admin_authorized', 'true');
+      document.getElementById('lockOverlay').style.display = 'none';
+      errorMsg.style.display = 'none';
+    } else {
+      errorMsg.style.display = 'block';
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('adminPassword').focus();
+    }
+  } catch (err) {
+    console.error('Password hashing failed:', err);
+    errorMsg.textContent = '❌ خطأ في النظام | Erreur système';
     errorMsg.style.display = 'block';
-    document.getElementById('adminPassword').value = '';
-    document.getElementById('adminPassword').focus();
   }
 }
 
