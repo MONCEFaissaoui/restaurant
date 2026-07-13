@@ -693,7 +693,15 @@
 <!-- Buzzer audio (generated via Web Audio API) -->
 <script>
 // ─── Lock Screen Logic ───────────────────────────────────────────────────────
-const LOCK_PASS = "35055166";
+const LOCK_HASH = "48d90bb9e56126bf32330d9e8904771f0193931f562a71fd71aeb183c5f43ca6";
+
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 function checkAuthorization() {
   const isAuthorized = sessionStorage.getItem('dashboard_authorized') === 'true';
@@ -706,17 +714,24 @@ function checkAuthorization() {
   }
 }
 
-function unlockAdmin() {
+async function unlockAdmin() {
   const input = document.getElementById('adminPassword').value;
   const errorMsg = document.getElementById('lockError');
-  if (input === LOCK_PASS) {
-    sessionStorage.setItem('dashboard_authorized', 'true');
-    document.getElementById('lockOverlay').style.display = 'none';
-    errorMsg.style.display = 'none';
-  } else {
+  try {
+    const hashedInput = await hashPassword(input);
+    if (hashedInput === LOCK_HASH) {
+      sessionStorage.setItem('dashboard_authorized', 'true');
+      document.getElementById('lockOverlay').style.display = 'none';
+      errorMsg.style.display = 'none';
+    } else {
+      errorMsg.style.display = 'block';
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('adminPassword').focus();
+    }
+  } catch (err) {
+    console.error('Password hashing failed:', err);
+    errorMsg.textContent = '❌ خطأ في النظام | Erreur système';
     errorMsg.style.display = 'block';
-    document.getElementById('adminPassword').value = '';
-    document.getElementById('adminPassword').focus();
   }
 }
 
@@ -764,7 +779,9 @@ function loadTableStates() {
     if (rawStats) {
       stats = JSON.parse(rawStats);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Error loading table states from localStorage:', e);
+  }
 }
 
 function saveLogsToLocalStorage(logsList) {
@@ -777,7 +794,9 @@ function loadLogsFromLocalStorage() {
     if (raw) {
       return JSON.parse(raw).map(l => ({ ...l, time: new Date(l.time) }));
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Error loading logs from localStorage:', e);
+  }
   return [];
 }
 
@@ -835,7 +854,9 @@ function connectSSE() {
     try {
       const msg = JSON.parse(e.data);
       handleNtfyMessage(msg);
-    } catch {}
+    } catch(err) {
+      console.error('Error parsing SSE message:', err);
+    }
   });
 
   sse.onerror = () => {
@@ -963,6 +984,7 @@ function renderGrid() {
     : 'جميع الطاولات هادئة — Toutes les tables libres';
 
   grid.innerHTML = '';
+  const fragment = document.createDocumentFragment();
   for (let t = 1; t <= TABLES; t++) {
     const st = tableStates[t] || { status:'free', time:null, orderData:null };
     const a = ACTION_MAP[st.status];
@@ -997,8 +1019,9 @@ function renderGrid() {
         </button>
       `}
     `;
-    grid.appendChild(card);
+    fragment.appendChild(card);
   }
+  grid.appendChild(fragment);
 }
 
 // ─── Log Feed ─────────────────────────────────────────────────────────────
@@ -1027,12 +1050,27 @@ function renderLogs() {
       desc = `فتح قائمة الطعام | Menu ouvert`;
     }
 
-    entry.innerHTML = `
-      <span class="log-icon">${a.icon}</span>
-      <span class="log-table">Table ${log.tableNum}</span>
-      <span class="log-msg">${desc}</span>
-      <span class="log-time">${formatTime(log.time)}</span>
-    `;
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'log-icon';
+    iconSpan.textContent = a.icon;
+
+    const tableSpan = document.createElement('span');
+    tableSpan.className = 'log-table';
+    tableSpan.textContent = `Table ${log.tableNum}`;
+
+    const msgSpan = document.createElement('span');
+    msgSpan.className = 'log-msg';
+    msgSpan.textContent = desc;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'log-time';
+    timeSpan.textContent = formatTime(log.time);
+
+    entry.appendChild(iconSpan);
+    entry.appendChild(tableSpan);
+    entry.appendChild(msgSpan);
+    entry.appendChild(timeSpan);
+
     feed.appendChild(entry);
   });
 }
@@ -1085,7 +1123,9 @@ function playBuzzer(type) {
       osc.stop(t + 0.18);
       t += 0.2;
     });
-  } catch(e) {}
+  } catch(e) {
+    console.error('Error playing sound:', e);
+  }
 }
 
 function toggleSound() {
@@ -1129,10 +1169,16 @@ function openReceiptModal(tableNum) {
   st.orderData.items.forEach(it => {
     const row = document.createElement('div');
     row.className = 'receipt-line';
-    row.innerHTML = `
-      <span>${it.qty}x ${it.name}</span>
-      <span>${it.qty * it.price} DA</span>
-    `;
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = `${it.qty}x ${it.name}`;
+
+    const priceSpan = document.createElement('span');
+    priceSpan.textContent = `${it.qty * it.price} DA`;
+
+    row.appendChild(nameSpan);
+    row.appendChild(priceSpan);
+
     itemsListEl.appendChild(row);
   });
 
