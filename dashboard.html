@@ -1027,12 +1027,27 @@ function renderLogs() {
       desc = `فتح قائمة الطعام | Menu ouvert`;
     }
 
-    entry.innerHTML = `
-      <span class="log-icon">${a.icon}</span>
-      <span class="log-table">Table ${log.tableNum}</span>
-      <span class="log-msg">${desc}</span>
-      <span class="log-time">${formatTime(log.time)}</span>
-    `;
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'log-icon';
+    iconSpan.textContent = a.icon;
+
+    const tableSpan = document.createElement('span');
+    tableSpan.className = 'log-table';
+    tableSpan.textContent = `Table ${log.tableNum}`;
+
+    const msgSpan = document.createElement('span');
+    msgSpan.className = 'log-msg';
+    msgSpan.textContent = desc;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'log-time';
+    timeSpan.textContent = formatTime(log.time);
+
+    entry.appendChild(iconSpan);
+    entry.appendChild(tableSpan);
+    entry.appendChild(msgSpan);
+    entry.appendChild(timeSpan);
+
     feed.appendChild(entry);
   });
 }
@@ -1129,10 +1144,16 @@ function openReceiptModal(tableNum) {
   st.orderData.items.forEach(it => {
     const row = document.createElement('div');
     row.className = 'receipt-line';
-    row.innerHTML = `
-      <span>${it.qty}x ${it.name}</span>
-      <span>${it.qty * it.price} DA</span>
-    `;
+
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = `${it.qty}x ${it.name}`;
+
+    const priceSpan = document.createElement('span');
+    priceSpan.textContent = `${it.qty * it.price} DA`;
+
+    row.appendChild(nameSpan);
+    row.appendChild(priceSpan);
+
     itemsListEl.appendChild(row);
   });
 
