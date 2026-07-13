@@ -764,7 +764,9 @@ function loadTableStates() {
     if (rawStats) {
       stats = JSON.parse(rawStats);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Error loading table states from localStorage:', e);
+  }
 }
 
 function saveLogsToLocalStorage(logsList) {
@@ -777,7 +779,9 @@ function loadLogsFromLocalStorage() {
     if (raw) {
       return JSON.parse(raw).map(l => ({ ...l, time: new Date(l.time) }));
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Error loading logs from localStorage:', e);
+  }
   return [];
 }
 
@@ -835,7 +839,9 @@ function connectSSE() {
     try {
       const msg = JSON.parse(e.data);
       handleNtfyMessage(msg);
-    } catch {}
+    } catch(err) {
+      console.error('Error parsing SSE message:', err);
+    }
   });
 
   sse.onerror = () => {
@@ -1085,7 +1091,9 @@ function playBuzzer(type) {
       osc.stop(t + 0.18);
       t += 0.2;
     });
-  } catch(e) {}
+  } catch(e) {
+    console.error('Error playing sound:', e);
+  }
 }
 
 function toggleSound() {
