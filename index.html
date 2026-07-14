@@ -43,8 +43,10 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,200,66,.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(255,140,66,.08) 0%, transparent 50%);
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,200,66,.2) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(255,140,66,.15) 0%, transparent 50%),
+        linear-gradient(rgba(13, 13, 13, 0.8), rgba(13, 13, 13, 0.95)),
+        url('./steak_hero.jpg') center/cover no-repeat;
       pointer-events: none;
       z-index: 0;
     }
@@ -637,7 +639,9 @@
     #cuisineSplash {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at center, #1b0a02 0%, #050200 100%);
+      background:
+        radial-gradient(circle at center, rgba(27, 10, 2, 0.75) 0%, rgba(5, 2, 0, 0.95) 100%),
+        url('./steak_hero.jpg') center/cover no-repeat;
       z-index: 10000;
       display: flex;
       flex-direction: column;
