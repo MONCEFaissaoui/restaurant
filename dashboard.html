@@ -948,6 +948,11 @@ function triggerTable(tableNum, actionKey, orderData = null) {
   renderGrid();
   addLog(tableNum, actionKey, now, orderData);
   if (soundEnabled) playBuzzer(actionKey);
+
+  // Auto open receipt modal if bill is requested and order data exists
+  if (actionKey === 'bill' && finalOrderData) {
+    openReceiptModal(tableNum);
+  }
 }
 
 // ─── Acknowledge & Reset ──────────────────────────────────────────────────
