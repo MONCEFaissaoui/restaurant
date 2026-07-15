@@ -1,427 +1,222 @@
 {
   "restaurant_name": "La Citadelle",
-  "currency": "DA (Algerian Dinar)",
+  "currency": "DA",
   "menu": [
     {
-      "category_fr": "Nos entrées",
+      "category_fr": "Nos Entrées",
       "category_ar": "المقبلات",
       "items": [
-        {
-          "name_fr": "Soupe de lentilles",
-          "name_ar": "شوربة عدس",
-          "price": 300
-        },
-        {
-          "name_fr": "Harira",
-          "name_ar": "حريرة",
-          "price": 300
-        },
-        {
-          "name_fr": "Soupe de poulet",
-          "name_ar": "شوربة دجاج",
-          "price": 300
-        },
-        {
-          "name_fr": "Spaghetti",
-          "name_ar": "سباغيتي",
-          "price": 300
-        },
-        {
-          "name_fr": "Bourek",
-          "name_ar": "بورَاك",
-          "price": 400
-        },
-        {
-          "name_fr": "Salade orientale",
-          "name_ar": "سلطة شرقية",
-          "prices": [
-            { "size": "PM (Petit Modèle)", "price": 250 },
-            { "size": "GM (Grand Modèle)", "price": 350 }
-          ]
-        },
-        {
-          "name_fr": "Fatouche",
-          "name_ar": "فتوش",
-          "price": 300
-        },
-        {
-          "name_fr": "Arayis",
-          "name_ar": "عرائس",
-          "price": 300
-        },
-        {
-          "name_fr": "Maghmour",
-          "name_ar": "مغمور",
-          "price": 300
-        },
-        {
-          "name_fr": "Hummus bil lahme",
-          "name_ar": "حمص بلحمة",
-          "price": 400
-        },
-        {
-          "name_fr": "Kebbé chamia",
-          "name_ar": "كبة شامية",
-          "price": 600
-        },
-        {
-          "name_fr": "Crème de poichiches",
-          "name_ar": "كريم حمص",
-          "price": 300
-        },
-        {
-          "name_fr": "Baba ghennoudj",
-          "name_ar": "بابا غنوج",
-          "price": 300
-        },
-        {
-          "name_fr": "Labné",
-          "name_ar": "لبنة",
-          "price": 300
-        },
-        {
-          "name_fr": "Mtabél",
-          "name_ar": "متبل",
-          "price": 300
-        },
-        {
-          "name_fr": "Crème à l'ail",
-          "name_ar": "كريمة الثوم",
-          "price": 300
-        },
-        {
-          "name_fr": "Mezza sghira",
-          "name_ar": "مزة صغيرة",
-          "price": 300
-        }
+        {"name_fr": "Crème poichiche", "name_ar": "حمص بطحينة", "price": 350, "image": "https://images.unsplash.com/photo-1577906096429-f73c2c312435?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Mezza PM", "name_ar": "مزة صغيرة", "price": 400, "image": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Mezza GM", "name_ar": "مزة كبيرة", "price": 600, "image": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "ARAYIS", "name_ar": "عرايس", "price": 400, "image": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Bourek Fromage", "name_ar": "بوراك بالجبن", "price": 400, "image": "https://images.unsplash.com/photo-1601315379734-425a469078de?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Barrak viande/poulet", "name_ar": "برك لحم / دجاج", "price": 800, "image": "https://images.unsplash.com/photo-1601315379734-425a469078de?q=80&w=600&auto=format&fit=crop"}
       ]
     },
     {
-      "category_fr": "Nos sandwichs",
-      "category_ar": "سندويشات",
+      "category_fr": "Nos Sandwiches",
+      "category_ar": "السندويشات",
       "items": [
-        {
-          "name_fr": "Sandwich chawarma poulet",
-          "name_ar": "سندويش شاورما دجاج",
-          "price": 250
-        },
-        {
-          "name_fr": "Sandwich chawarma viande",
-          "name_ar": "سندويش شاورما لحم",
-          "price": 300
-        },
-        {
-          "name_fr": "Sandwich kebab viande",
-          "name_ar": "سندويش كباب لحم",
-          "price": 300
-        },
-        {
-          "name_fr": "Sandwich kebab poulet",
-          "name_ar": "سندويش كباب دجاج",
-          "price": 300
-        },
-        {
-          "name_fr": "Sandwich chich taouk",
-          "name_ar": "سندويش شيش طاووق",
-          "price": 300
-        }
+        {"name_fr": "Sandwiche Chawarma poulet", "name_ar": "سندويش شاورما دجاج", "price": 350, "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Sandwiche Chawarma viande", "name_ar": "سندويش شاورما لحم", "price": 400, "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Sandwiche Chiche Taouk", "name_ar": "سندويش شيش طاووق", "price": 400, "image": "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Sandwiche Kebab poulet", "name_ar": "سندويش كباب دجاج", "price": 400, "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Sandwiche Kebab viande", "name_ar": "سندويش كباب لحم", "price": 400, "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Menu ENFANT", "name_ar": "وجبة أطفال", "price": 600, "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop"}
       ]
     },
     {
-      "category_fr": "Nos poulets",
-      "category_ar": "الدجاج",
+      "category_fr": "Nos Poulets",
+      "category_ar": "أطباق الدجاج",
       "items": [
-        {
-          "name_fr": "Les ailes grillées",
-          "name_ar": "جوانح مشوية",
-          "price": 500
-        },
-        {
-          "name_fr": "Plat fajitas",
-          "name_ar": "وجبة فاهيتا",
-          "price": 900
-        },
-        {
-          "name_fr": "Plat mexicain",
-          "name_ar": "وجبة مكسيكي",
-          "price": 900
-        },
-        {
-          "name_fr": "Plat chawarma",
-          "name_ar": "وجبة شاورما",
-          "price": 1100
-        },
-        {
-          "name_fr": "Cuisse",
-          "name_ar": "كويس",
-          "price": 1000
-        },
-        {
-          "name_fr": "Repas chawarma viande",
-          "name_ar": "وجبة شاورما لحم",
-          "price": 1000
-        },
-        {
-          "name_fr": "Crespy",
-          "name_ar": "كريسبي",
-          "price": 1000
-        },
-        {
-          "name_fr": "Cordon bleu",
-          "name_ar": "كوردون بلو",
-          "price": 1200
-        },
-        {
-          "name_fr": "Escalope panée",
-          "name_ar": "إسكالوب باني",
-          "price": 1200
-        },
-        {
-          "name_fr": "Cuisse biryani",
-          "name_ar": "كويس برياني",
-          "price": 1500
-        }
+        {"name_fr": "Les ailes grillées", "name_ar": "أجنحة دجاج مشوية", "price": 800, "image": "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kebab poulet", "name_ar": "كباب دجاج", "price": 1200, "image": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Faroudj", "name_ar": "فروج مشوي كامل", "price": 1200, "image": "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Escalope à la crème", "name_ar": "إسكالوب بالكريمة", "price": 1500, "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Escalope grillée", "name_ar": "إسكالوب مشوي", "price": 1100, "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Plat chawarma poulet", "name_ar": "طبق شاورما دجاج", "price": 1200, "image": "https://images.unsplash.com/photo-1528736235302-52922df5c122?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crispy", "name_ar": "دجاج كريسبي مقرمش", "price": 1400, "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Cordon Bleu", "name_ar": "كوردون بلو", "price": 1600, "image": "https://images.unsplash.com/photo-1624462966581-bc6d768cbce5?q=80&w=600&auto=format&fit=crop"}
       ]
     },
     {
-      "category_fr": "Nos machawi",
+      "category_fr": "Nos Grillades",
       "category_ar": "المشاوي",
       "items": [
-        {
-          "name_fr": "Escalope grillée",
-          "name_ar": "إسكالوب مشوي",
-          "price": 950
-        },
-        {
-          "name_fr": "Mchakal aadi",
-          "name_ar": "مشكل عادي",
-          "price": 950
-        },
-        {
-          "name_fr": "Kebab poulet",
-          "name_ar": "كباب دجاج",
-          "price": 950
-        },
-        {
-          "name_fr": "Kebab d'aubergine",
-          "name_ar": "كباب باذنجان",
-          "price": 1000
-        },
-        {
-          "name_fr": "Kabab halabi",
-          "name_ar": "كباب حلبي",
-          "price": 1000
-        },
-        {
-          "name_fr": "Kebab champignon",
-          "name_ar": "كباب فطر",
-          "price": 1000
-        },
-        {
-          "name_fr": "Kebab khachekhache",
-          "name_ar": "كباب خشخاش",
-          "price": 1000
-        },
-        {
-          "name_fr": "Faroudj",
-          "name_ar": "فروج",
-          "price": 1000
-        },
-        {
-          "name_fr": "Chich taouk",
-          "name_ar": "شيش طاووق",
-          "price": 1000
-        },
-        {
-          "name_fr": "Steak de viande",
-          "name_ar": "شرحات لحم",
-          "price": 1000
-        },
-        {
-          "name_fr": "Mergaz viande",
-          "name_ar": "نقانق اللحم",
-          "price": 1000
-        },
-        {
-          "name_fr": "Kabab ezmerli",
-          "name_ar": "كباب إزمرلي",
-          "price": 1200
-        },
-        {
-          "name_fr": "Kors El Cham",
-          "name_ar": "قرص الشام",
-          "price": 1300
-        },
-        {
-          "name_fr": "Entrecôtes grillées",
-          "name_ar": "ريش مشوي",
-          "price": 1300
-        },
-        {
-          "name_fr": "Djat machwi",
-          "name_ar": "جاط مشوي",
-          "price": 1100
-        },
-        {
-          "name_fr": "Djat machwi (4 personnes)",
-          "name_ar": "جاط مشوي أربعة أشخاص",
-          "price": 4400
-        },
-        {
-          "name_fr": "Veau",
-          "name_ar": "لحم عجل",
-          "price": 1100
-        },
-        {
-          "name_fr": "Mechwi grillé",
-          "name_ar": "مشوي غنم",
-          "price": 1500
-        },
-        {
-          "name_fr": "Mfawar",
-          "name_ar": "لحم غنم مفور",
-          "price": 1500
-        },
-        {
-          "name_fr": "Gigot de mouton rôti",
-          "name_ar": "كتف مشوي",
-          "price": 4000
-        }
+        {"name_fr": "Grillade mixte simple", "name_ar": "مشاوي مشكلة بسيطة", "price": 1300, "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kors Echam", "name_ar": "قرص الشام", "price": 1900, "image": "https://images.unsplash.com/photo-1544025162-811c7ce69527?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kebab viande", "name_ar": "كباب لحم", "price": 1300, "image": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kebab champignon", "name_ar": "كباب بالفطر", "price": 1500, "image": "https://images.unsplash.com/photo-1544025162-811c7ce69527?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kebab d'aubergine", "name_ar": "كباب بالباذنجان", "price": 1500, "image": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kebab Ezmerli", "name_ar": "كباب إزمرلي", "price": 1500, "image": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kebab Khachkhache", "name_ar": "كباب خشخاش", "price": 1500, "image": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Djat machaoui (1 pers)", "name_ar": "جاط مشوي فردي", "price": 1500, "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Djat machaoui (2 pers)", "name_ar": "جاط مشوي لشخصين", "price": 2500, "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Djat machaoui (4 pers)", "name_ar": "جاط مشوي عائلي", "price": 4800, "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Côtelette", "name_ar": "ريش غنم", "price": 2400, "image": "https://images.unsplash.com/photo-1544025162-811c7ce69527?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Foie d'agneau", "name_ar": "كبدة غنم", "price": 2500, "image": "https://images.unsplash.com/photo-1544025162-811c7ce69527?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Entrecôte", "name_ar": "أنتركوت بقر", "price": 1700, "image": "https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Filet de bœuf", "name_ar": "فيليه بقر", "price": 2200, "image": "https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=600&auto=format&fit=crop"}
       ]
     },
     {
-      "category_fr": "Nos poissons",
+      "category_fr": "Nos Poissons",
       "category_ar": "الأسماك",
       "items": [
-        {
-          "name_fr": "Sardine",
-          "name_ar": "سردين",
-          "price": 1000
-        },
-        {
-          "name_fr": "Rouget",
-          "name_ar": "روجي",
-          "price": 2000
-        },
-        {
-          "name_fr": "Espadon",
-          "name_ar": "إسبرادون",
-          "price": 2000
-        },
-        {
-          "name_fr": "Filet de merlan",
-          "name_ar": "فيليه ميرلون",
-          "price": 2000
-        },
-        {
-          "name_fr": "Merlan",
-          "name_ar": "ميرلون",
-          "price": 2000
-        },
-        {
-          "name_fr": "Saumon",
-          "name_ar": "سومون",
-          "price": 2000
-        },
-        {
-          "name_fr": "Crevettes grillées",
-          "name_ar": "جمبري مشوي",
-          "price": 2500
-        }
+        {"name_fr": "Daurade", "name_ar": "سمك دوراد", "price": 2200, "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Daurade au four", "name_ar": "دوراد بالفرن", "price": 2600, "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Loup de Mer", "name_ar": "ذئب البحر", "price": 2500, "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Rouget (arrivage)", "name_ar": "روجي صيد اليوم", "price": 2200, "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Merlan", "name_ar": "سمك ميرلان", "price": 2500, "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Filet de merlan", "name_ar": "فيليه ميرلان", "price": 3000, "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Espadon", "name_ar": "سمك أبو سيف", "price": 2600, "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Saumon", "name_ar": "سلمون مشوي", "price": 3000, "image": "https://images.unsplash.com/photo-1485921325833-c519f76c4927?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crevette grillée", "name_ar": "جمبري مشوي", "price": 3000, "image": "https://images.unsplash.com/photo-1559742811-822873691df8?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crevette provençal", "name_ar": "جمبري بروفنسال", "price": 3500, "image": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crevette en Sauce", "name_ar": "جمبري بالصلصة", "price": 3500, "image": "https://images.unsplash.com/photo-1559841644-08984562005a?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crevette sautée à l'ail", "name_ar": "جمبري مقلي بالثوم", "price": 3500, "image": "https://images.unsplash.com/photo-1559742811-822873691df8?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crevette panée", "name_ar": "جمبري بانيه", "price": 4000, "image": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Riz crevette", "name_ar": "أرز بالجمبري", "price": 3500, "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Marmite pêcheur", "name_ar": "طاجن الصياد", "price": 3500, "image": "https://images.unsplash.com/photo-1559841644-08984562005a?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pasta fruits de mer", "name_ar": "مكرونة فواكه البحر", "price": 3500, "image": "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pasta crevette", "name_ar": "مكرونة بالجمبري", "price": 3500, "image": "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Paella Valencienne", "name_ar": "باييلا فالنسيا", "price": 4000, "image": "https://images.unsplash.com/photo-1534080564583-6be75777b70a?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Assiette méditerranéenne", "name_ar": "طبق متوسطي اليوم", "price": 3000, "image": "https://images.unsplash.com/photo-1534080564583-6be75777b70a?q=80&w=600&auto=format&fit=crop"}
       ]
     },
     {
-      "category_fr": "Nos boissons",
+      "category_fr": "Nos Desserts",
+      "category_ar": "التحليات",
+      "items": [
+        {"name_fr": "Flan caramel", "name_ar": "فلان كراميل", "price": 350, "image": "https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crème brûlée", "name_ar": "كريم برولي", "price": 400, "image": "https://images.unsplash.com/photo-1470124182917-cc6e71b22cbc?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Salade de fruits", "name_ar": "سلطة فواكه طازجة", "price": 400, "image": "https://images.unsplash.com/photo-1563805042-7684c8e9e533?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Mousse au chocolat", "name_ar": "موس شوكولاتة", "price": 350, "image": "https://images.unsplash.com/photo-1587314168485-3236d6710814?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Tiramisu", "name_ar": "تيراميسو", "price": 350, "image": "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Cheese cake", "name_ar": "تشيز كيك", "price": 500, "image": "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Dessert maison", "name_ar": "تحلية المنزل الخاصة", "price": 500, "image": "https://images.unsplash.com/photo-1563805042-7684c8e9e533?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Can Cake", "name_ar": "كان كيك", "price": 700, "image": "https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kunafa", "name_ar": "كنافة كلاسيكية", "price": 600, "image": "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kunafa fromage", "name_ar": "كنافة بالجبن", "price": 800, "image": "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Kunafa spéciale", "name_ar": "كنافة سبيسيال فاخرة", "price": 1000, "image": "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Fruits de saison", "name_ar": "فواكه الموسم المشكلة", "price": 1000, "image": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément", "name_ar": "إضافات متنوعة", "price": 300, "image": "https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80&w=600&auto=format&fit=crop"}
+      ]
+    },
+    {
+      "category_fr": "Nos Boissons",
       "category_ar": "المشروبات",
       "items": [
-        {
-          "name_fr": "Jus de citron & menthe",
-          "name_ar": "عصير الليمون بالنعناع",
-          "prices": [
-            { "unit": "Carafe", "price": 800 },
-            { "unit": "Verre", "price": 300 }
-          ]
-        },
-        {
-          "name_fr": "Jus de fraise",
-          "name_ar": "عصير الفراولة",
-          "prices": [
-            { "unit": "Carafe", "price": 800 },
-            { "unit": "Verre", "price": 300 }
-          ]
-        },
-        {
-          "name_fr": "Jus cocktail",
-          "name_ar": "عصير الكوكتيل",
-          "prices": [
-            { "unit": "Carafe", "price": 800 },
-            { "unit": "Verre", "price": 300 }
-          ]
-        },
-        {
-          "name_fr": "Jus de banane",
-          "name_ar": "عصير الموز",
-          "prices": [
-            { "unit": "Carafe", "price": 1000 },
-            { "unit": "Verre", "price": 300 }
-          ]
-        }
+        {"name_fr": "Boisson gazeuse PM", "name_ar": "مشروب غازي صغير", "price": 100, "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Boisson gazeuse GM", "name_ar": "مشروب غازي كبير", "price": 150, "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Jus/Schweppes GM", "name_ar": "عصير / شويبس كبير", "price": 200, "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Mojito PM", "name_ar": "موهيتو صغير", "price": 400, "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Mojito GM", "name_ar": "موهيتو كبير", "price": 1000, "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Cocktail PM", "name_ar": "كوكتيل صغير", "price": 400, "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Cocktail GM", "name_ar": "كوكتيل كبير", "price": 1000, "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Cocktail GM Spécial", "name_ar": "كوكتيل كبير سبيسيال", "price": 1200, "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Eau minérale", "name_ar": "مياه معدنية", "price": 100, "image": "https://images.unsplash.com/photo-1548839140-29a749e1abc5?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Eau gazeuse", "name_ar": "مياه غازية", "price": 100, "image": "https://images.unsplash.com/photo-1601612450375-7b5cb99f4c3a?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Café", "name_ar": "قهوة", "price": 150, "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=600&auto=format&fit=crop"}
       ]
     },
     {
-      "category_fr": "Nos desserts",
-      "category_ar": "الحلويات",
+      "category_fr": "Les Crêpes",
+      "category_ar": "الكريب",
       "items": [
-        {
-          "name_fr": "Flan caramel",
-          "name_ar": "فلان كراميل",
-          "price": 230
-        },
-        {
-          "name_fr": "Crème brûlée",
-          "name_ar": "كريم برولي",
-          "price": 300
-        },
-        {
-          "name_fr": "Mehalbi",
-          "name_ar": "محلبي",
-          "price": 200
-        },
-        {
-          "name_fr": "Tiramisu",
-          "name_ar": "تيراميسو",
-          "price": 300
-        },
-        {
-          "name_fr": "Crêpe nutella",
-          "name_ar": "كريب بالنوتيلا",
-          "price": 250
-        },
-        {
-          "name_fr": "Crêpe nutella + Banane",
-          "name_ar": "كريب بالنوتيلا + موز",
-          "price": 300
-        },
-        {
-          "name_fr": "Crêpe nutella + Fraise",
-          "name_ar": "كريب بالنوتيلا + فراولة",
-          "price": 300
-        },
-        {
-          "name_fr": "Mousse au chocolat",
-          "name_ar": "موس بالشوكولاتة",
-          "price": 300
-        },
-        {
-          "name_fr": "Salade de fruits",
-          "name_ar": "سلطة فواكه",
-          "price": 300
-        },
-        {
-          "name_fr": "Fruits de saison",
-          "name_ar": "فواكه الموسم",
-          "price": 300
-        }
+        {"name_fr": "Crêpe Nutella", "name_ar": "كريب نوتيلا", "price": 400, "image": "https://images.unsplash.com/photo-1519676867240-f03562e64548?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Nutella Banane", "name_ar": "كريب نوتيلا موز", "price": 450, "image": "https://images.unsplash.com/photo-1590137517112-a1f737088910?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Nutella Ananas", "name_ar": "كريب نوتيلا أناناس", "price": 450, "image": "https://images.unsplash.com/photo-1623126839502-3c4ba63a3560?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Nutella Mix Fruits", "name_ar": "كريب نوتيلا ميكس فواكه", "price": 550, "image": "https://images.unsplash.com/photo-1621616053303-34e2c65a0c86?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Nutella Pistach", "name_ar": "كريب نوتيلا فستق", "price": 550, "image": "https://images.unsplash.com/photo-1614548312061-04e8d3566d5b?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Nutella Lacitadelle", "name_ar": "كريب نوتيلا القلعة", "price": 850, "image": "https://images.unsplash.com/photo-1584278860047-22db9ff82bed?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Nutella Lotus", "name_ar": "كريب نوتيلا لوتس", "price": 450, "image": "https://plus.unsplash.com/premium_photo-1672322365287-fc085a6760ff?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Mordjane", "name_ar": "كريب شوكولاتة مرجان", "price": 300, "image": "https://images.unsplash.com/photo-1519676867240-f03562e64548?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Mordjane Banane", "name_ar": "كريب مرجان موز", "price": 350, "image": "https://images.unsplash.com/photo-1590137517112-a1f737088910?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Mordjane Ananas", "name_ar": "كريب مرجان أناناس", "price": 350, "image": "https://images.unsplash.com/photo-1623126839502-3c4ba63a3560?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Mordjane Mix Fruits", "name_ar": "كريب مرجان ميكس فواكه", "price": 450, "image": "https://images.unsplash.com/photo-1621616053303-34e2c65a0c86?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Mordjane Pistach", "name_ar": "كريب مرجان فستق", "price": 400, "image": "https://images.unsplash.com/photo-1614548312061-04e8d3566d5b?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Mordjane Lacitadelle", "name_ar": "كريب مرجان القلعة", "price": 700, "image": "https://images.unsplash.com/photo-1584278860047-22db9ff82bed?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Crêpe Mordjane Lotus", "name_ar": "كريب مرجان لوتس", "price": 400, "image": "https://plus.unsplash.com/premium_photo-1672322365287-fc085a6760ff?q=80&w=600&auto=format&fit=crop"}
+      ]
+    },
+    {
+      "category_fr": "Les Gaufres",
+      "category_ar": "الوافل",
+      "items": [
+        {"name_fr": "Gaufres Nutella", "name_ar": "وافل نوتيلا", "price": 500, "image": "https://images.unsplash.com/photo-1562376552-0d160a2f9f77?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Nutella Banane", "name_ar": "وافل نوتيلا موز", "price": 550, "image": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Nutella Ananas", "name_ar": "وافل نوتيلا أناناس", "price": 550, "image": "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Nutella Miel", "name_ar": "وافل نوتيلا عسل", "price": 500, "image": "https://images.unsplash.com/photo-1605335198086-7a8e854897f2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Nutella Mix Fruits", "name_ar": "وافل نوتيلا ميكس فواكه", "price": 700, "image": "https://images.unsplash.com/photo-1595186539150-f70b777a49df?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Nutella Pistach", "name_ar": "وافل نوتيلا فستق", "price": 550, "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Nutella Lacitadelle", "name_ar": "وافل نوتيلا القلعة", "price": 900, "image": "https://images.unsplash.com/photo-1525804018788-ceab30b429d2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Nutella Lotus", "name_ar": "وافل نوتيلا لوتس", "price": 500, "image": "https://images.unsplash.com/photo-1481391032119-d89fee407e44?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane", "name_ar": "وافل شوكولاتة مرجان", "price": 400, "image": "https://images.unsplash.com/photo-1562376552-0d160a2f9f77?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane Banane", "name_ar": "وافل مرجان موز", "price": 450, "image": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane Ananas", "name_ar": "وافل مرجان أناناس", "price": 450, "image": "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane Miel", "name_ar": "وافل مرجان عسل", "price": 450, "image": "https://images.unsplash.com/photo-1605335198086-7a8e854897f2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane Mix Fruits", "name_ar": "وافل مرجان ميكس فواكه", "price": 550, "image": "https://images.unsplash.com/photo-1595186539150-f70b777a49df?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane Pistach", "name_ar": "وافل مرجان فستق", "price": 500, "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane Lacitadelle", "name_ar": "وافل مرجان القلعة", "price": 750, "image": "https://images.unsplash.com/photo-1525804018788-ceab30b429d2?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Gaufres Mordjane Lotus", "name_ar": "وافل مرجان لوتس", "price": 450, "image": "https://images.unsplash.com/photo-1481391032119-d89fee407e44?q=80&w=600&auto=format&fit=crop"}
+      ]
+    },
+    {
+      "category_fr": "Pancakes",
+      "category_ar": "بان كيك",
+      "items": [
+        {"name_fr": "Pancake Nutella", "name_ar": "بان كيك نوتيلا", "price": 500, "image": "https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Banane", "name_ar": "بان كيك نوتيلا موز", "price": 550, "image": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Ananas", "name_ar": "بان كيك نوتيلا أناناس", "price": 550, "image": "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Miel", "name_ar": "بان كيك نوتيلا عسل", "price": 500, "image": "https://images.unsplash.com/photo-1554520735-0a6b8b6ce8b7?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Mix Fruits", "name_ar": "بان كيك نوتيلا فواكه", "price": 700, "image": "https://images.unsplash.com/photo-1506802913710-40e2e6633979?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Pistach", "name_ar": "بان كيك نوتيلا فستق", "price": 550, "image": "https://images.unsplash.com/photo-1594979109009-408a28723377?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Lacitadelle", "name_ar": "بان كيك نوتيلا القلعة", "price": 900, "image": "https://images.unsplash.com/photo-1554520735-0a6b8b6ce8b7?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Lotus", "name_ar": "بان كيك نوتيلا لوتس", "price": 500, "image": "https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Nutella Dubai", "name_ar": "بان كيك نوتيلا دبي", "price": 750, "image": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane", "name_ar": "بان كيك شوكولاتة مرجان", "price": 450, "image": "https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Banane", "name_ar": "بان كيك مرجان موز", "price": 500, "image": "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Ananas", "name_ar": "بان كيك مرجان أناناس", "price": 500, "image": "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Miel", "name_ar": "بان كيك مرجان عسل", "price": 500, "image": "https://images.unsplash.com/photo-1554520735-0a6b8b6ce8b7?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Mix Fruits", "name_ar": "بان كيك مرجان فواكه", "price": 500, "image": "https://images.unsplash.com/photo-1506802913710-40e2e6633979?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Pistach", "name_ar": "بان كيك مرجان فستق", "price": 550, "image": "https://images.unsplash.com/photo-1594979109009-408a28723377?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Lacitadelle", "name_ar": "بان كيك مرجان القلعة", "price": 800, "image": "https://images.unsplash.com/photo-1554520735-0a6b8b6ce8b7?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Lotus", "name_ar": "بان كيك مرجان لوتس", "price": 500, "image": "https://images.unsplash.com/photo-1528207776546-365bb710ee93?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Pancake Mordjane Dubai", "name_ar": "بان كيك مرجان دبي", "price": 700, "image": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?q=80&w=600&auto=format&fit=crop"}
+      ]
+    },
+    {
+      "category_fr": "Milkshakes & Frappuccinos",
+      "category_ar": "ميلك شيك وفرابوتشينو",
+      "items": [
+        {"name_fr": "Milkshake Nutella", "name_ar": "ميلك شيك نوتيلا", "price": 500, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Banane", "name_ar": "ميلك شيك موز", "price": 600, "image": "https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Bueno", "name_ar": "ميلك شيك بوينو", "price": 600, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Oreo", "name_ar": "ميلك شيك أوريو", "price": 600, "image": "https://images.unsplash.com/photo-1585842378082-2775f0f353ea?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Twix", "name_ar": "ميلك شيك تويكس", "price": 600, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Snickers", "name_ar": "ميلك شيك سنيكرز", "price": 600, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Kitkat", "name_ar": "ميلك شيك كيتكات", "price": 600, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Lotus", "name_ar": "ميلك شيك لوتس", "price": 600, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Milkshake Pistach", "name_ar": "ميلك شيك فستق", "price": 600, "image": "https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Frappuccino Netulla", "name_ar": "فرابوتشينو نوتيلا", "price": 500, "image": "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Frappuccino Fruits", "name_ar": "فرابوتشينو فواكه", "price": 600, "image": "https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Frappuccino PinaColada", "name_ar": "فرابوتشينو بينا كولادا", "price": 600, "image": "https://images.unsplash.com/photo-1546173159-315724a31696?q=80&w=600&auto=format&fit=crop"}
+      ]
+    },
+    {
+      "category_fr": "Les Suppléments",
+      "category_ar": "الإضافات الحلوة",
+      "items": [
+        {"name_fr": "Supplément Twix", "name_ar": "إضافة تويكس", "price": 300, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément Snickers", "name_ar": "إضافة سنيكرز", "price": 300, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément Rafaello", "name_ar": "إضافة رافايلو", "price": 300, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément Bueno", "name_ar": "إضافة بوينو", "price": 300, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément M&M's", "name_ar": "إضافة إم آند إم", "price": 300, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément KitKat", "name_ar": "إضافة كيتكات", "price": 300, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément Biscoff", "name_ar": "إضافة بسكوف", "price": 300, "image": "https://images.unsplash.com/photo-1572490122747-3968b75bb699?q=80&w=600&auto=format&fit=crop"},
+        {"name_fr": "Supplément Oreo", "name_ar": "إضافة أوريو", "price": 300, "image": "https://images.unsplash.com/photo-1585842378082-2775f0f353ea?q=80&w=600&auto=format&fit=crop"}
       ]
     }
   ]

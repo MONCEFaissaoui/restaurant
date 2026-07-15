@@ -3,590 +3,658 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>خدمة الطاولة | Service de Table</title>
-  <meta name="description" content="اطلب الخدمة من طاولتك بضغطة واحدة — Demandez le service depuis votre table en un clic." />
+  <title>La Citadelle | القلعة - خدمة الطاولة</title>
+  <meta name="description" content="اطلب الخدمة من طاولتك بضغطة واحدة - خدمة رقمية فاخرة" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  
+  <!-- Motion Library for fluid, spring-based script animations -->
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
 
   <style>
     :root {
-      --gold:      #F5C842;
-      --gold-dim:  #C9A22E;
-      --amber:     #FF8C42;
-      --bg:        #0D0D0D;
-      --surface:   #161616;
-      --card:      #1E1E1E;
-      --border:    rgba(245,200,66,.15);
-      --text:      #F5F0E8;
-      --muted:     #888;
-      --menu-c:    #4FC3F7;
-      --call-c:    #FFB300;
-      --bill-c:    #EF5350;
-      --success-c: #66BB6A;
-      --radius:    20px;
-      --shadow:    0 20px 60px rgba(0,0,0,.6);
+      --bg-dark: #0b0a09;
+      --bg-surface: #151311;
+      --bg-card: rgba(26, 24, 21, 0.7);
+      --gold: #cfa853;
+      --gold-hover: #ecd59b;
+      --gold-glow: rgba(207, 168, 83, 0.2);
+      --cream: #ebdcb9;
+      --cream-dim: rgba(235, 220, 185, 0.6);
+      --white: #ffffff;
+      --text-main: #f6eedb;
+      --text-muted: #a69c8c;
+      --red: #ff5252;
+      --green: #10b981;
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 26px;
+      
+      --font-serif: 'Playfair Display', 'Cairo', serif;
+      --font-sans: 'Outfit', 'Cairo', sans-serif;
+      --spring-transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --smooth-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: var(--font-sans);
+    }
 
     html, body {
       height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Cairo', 'Outfit', sans-serif;
-      overflow-x: hidden;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
-    /* ── Animated background ── */
-    body::before {
-      content: '';
-      position: fixed;
+    /* Custom Scrollbar for Menu List */
+    .menu-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .menu-list::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .menu-list::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 4px;
+    }
+
+    /* ── Landing View ── */
+    #landingView {
+      position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(245,200,66,.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 90% 80%, rgba(255,140,66,.08) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .page {
-      position: relative;
-      z-index: 1;
-      min-height: 100dvh;
+      background: url('./bg.jpg') center/cover no-repeat;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 20px 40px;
-      gap: 0;
+      justify-content: flex-end;
+      padding: 24px;
+      z-index: 10;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
     }
 
-    /* ── Header ── */
-    .header {
-      width: 100%;
-      max-width: 420px;
+    #landingView::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, 
+        rgba(11, 10, 9, 0.98) 0%, 
+        rgba(11, 10, 9, 0.7) 40%, 
+        rgba(11, 10, 9, 0.3) 100%);
+      z-index: -1;
+    }
+
+    .landing-header {
+      position: absolute;
+      top: 8%;
       text-align: center;
-      padding: 28px 0 24px;
-      animation: fadeDown .6s ease both;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 20px;
     }
 
-    .restaurant-icon {
-      margin-bottom: 10px;
-      filter: drop-shadow(0 0 18px rgba(245,200,66,.5));
-      animation: pulse 3s ease-in-out infinite;
+    .logo-container {
+      position: relative;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: logoEntrance 1s forwards cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .header-logo-img {
-      width: 70px;
-      height: 70px;
+    .logo-img {
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       border: 2px solid var(--gold);
-      background: #fff;
+      box-shadow: 0 0 35px var(--gold-glow);
       object-fit: cover;
-      padding: 2px;
-      display: inline-block;
+      transition: transform 0.3s ease;
     }
 
-    @keyframes pulse {
-      0%, 100% { filter: drop-shadow(0 0 18px rgba(245,200,66,.5)); }
-      50%       { filter: drop-shadow(0 0 30px rgba(245,200,66,.9)); }
+    .logo-container::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px dashed rgba(207, 168, 83, 0.5);
+      animation: spinDashed 20s linear infinite;
     }
 
-    .restaurant-name {
-      font-size: 1.45rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--gold), var(--amber));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: .5px;
-      margin-bottom: 6px;
+    .restaurant-title {
+      font-family: var(--font-serif);
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--white);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      opacity: 0;
+      transform: translateY(-10px);
+      animation: fadeInDown 0.8s forwards 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .table-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(245,200,66,.1);
-      border: 1px solid var(--border);
+      gap: 10px;
+      background: rgba(21, 19, 17, 0.65);
+      border: 1px solid rgba(207, 168, 83, 0.4);
+      padding: 8px 24px;
       border-radius: 50px;
-      padding: 6px 18px;
-      font-size: .9rem;
       color: var(--gold);
-      font-weight: 600;
-      backdrop-filter: blur(10px);
-      margin-top: 4px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(207, 168, 83, 0.1);
+      opacity: 0;
+      transform: translateY(-10px);
+      animation: fadeInDown 0.8s forwards 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .table-badge .dot {
-      width: 8px; height: 8px;
-      background: var(--success-c);
-      border-radius: 50%;
-      animation: blink 1.5s ease-in-out infinite;
+    .table-badge span {
+      color: var(--white);
+      background: var(--gold);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-family: var(--font-sans);
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .3; }
-    }
-
-    /* ── Divider ── */
-    .divider {
-      display: flex; align-items: center; gap: 12px;
-      width: 100%; max-width: 420px;
-      margin: 0 0 28px;
-      color: var(--muted);
-      font-size: .75rem;
-    }
-    .divider::before, .divider::after {
-      content: ''; flex: 1;
-      height: 1px; background: var(--border);
-    }
-
-    /* ── Action Cards ── */
-    .actions {
+    .actions-grid {
       width: 100%;
       max-width: 420px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      animation: fadeUp .6s .15s ease both;
+      display: grid;
+      gap: 16px;
+      margin-bottom: 6dvh;
+      z-index: 2;
     }
 
-    .btn-card {
-      position: relative;
+    .btn-action {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(207, 168, 83, 0.15);
+      padding: 18px 24px;
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
-      gap: 18px;
-      padding: 22px 24px;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      text-align: right;
-      transition: transform .18s ease, box-shadow .18s ease;
-      overflow: hidden;
-      width: 100%;
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.06);
-    }
-
-    .btn-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity .2s ease;
-    }
-
-    .btn-card:hover   { transform: translateY(-3px); }
-    .btn-card:active  { transform: scale(.97); }
-
-    .btn-card.menu   { --accent: var(--menu-c); }
-    .btn-card.call   { --accent: var(--call-c); }
-    .btn-card.bill   { --accent: var(--bill-c); }
-
-    .btn-card::before { background: radial-gradient(ellipse at 30% 50%, rgba(var(--accent-rgb),.15) 0%, transparent 70%); }
-    .btn-card.menu  { --accent-rgb: 79,195,247; }
-    .btn-card.call  { --accent-rgb: 255,179,0; }
-    .btn-card.bill  { --accent-rgb: 239,83,80; }
-
-    .btn-card:hover::before { opacity: 1; }
-
-    .btn-card .glow-bar {
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 4px;
-      background: var(--accent);
-      border-radius: 0 4px 4px 0;
-      box-shadow: 0 0 12px var(--accent);
-    }
-
-    .btn-icon {
-      font-size: 2.2rem;
-      width: 56px; height: 56px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,.05);
-      border-radius: 14px;
-      flex-shrink: 0;
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 4px 16px rgba(0,0,0,.3);
-    }
-
-    .btn-text { flex: 1; }
-
-    .btn-ar {
-      display: block;
-      font-size: 1.1rem;
+      gap: 20px;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: var(--text);
-      line-height: 1.3;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: var(--spring-transition);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
     }
 
-    .btn-fr {
-      display: block;
-      font-size: .8rem;
-      color: var(--muted);
-      font-family: 'Outfit', sans-serif;
-      margin-top: 2px;
-      letter-spacing: .3px;
+    .btn-action:nth-child(1) { animation: fadeInUp 0.8s forwards 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .btn-action:nth-child(2) { animation: fadeInUp 0.8s forwards 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .btn-action:nth-child(3) { animation: fadeInUp 0.8s forwards 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    
+    .btn-action.primary {
+      background: linear-gradient(135deg, var(--gold) 0%, #a48135 100%);
+      color: var(--bg-dark);
+      border: none;
+      box-shadow: 0 15px 35px var(--gold-glow);
     }
 
-    .btn-arrow {
-      font-size: 1.2rem;
-      color: var(--muted);
-      flex-shrink: 0;
-      transition: transform .2s, color .2s;
+    .btn-action.primary .btn-fr {
+      color: rgba(11, 10, 9, 0.7);
     }
-    .btn-card:hover .btn-arrow { transform: translateX(-4px); color: var(--accent); }
 
-    /* ── Loading / Success Overlay ── */
-    .btn-overlay {
-      position: absolute;
-      inset: 0;
-      display: none;
+    .btn-action:active { 
+      transform: scale(0.95) translateY(2px) !important;
+    }
+
+    .btn-action.primary:hover {
+      box-shadow: 0 15px 45px rgba(207, 168, 83, 0.4);
+    }
+
+    .btn-action:not(.primary):hover {
+      border-color: rgba(207, 168, 83, 0.4);
+      background: rgba(26, 24, 21, 0.85);
+    }
+
+    .btn-icon-wrapper {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(207, 168, 83, 0.15);
+      color: var(--gold);
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      border-radius: var(--radius);
-      font-size: 1rem;
-      font-weight: 700;
-      backdrop-filter: blur(6px);
+      flex-shrink: 0;
+      transition: var(--spring-transition);
     }
 
-    .btn-card.loading .btn-overlay,
-    .btn-card.success .btn-overlay,
-    .btn-card.error   .btn-overlay { display: flex; }
-
-    .btn-card.loading .btn-overlay { background: rgba(30,30,30,.85); color: var(--muted); }
-    .btn-card.success .btn-overlay { background: rgba(102,187,106,.15); color: var(--success-c); border: 1px solid var(--success-c); }
-    .btn-card.error   .btn-overlay { background: rgba(239,83,80,.15);   color: var(--bill-c); }
-
-    .spinner {
-      width: 22px; height: 22px;
-      border: 3px solid rgba(255,255,255,.1);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
+    .btn-action.primary .btn-icon-wrapper {
+      background: rgba(11, 10, 9, 0.12);
+      color: var(--bg-dark);
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Footer ── */
-    .footer {
-      margin-top: auto;
-      padding-top: 32px;
-      text-align: center;
-      color: var(--muted);
-      font-size: .75rem;
-      animation: fadeUp .6s .35s ease both;
+    .btn-icon-wrapper svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
     }
 
-    .footer a { color: var(--gold-dim); text-decoration: none; }
-
-    /* ── Toast ── */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 12px 24px;
-      font-size: .88rem;
-      display: flex; align-items: center; gap: 10px;
-      box-shadow: var(--shadow);
-      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s;
-      opacity: 0;
-      z-index: 200;
-      white-space: nowrap;
-      max-width: 90vw;
+    .btn-text-group {
+      text-align: right;
+      flex: 1;
     }
 
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .btn-text-group div {
+      font-size: 1.15rem;
+      letter-spacing: 0.3px;
+    }
 
-    /* ── Animations ── */
-    @keyframes fadeDown { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeUp   { from { opacity: 0; transform: translateY(18px);  } to { opacity: 1; transform: translateY(0); } }
+    .btn-fr { 
+      font-size: 0.82rem; 
+      color: var(--text-muted); 
+      font-family: 'Outfit'; 
+      display: block; 
+      margin-top: 2px;
+      font-weight: 500;
+    }
 
-    /* ── Ripple ── */
-    .ripple {
+    /* Action Loading Overlays */
+    .overlay-status {
       position: absolute;
-      border-radius: 50%;
-      background: rgba(255,255,255,.12);
-      transform: scale(0);
-      animation: rippleAnim .6s linear;
-      pointer-events: none;
-    }
-
-    @keyframes rippleAnim {
-      to { transform: scale(4); opacity: 0; }
-    }
-
-    /* ── Wave separator ── */
-    .wave { width: 100%; max-width: 420px; text-align: center; margin: 8px 0 20px; }
-    .wave span { color: var(--border); font-size: 1.1rem; letter-spacing: 4px; }
-
-    /* ── Digital Menu Sheet Styles ── */
-    .sheet-backdrop {
-      position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-      z-index: 100;
+      background: rgba(21, 19, 17, 0.95);
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 700;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 1.1rem;
     }
-    .sheet-backdrop.show {
+    
+    .btn-action.primary .overlay-status {
+      background: var(--gold);
+      color: var(--bg-dark);
+    }
+    
+    .btn-action.loading .overlay-status,
+    .btn-action.success .overlay-status,
+    .btn-action.error .overlay-status {
       opacity: 1;
       pointer-events: auto;
     }
 
-    .menu-sheet {
-      position: fixed;
-      left: 50%; right: auto; bottom: 0;
-      width: 100%;
-      max-width: 500px;
-      transform: translate(-50%, 100%);
-      height: 85dvh;
-      background: var(--surface);
-      border-top: 1.5px solid var(--border);
-      border-radius: 24px 24px 0 0;
-      z-index: 101;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
-    }
-    .menu-sheet.show {
-      transform: translate(-50%, 0);
-    }
-
-    .sheet-handle {
-      width: 40px;
-      height: 5px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 10px;
-      margin: 12px auto 8px;
-      flex-shrink: 0;
-    }
-
-    .sheet-header {
-      padding: 0 24px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      flex-shrink: 0;
-    }
-    .sheet-title h3 {
-      font-size: 1.15rem;
-      font-weight: 900;
-      color: var(--gold);
-    }
-    .sheet-title p {
-      font-size: 0.72rem;
-      color: var(--muted);
-      font-family: 'Outfit', sans-serif;
-      margin-top: 2px;
-    }
-
-    .close-sheet-btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: var(--text);
-      width: 36px; height: 36px;
+    .spinner {
+      width: 24px; 
+      height: 24px;
+      border: 3px solid rgba(207, 168, 83, 0.2);
+      border-top-color: var(--gold);
       border-radius: 50%;
-      font-size: 1.2rem;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s;
+      animation: spin 0.8s linear infinite;
     }
-    .close-sheet-btn:hover {
-      background: rgba(255,255,255,0.12);
+    .btn-action.primary .spinner { 
+      border-color: rgba(11, 10, 9, 0.15); 
+      border-top-color: var(--bg-dark); 
     }
 
-    .menu-content {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 20px 20px 140px; /* space for cart footer */
-      position: relative;
-      z-index: 1;
+    @keyframes spin { 
+      to { transform: rotate(360deg); } 
     }
 
-    .cat-section {
-      margin-bottom: 24px;
-    }
-    .cat-header {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px dashed var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    @keyframes spinDashed { 
+      to { transform: rotate(360deg); } 
     }
 
-    .menu-items-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    @keyframes logoEntrance {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
-    .menu-item-card {
-      background: rgba(26, 26, 26, 0.95);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      transition: border-color 0.2s, background 0.2s;
-      animation: slideUpCard 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    @keyframes fadeInDown {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    @keyframes slideUpCard {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .menu-item-card.has-qty {
-      border-color: rgba(245,200,66,0.3);
-      background: rgba(245,200,66,0.06);
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    /* ── 3D Parallax Scroll Background ── */
-    .parallax-bg-wrap {
+
+    /* ── Menu View ── */
+    #menuView {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-      perspective: 1000px;
+      background: var(--bg-dark);
+      z-index: 20;
+      transform: translateY(100%);
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
     }
-    .parallax-layer {
-      position: absolute;
-      transform-style: preserve-3d;
-      font-size: 3rem;
-      filter: drop-shadow(0 0 15px rgba(255, 110, 0, 0.25));
-      opacity: 0.25;
-      will-change: transform;
-    }
-    .layer-1  { top: 5%;   left: 8%;   font-size: 3.2rem; }
-    .layer-2  { top: 12%;  right: 10%; font-size: 4rem;   filter: drop-shadow(0 0 20px rgba(255, 100, 0, 0.4)); }
-    .layer-3  { top: 22%;  left: 12%;  font-size: 2.8rem; }
-    .layer-4  { top: 30%;  right: 6%;  font-size: 4.5rem; filter: blur(1px); }
-    .layer-5  { top: 40%;  left: 15%;  font-size: 3.5rem; }
-    .layer-6  { top: 48%;  right: 12%; font-size: 3rem;   filter: drop-shadow(0 0 20px rgba(255, 100, 0, 0.4)); }
-    .layer-7  { top: 58%;  left: 6%;   font-size: 4.2rem; filter: blur(1px); }
-    .layer-8  { top: 66%;  right: 8%;  font-size: 3.8rem; }
-    .layer-9  { top: 76%;  left: 10%;  font-size: 3.2rem; }
-    .layer-10 { top: 84%;  right: 14%; font-size: 4.4rem; filter: drop-shadow(0 0 20px rgba(255, 100, 0, 0.4)); }
-    .layer-11 { top: 92%;  left: 8%;   font-size: 3rem; }
-    .layer-12 { top: 97%;  right: 10%; font-size: 3.6rem; }
-
-    .item-info {
-      flex: 1;
-      text-align: right;
-    }
-    .item-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.4;
-    }
-    .item-price-tag {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--gold);
-      font-family: 'Outfit', sans-serif;
-      margin-top: 4px;
+    #menuView.show { 
+      transform: translateY(0); 
     }
 
-    .item-actions {
+    .menu-header {
+      background: var(--bg-surface);
+      padding: 16px 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(207, 168, 83, 0.1);
+      z-index: 5;
+    }
+    
+    .menu-title-wrapper {
+      display: flex;
+      flex-direction: column;
     }
 
-    .add-initial-btn {
-      background: rgba(245,200,66,0.1);
-      border: 1px solid rgba(245,200,66,0.25);
+    .menu-title {
+      color: var(--white);
+      font-weight: 800;
+      font-size: 1.4rem;
+      font-family: var(--font-serif);
+    }
+    
+    .menu-title-fr {
+      font-size: 0.85rem;
       color: var(--gold);
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'Cairo', sans-serif;
-    }
-    .add-initial-btn:hover {
-      background: rgba(245,200,66,0.2);
+      font-family: 'Outfit';
+      font-weight: 600;
+      margin-top: 1px;
+      letter-spacing: 0.5px;
     }
 
+    .close-btn {
+      width: 44px; 
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(207, 168, 83, 0.12);
+      color: var(--gold);
+      border: 1px solid rgba(207, 168, 83, 0.2);
+      font-size: 1.8rem;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--spring-transition);
+    }
+    .close-btn:active {
+      transform: scale(0.85);
+      background: rgba(207, 168, 83, 0.25);
+    }
+
+    /* Sticky Categories Navigation */
+    .categories-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(21, 19, 17, 0.9);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 20px;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+      z-index: 4;
+      border-bottom: 1px solid rgba(207, 168, 83, 0.08);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .categories-nav::-webkit-scrollbar { 
+      display: none; 
+    }
+
+    .cat-tab {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(207, 168, 83, 0.15);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--spring-transition);
+    }
+    
+    .cat-tab.active {
+      background: var(--gold);
+      color: var(--bg-dark);
+      border-color: var(--gold);
+      box-shadow: 0 6px 20px var(--gold-glow);
+    }
+
+    /* Menu List */
+    .menu-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px 140px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .category-section {
+      margin-bottom: 40px;
+      scroll-margin-top: 80px;
+    }
+    
+    .category-title {
+      font-size: 1.5rem;
+      color: var(--gold);
+      font-weight: 800;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-serif);
+    }
+    
+    .category-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to left, rgba(207, 168, 83, 0.4), rgba(207, 168, 83, 0));
+    }
+
+    /* Dish Card Redesign */
+    .dish-card {
+      display: flex;
+      background: var(--bg-card);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(235, 220, 185, 0.06);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      gap: 16px;
+      transition: var(--spring-transition);
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeInUp 0.6s forwards cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .dish-card.in-cart {
+      border-color: rgba(207, 168, 83, 0.5);
+      background: rgba(207, 168, 83, 0.05);
+      box-shadow: 0 8px 30px var(--gold-glow);
+    }
+
+    .dish-img-wrapper {
+      width: 105px;
+      height: 105px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .dish-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: var(--bg-surface);
+      transition: transform 0.5s ease;
+    }
+    
+    .dish-card:hover .dish-img {
+      transform: scale(1.08);
+    }
+
+    .dish-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .dish-name {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--white);
+      line-height: 1.35;
+    }
+    
+    .dish-name-fr {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'Outfit';
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    .dish-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .dish-price {
+      font-weight: 800;
+      color: var(--gold);
+      font-family: 'Outfit';
+      font-size: 1.15rem;
+    }
+
+    .add-btn {
+      background: rgba(207, 168, 83, 0.12);
+      border: 1px solid rgba(207, 168, 83, 0.3);
+      color: var(--gold);
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--spring-transition);
+    }
+    
+    .add-btn:hover {
+      background: var(--gold);
+      color: var(--bg-dark);
+      border-color: var(--gold);
+    }
+    
     .qty-controls {
       display: none;
       align-items: center;
-      gap: 10px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 30px;
-      padding: 4px;
+      gap: 12px;
+      background: rgba(207, 168, 83, 0.15);
+      border: 1px solid rgba(207, 168, 83, 0.3);
+      border-radius: 50px;
+      padding: 4px 6px;
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .qty-controls.show {
-      display: flex;
-    }
+    
+    .dish-card.in-cart .add-btn { display: none; }
+    .dish-card.in-cart .qty-controls { display: flex; }
 
     .qty-btn {
-      width: 28px; height: 28px;
+      width: 28px; 
+      height: 28px;
       border-radius: 50%;
       border: none;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      font-size: 1rem;
-      font-weight: 700;
+      background: var(--gold);
+      color: var(--bg-dark);
+      font-weight: 900;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
+      transition: var(--spring-transition);
     }
-    .qty-btn:hover {
-      background: rgba(255,255,255,0.15);
+    .qty-btn:active {
+      transform: scale(0.85);
     }
-    .qty-btn.minus {
-      color: #EF5350;
-    }
-    .qty-btn.plus {
-      color: #66BB6A;
-    }
-
-    .qty-num {
-      font-size: 0.9rem;
-      font-weight: 700;
-      min-width: 16px;
+    
+    .qty-num { 
+      font-weight: 800; 
+      font-family: 'Outfit'; 
+      min-width: 18px; 
       text-align: center;
-      font-family: 'Outfit', sans-serif;
+      color: var(--white);
+      font-size: 1.05rem;
     }
 
-    /* Floating Cart Bar */
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Cart Floating Bar (iOS Pill Redesign) */
     .cart-bar {
       position: absolute;
-      left: 0; right: 0; bottom: 0;
-      background: rgba(22, 22, 22, 0.95);
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 16px 20px env(safe-area-inset-bottom, 16px);
+      bottom: 24px; 
+      left: 16px; 
+      right: 16px;
+      background: rgba(21, 19, 17, 0.92);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(207, 168, 83, 0.35);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
-      z-index: 10;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(207, 168, 83, 0.1);
+      transform: translateY(150%) scale(0.9);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .cart-bar.active { 
+      transform: translateY(0) scale(1); 
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .cart-info {
@@ -594,1069 +662,447 @@
       flex-direction: column;
       text-align: right;
     }
-    .cart-summary-txt {
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-    .cart-total-price {
-      font-size: 1.15rem;
+
+    .cart-total {
+      font-size: 1.45rem;
       font-weight: 900;
       color: var(--gold);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Outfit';
+      letter-spacing: 0.5px;
     }
-
-    .send-order-btn {
-      flex: 1;
-      max-width: 200px;
-      background: linear-gradient(135deg, var(--gold), var(--amber));
-      color: #000;
-      border: none;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      gap: 8px;
-      transition: opacity 0.2s, transform 0.1s;
-      font-family: 'Cairo', sans-serif;
-    }
-    .send-order-btn:hover {
-      opacity: 0.9;
-    }
-    .send-order-btn:active {
-      transform: scale(0.97);
-    }
-    .send-order-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* ── 3D Culinary Fire Splash Screen ── */
-    #cuisineSplash {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at center, #1b0a02 0%, #050200 100%);
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      overflow: hidden;
-      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-    #cuisineSplash.fade-out {
-      opacity: 0;
-      transform: scale(1.1) translateZ(100px);
-      pointer-events: none;
-    }
-
-    #fireCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .splash-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .splash-emblem-wrap {
-      perspective: 800px;
-      width: 150px;
-      height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-    }
-
-    .splash-emblem {
-      position: relative;
-      transform-style: preserve-3d;
-      animation: float3D 6s ease-in-out infinite;
-    }
-
-    .splash-emblem-img {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      border: 3px solid var(--gold);
-      background: #fff;
-      object-fit: cover;
-      padding: 3px;
-      box-shadow: 0 0 45px rgba(245, 200, 66, 0.7);
-    }
-
-    @keyframes float3D {
-      0% {
-        transform: translateY(0) rotateY(0deg) rotateX(15deg);
-      }
-      50% {
-        transform: translateY(-20px) rotateY(180deg) rotateX(-15deg);
-      }
-      100% {
-        transform: translateY(0) rotateY(360deg) rotateX(15deg);
-      }
-    }
-
-    .splash-title-ar {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: #fff;
-      text-shadow: 0 0 20px rgba(245, 200, 66, 0.6);
-      margin-bottom: 4px;
-      animation: zoomInFade 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .splash-title-fr {
-      font-size: 1rem;
+    
+    .cart-items-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
       font-weight: 600;
-      color: var(--gold);
-      letter-spacing: 1px;
-      font-family: 'Outfit', sans-serif;
-      margin-bottom: 16px;
-      animation: zoomInFade 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      margin-top: 2px;
     }
 
-    .splash-desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 24px;
-      animation: zoomInFade 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .splash-btn {
-      background: linear-gradient(135deg, var(--gold), var(--amber));
-      color: #000;
+    .order-btn {
+      background: var(--gold);
+      color: var(--bg-dark);
       border: none;
-      border-radius: 40px;
-      padding: 14px 36px;
-      font-size: 0.95rem;
-      font-weight: 900;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1.05rem;
       cursor: pointer;
-      display: flex;
-      align-items: center;
+      display: flex; 
+      align-items: center; 
       gap: 10px;
-      box-shadow: 0 8px 30px rgba(255, 140, 66, 0.4), inset 0 2px 4px rgba(255,255,255,0.4);
-      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-      font-family: 'Cairo', sans-serif;
-      animation: zoomInFade 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      box-shadow: 0 8px 24px var(--gold-glow);
+      transition: var(--spring-transition);
     }
-
-    .splash-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 35px rgba(255, 140, 66, 0.6);
+    .order-btn:hover {
+      background: var(--gold-hover);
+      box-shadow: 0 8px 30px rgba(207, 168, 83, 0.4);
     }
-
-    .splash-btn:active {
-      transform: scale(0.97);
+    .order-btn:active {
+      transform: scale(0.95);
     }
-
-    @keyframes zoomInFade {
-      from {
-        opacity: 0;
-        transform: scale(0.8) translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    /* Subtle Author Watermark */
-    .moncef-signature {
-      position: fixed;
-      bottom: 12px;
-      right: 12px;
-      font-family: 'Outfit', 'Cairo', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 500;
-      color: rgba(245, 200, 66, 0.45);
-      background: rgba(10, 8, 6, 0.75);
-      padding: 5px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(245, 200, 66, 0.12);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 99;
+    .order-btn:disabled { 
+      opacity: 0.5; 
       pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      letter-spacing: 0.2px;
     }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 24px; 
+      left: 50%; 
+      transform: translateX(-50%) translateY(-120px);
+      background: rgba(21, 19, 17, 0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--gold);
+      color: var(--white);
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-weight: 700;
+      display: flex; 
+      align-items: center; 
+      gap: 12px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-size: 1.05rem;
+    }
+    .toast.show { 
+      transform: translateX(-50%) translateY(0); 
+    }
+
   </style>
 </head>
-
 <body>
 
-<!-- ── 3D Culinary Fire Splash Screen ── -->
-<div id="cuisineSplash">
-  <canvas id="fireCanvas"></canvas>
-  <div class="splash-content">
-    <div class="splash-emblem-wrap">
-      <div class="splash-emblem">
-        <img src="./logo.jpeg" class="splash-emblem-img" alt="La Citadelle Logo" />
+  <!-- Landing View -->
+  <div id="landingView">
+    <div class="landing-header">
+      <div class="logo-container">
+        <img src="./logo.jpeg" onerror="this.src='https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=200&auto=format&fit=crop'" alt="Logo" class="logo-img" />
+      </div>
+      <h1 class="restaurant-title" id="restName">La Citadelle</h1>
+      <div class="table-badge">
+        طاولة <span id="tableNum">-</span> Table
       </div>
     </div>
-    <div class="splash-title-ar">القلعة</div>
-    <div class="splash-title-fr">La Citadelle</div>
-    <div class="splash-desc">
-      تذوقوا ألذ المأكولات المحضرة بلهيب المطبخ الحقيقي
-      <br>
-      Savourez nos délices préparés au feu de cuisine authentique.
-    </div>
-    <button class="splash-btn" onclick="dismissSplash()">
-      <span>ابدأ التجربة | Découvrir</span>
-      <span>🔥</span>
-    </button>
-  </div>
-</div>
-<script>
-  if (sessionStorage.getItem('splash_dismissed') === 'true') {
-    document.getElementById('cuisineSplash').style.display = 'none';
-  }
-</script>
 
-<div class="page">
-
-  <!-- Header -->
-  <header class="header">
-    <div class="restaurant-icon" id="restaurantIcon">
-      <img src="./logo.jpeg" class="header-logo-img" alt="La Citadelle Logo" />
-    </div>
-    <div class="restaurant-name" id="restaurantName">La Citadelle | القلعة</div>
-    <div class="table-badge">
-      <span class="dot"></span>
-      <span id="tableLabelAr">الطاولة</span>
-      <span id="tableNum">–</span>
-      &nbsp;·&nbsp;
-      <span id="tableLabelFr">Table</span>
-    </div>
-  </header>
-
-  <!-- Divider -->
-  <div class="divider">كيف يمكننا مساعدتك؟ &nbsp;·&nbsp; Comment pouvons-nous vous aider ?</div>
-
-  <!-- Actions -->
-  <div class="actions">
-
-    <!-- Menu -->
-    <button class="btn-card menu" id="btn-menu" onclick="handleMenu(event)">
-      <div class="glow-bar"></div>
-      <div class="btn-icon">📄</div>
-      <div class="btn-text">
-        <span class="btn-ar">عرض القائمة</span>
-        <span class="btn-fr">Voir le Menu</span>
-      </div>
-      <span class="btn-arrow">‹</span>
-      <div class="btn-overlay">
-        <span>🔗</span> <span id="menu-overlay-text">فتح القائمة…</span>
-      </div>
-    </button>
-
-    <!-- Call Waiter -->
-    <button class="btn-card call" id="btn-call" onclick="handleAction(event,'call')">
-      <div class="glow-bar"></div>
-      <div class="btn-icon">🔔</div>
-      <div class="btn-text">
-        <span class="btn-ar">استدعاء النادل</span>
-        <span class="btn-fr">Appeler le Serveur</span>
-      </div>
-      <span class="btn-arrow">‹</span>
-      <div class="btn-overlay">
-        <div class="spinner"></div><span id="call-overlay-text">إرسال…</span>
-      </div>
-    </button>
-
-    <!-- Bill -->
-    <button class="btn-card bill" id="btn-bill" onclick="handleAction(event,'bill')">
-      <div class="glow-bar"></div>
-      <div class="btn-icon">💳</div>
-      <div class="btn-text">
-        <span class="btn-ar">طلب الحساب</span>
-        <span class="btn-fr">Demander l'Addition</span>
-      </div>
-      <span class="btn-arrow">‹</span>
-      <div class="btn-overlay">
-        <div class="spinner"></div><span id="bill-overlay-text">إرسال…</span>
-      </div>
-    </button>
-
-  </div>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <p>⚡ مدعوم بـ QR Salik &nbsp;·&nbsp; Powered by QR Salik</p>
-  </footer>
-
-</div>
-
-<!-- Digital Menu Bottom Sheet -->
-<div class="sheet-backdrop" id="menuBackdrop" onclick="closeMenu()"></div>
-<div class="menu-sheet" id="menuSheet">
-  <div class="parallax-bg-wrap">
-    <div class="parallax-layer layer-1" data-depth="0.15">🌶️</div>
-    <div class="parallax-layer layer-2" data-depth="0.38">🔥</div>
-    <div class="parallax-layer layer-3" data-depth="0.55">🌿</div>
-    <div class="parallax-layer layer-4" data-depth="0.22">🍳</div>
-    <div class="parallax-layer layer-5" data-depth="0.48">✨</div>
-    <div class="parallax-layer layer-6" data-depth="0.62">🥄</div>
-    <div class="parallax-layer layer-7" data-depth="0.12">🥩</div>
-    <div class="parallax-layer layer-8" data-depth="0.42">🍋</div>
-    <div class="parallax-layer layer-9" data-depth="0.58">🧂</div>
-    <div class="parallax-layer layer-10" data-depth="0.28">🍕</div>
-    <div class="parallax-layer layer-11" data-depth="0.50">🍅</div>
-    <div class="parallax-layer layer-12" data-depth="0.68">🔥</div>
-  </div>
-  <div class="sheet-handle"></div>
-  <div class="sheet-header">
-    <div class="sheet-title">
-      <h3>قائمة الطعام | Le Menu</h3>
-      <p>اطلب مباشرة من طاولتك — Commandez en direct</p>
-    </div>
-    <button class="close-sheet-btn" onclick="closeMenu()">×</button>
-  </div>
-  <div class="menu-content" id="menuContent">
-    <div style="text-align:center; padding:40px 0; color:var(--muted)">
-      <div class="spinner" style="margin: 0 auto 12px;"></div>
-      جاري تحميل القائمة... | Chargement du menu...
-    </div>
-  </div>
-  <div class="cart-bar">
-    <div class="cart-info">
-      <span class="cart-summary-txt" id="cartSummary">0 عناصر | 0 éléments</span>
-      <span class="cart-total-price" id="cartTotal">0 DA</span>
-    </div>
-    <button class="send-order-btn" id="sendOrderBtn" onclick="submitOrder(event)" disabled>
-      <span>إرسال الطلب | Commander</span>
-    </button>
-  </div>
-</div>
-
-<!-- Fallback local menu data for offline/file:// protocol support -->
-<script type="application/json" id="menuFallbackData">
-{
-  "categories": [
-    {
-      "name": "🐟 الأسماك | Nos Poissons",
-      "items": [
-        { "id": "p1", "name": "Sardine / سردين", "price": 1000 },
-        { "id": "p2", "name": "Rouget / روجي", "price": 2000 },
-        { "id": "p3", "name": "Espadon / إسبرادون", "price": 2000 },
-        { "id": "p4", "name": "Filet de merlan / فيليه ميرلون", "price": 2000 },
-        { "id": "p5", "name": "Merlan / ميرلون", "price": 2000 },
-        { "id": "p6", "name": "Saumon / سومون", "price": 2000 },
-        { "id": "p7", "name": "Crevettes grillées / جمبري مشوي", "price": 2500 }
-      ]
-    },
-    {
-      "name": "☕ مشروبات ساخنة | Boissons Chaudes",
-      "items": [
-        { "id": "c1", "name": "Espresso / إسبريسو", "price": 100 },
-        { "id": "c2", "name": "Cappuccino / كابوتشينو", "price": 150 },
-        { "id": "c3", "name": "Café au Lait / قهوة حليب", "price": 120 },
-        { "id": "c4", "name": "Thé à la Menthe / شاي بالنعناع", "price": 80 }
-      ]
-    },
-    {
-      "name": "🍰 الحلويات | Desserts",
-      "items": [
-        { "id": "d1", "name": "Tartelette aux fruits / تارت الفواكه", "price": 250 },
-        { "id": "d2", "name": "Flan Caramel / فلان كراميل", "price": 180 },
-        { "id": "d3", "name": "Fondant au Chocolat / فوندان الشوكولاتة", "price": 300 }
-      ]
-    }
-  ]
-}
-</script>
-
-<!-- Toast -->
-<div class="toast" id="toast">
-  <span id="toast-icon">✅</span>
-  <span id="toast-msg">تم الإرسال بنجاح</span>
-</div>
-
-<script>
-  // ─── Read URL Params ───────────────────────────────────────────────────────
-  const p = new URLSearchParams(location.search);
-  const TABLE    = p.get('table')    || '?';
-  let NAME       = p.get('name')     || 'La Citadelle';
-  const TOPIC    = p.get('topic')    || '';          // ntfy topic
-  const TG_TOKEN = p.get('tg_token')|| '';          // Telegram bot token
-  const TG_CHAT  = p.get('tg_chat') || '';          // Telegram chat ID
-  const WA_NUM   = p.get('wa')       || '';          // WhatsApp fallback number
-
-  // ─── Populate UI ──────────────────────────────────────────────────────────
-  document.getElementById('restaurantName').textContent = NAME;
-  document.getElementById('tableNum').textContent = TABLE;
-
-  // ─── Normalize Menu Data ──────────────────────────────────────────────────
-  function normalizeMenuData(data) {
-    if (!data) return data;
-    if (data.categories && Array.isArray(data.categories)) {
-      return data;
-    }
-    if (Array.isArray(data.menu)) {
-      const normalizedCategories = [];
-      data.menu.forEach((cat, catIdx) => {
-        const catName = (cat.category_ar && cat.category_fr)
-          ? `${cat.category_ar} | ${cat.category_fr}`
-          : (cat.category_ar || cat.category_fr || `Category ${catIdx + 1}`);
-
-        const normalizedItems = [];
-        if (Array.isArray(cat.items)) {
-          cat.items.forEach((item, itemIdx) => {
-            const hasPrices = Array.isArray(item.prices) && item.prices.length > 0;
-            if (hasPrices) {
-              item.prices.forEach((pOpt, optIdx) => {
-                const optName = pOpt.size || pOpt.unit || "";
-                const optSuffix = optName ? ` (${optName})` : "";
-                const bName = `${item.name_ar || ""} | ${item.name_fr || ""}${optSuffix}`;
-                normalizedItems.push({
-                  id: `m_${catIdx}_${itemIdx}_${optIdx}`,
-                  name: bName,
-                  price: pOpt.price || 0
-                });
-              });
-            } else {
-              const bName = (item.name_ar && item.name_fr)
-                ? `${item.name_ar} | ${item.name_fr}`
-                : (item.name_ar || item.name_fr || `Item ${itemIdx + 1}`);
-              normalizedItems.push({
-                id: `m_${catIdx}_${itemIdx}`,
-                name: bName,
-                price: item.price || 0
-              });
-            }
-          });
-        }
-        normalizedCategories.push({
-          name: catName,
-          items: normalizedItems
-        });
-      });
-      return {
-        categories: normalizedCategories,
-        restaurant_name: data.restaurant_name,
-        currency: data.currency
-      };
-    }
-    return data;
-  }
-
-  // ─── Notification Payloads ────────────────────────────────────────────────
-  const ACTIONS = {
-    call: {
-      ar: 'استدعاء النادل 🔔',
-      fr: 'Appeler le Serveur 🔔',
-      emoji: '🔔',
-      ntfy_tags: 'bell',
-      ntfy_priority: 'high',
-    },
-    bill: {
-      ar: 'طلب الحساب 💳',
-      fr: "Demander l'Addition 💳",
-      emoji: '💳',
-      ntfy_tags: 'credit_card',
-      ntfy_priority: 'urgent',
-    },
-    order: {
-      ar: 'طلب جديد 🛒',
-      fr: 'Nouvelle Commande 🛒',
-      emoji: '🛒',
-      ntfy_tags: 'shopping_bags',
-      ntfy_priority: 'high',
-    }
-  };
-
-  // ─── Format Telegram Message ──────────────────────────────────────────────
-  function buildTelegramMsg(actionKey, orderDetails = null) {
-    const a = ACTIONS[actionKey];
-    const now = new Date();
-    const time = now.toLocaleTimeString('fr-DZ', { hour: '2-digit', minute: '2-digit' });
-    
-    let orderSection = '';
-    if (orderDetails) {
-      orderSection = `\n📋 <b>تفاصيل الطلب / Détails :</b>\n${orderDetails.text}\n💵 <b>المجموع / Total :</b> <b>${orderDetails.total} DA</b>\n━━━━━━━━━━━━━━━━━━`;
-    }
-
-    return (
-`🏪 <b>${escapeHtml(NAME)}</b>
-━━━━━━━━━━━━━━━━━━
-📍 <b>الطاولة / Table :</b> ${TABLE}
-${a.emoji} <b>الطلب / Demande :</b> ${a.ar} | ${a.fr}${orderSection}
-⏰ <b>التوقيت / Heure :</b> ${time}
-━━━━━━━━━━━━━━━━━━
-⚡ <i>يرجى الاستجابة فوراً — Action requise immédiatement</i>`
-    );
-  }
-
-  function escapeHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  // ─── Get Arabic Name Helper ───────────────────────────────────────────────
-  function getArabicName(fullName) {
-    if (fullName.includes(' | ')) {
-      const parts = fullName.split(' | ');
-      const arPart = parts[0].trim();
-      const frPart = parts[1];
-      const match = frPart.match(/\(([^)]+)\)$/);
-      if (match) {
-        return `${arPart} (${match[1]})`;
-      }
-      return arPart;
-    }
-    return fullName;
-  }
-
-  // ─── ntfy Notification ────────────────────────────────────────────────────
-  async function sendNtfy(actionKey, orderDetails = null) {
-    if (!TOPIC) return { ok: false, skipped: true };
-    const a = ACTIONS[actionKey];
-    const now = new Date();
-    const time = now.toLocaleTimeString('fr-DZ', { hour: '2-digit', minute: '2-digit' });
-    
-    let body = `الطاولة ${TABLE} | Table ${TABLE} — ${a.ar} | ${a.fr} — ${time}`;
-    if (orderDetails) {
-      const compactItems = orderDetails.items.map(it => `${getArabicName(it.name)} x${it.qty}`).join(' , ');
-      body = `طاولة ${TABLE} | T${TABLE}: ${compactItems}\n\n[ORDER_DATA:${JSON.stringify({ table: TABLE, total: orderDetails.total, items: orderDetails.items })}]`;
-    }
-
-    try {
-      const r = await fetch('https://ntfy.sh/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          topic: TOPIC,
-          message: body,
-          title: `${a.emoji} ${NAME} — Table ${TABLE}`,
-          priority: a.ntfy_priority === 'urgent' ? 5 : 4,
-          tags: [a.ntfy_tags]
-        })
-      });
-      return { ok: r.ok };
-    } catch(e) {
-      return { ok: false, error: e };
-    }
-  }
-
-  // ─── Telegram Notification ────────────────────────────────────────────────
-  async function sendTelegram(actionKey, orderDetails = null) {
-    if (!TG_TOKEN || !TG_CHAT) return { ok: false, skipped: true };
-    const text = buildTelegramMsg(actionKey, orderDetails);
-    try {
-      const r = await fetch(
-        `https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: TG_CHAT,
-            text,
-            parse_mode: 'HTML',
-            disable_notification: false,
-          })
-        }
-      );
-      const data = await r.json();
-      return { ok: data.ok };
-    } catch(e) {
-      return { ok: false, error: e };
-    }
-  }
-
-  // ─── WhatsApp Fallback ────────────────────────────────────────────────────
-  function sendWhatsApp(actionKey, orderDetails = null) {
-    if (!WA_NUM) return;
-    const a = ACTIONS[actionKey];
-    let txt = `[${NAME}] الطاولة ${TABLE} | Table ${TABLE} — ${a.ar}`;
-    if (orderDetails) {
-      txt += `\n\nتفاصيل الطلب:\n${orderDetails.text}\n💵 المجموع: ${orderDetails.total} DA`;
-    }
-    const msg = encodeURIComponent(txt);
-    window.open(`https://wa.me/${WA_NUM}?text=${msg}`, '_blank');
-  }
-
-  // ─── Main Action Handler ───────────────────────────────────────────────────
-  async function handleAction(event, actionKey) {
-    const btn = document.getElementById(`btn-${actionKey}`);
-    if (btn.classList.contains('loading') || btn.classList.contains('success')) return;
-
-    addRipple(event, btn);
-
-    // Show loading
-    setCardState(btn, 'loading');
-    const overlayText = document.getElementById(`${actionKey}-overlay-text`);
-    overlayText.textContent = 'إرسال… | Envoi…';
-
-    // Fire both in parallel
-    const [ntfyResult, tgResult] = await Promise.all([
-      sendNtfy(actionKey),
-      sendTelegram(actionKey)
-    ]);
-
-    const anyOk = ntfyResult.ok || tgResult.ok;
-    const allSkipped = ntfyResult.skipped && tgResult.skipped;
-
-    if (anyOk || allSkipped) {
-      setCardState(btn, 'success');
-      const a = ACTIONS[actionKey];
-      overlayText.textContent = ''; // handled by overlay icon
-      btn.querySelector('.btn-overlay').innerHTML = `<span style="font-size:1.4rem">✅</span> <span>تم الإرسال | Envoyé !</span>`;
-      showToast('✅', `تم تنبيه الفريق — Équipe alertée (Table ${TABLE})`);
-    } else {
-      setCardState(btn, 'error');
-      btn.querySelector('.btn-overlay').innerHTML = `<span style="font-size:1.4rem">⚠️</span> <span>خطأ في الاتصال</span>`;
-      showToast('⚠️', 'فشل الإرسال. جرب مجدداً.');
-      // Try WhatsApp fallback
-      if (WA_NUM) sendWhatsApp(actionKey);
-    }
-
-    // Reset after 4 seconds
-    setTimeout(() => {
-      btn.className = btn.className.replace(/(loading|success|error)/g, '').trim();
-      // Restore original overlay content
-      restoreOverlay(btn, actionKey);
-    }, 4000);
-  }
-
-  function restoreOverlay(btn, actionKey) {
-    btn.querySelector('.btn-overlay').innerHTML = `<div class="spinner"></div><span id="${actionKey}-overlay-text">إرسال…</span>`;
-  }
-
-  // ─── Menu Handler ─────────────────────────────────────────────────────────
-  function handleMenu(event) {
-    openMenu(event);
-  }
-
-  // ─── UI Helpers ───────────────────────────────────────────────────────────
-  function setCardState(btn, state) {
-    btn.classList.remove('loading', 'success', 'error');
-    if (state) btn.classList.add(state);
-  }
-
-  function showToast(icon, msg) {
-    const t = document.getElementById('toast');
-    document.getElementById('toast-icon').textContent = icon;
-    document.getElementById('toast-msg').textContent = msg;
-    t.classList.add('show');
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => t.classList.remove('show'), 3500);
-  }
-
-  function addRipple(event, btn) {
-    const r = document.createElement('span');
-    r.className = 'ripple';
-    const rect = btn.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height) * 2;
-    const x = (event.clientX || rect.left + rect.width / 2) - rect.left - size / 2;
-    const y = (event.clientY || rect.top + rect.height / 2) - rect.top - size / 2;
-    r.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
-    btn.appendChild(r);
-    r.addEventListener('animationend', () => r.remove());
-  }
-
-  // ─── Digital Menu Operations ────────────────────────────────────────────────
-  let menuData = null;
-  let itemsById = {}; // { id: item }
-  let cart = {}; // { itemId: qty }
-
-  function buildItemsMap() {
-    itemsById = {};
-    if (!menuData || !menuData.categories) return;
-    for (const cat of menuData.categories) {
-      if (!cat.items) continue;
-      for (const item of cat.items) {
-        itemsById[item.id] = item;
-      }
-    }
-  }
-
-  async function loadMenuData() {
-    const contentEl = document.getElementById('menuContent');
-    try {
-      // Attempt to load menu via dynamic fetch
-      const response = await fetch('./menu.json');
-      if (!response.ok) throw new Error('Failed to load menu');
-      const rawMenu = await response.json();
-      menuData = normalizeMenuData(rawMenu);
-      buildItemsMap();
-
-      // Update restaurant name dynamically from menu.json if not customized in url
-      if (menuData.restaurant_name && (NAME === 'La Citadelle' || p.get('name') === null)) {
-        NAME = menuData.restaurant_name;
-        document.getElementById('restaurantName').textContent = NAME;
-      }
-
-      renderMenu();
-    } catch (err) {
-      console.warn("Could not fetch menu.json, falling back to embedded menu fallback data:", err);
-      try {
-        const fallbackEl = document.getElementById('menuFallbackData');
-        if (fallbackEl) {
-          const rawFallback = JSON.parse(fallbackEl.textContent);
-          menuData = normalizeMenuData(rawFallback);
-          buildItemsMap();
-          renderMenu();
-          return;
-        }
-      } catch (fallbackErr) {
-        console.error("Fallback menu data parsing failed:", fallbackErr);
-      }
-      
-      contentEl.innerHTML = `
-        <div style="text-align:center; padding:40px 10px; color:var(--muted)">
-          <div style="font-size: 2.2rem; margin-bottom: 12px;">⚠️</div>
-          <p style="margin-bottom: 16px; font-size: 0.9rem; line-height: 1.5;">تعذر تحميل قائمة الطعام في الوقت الحالي.<br>Impossible de charger le menu pour le moment.</p>
-          <button class="add-initial-btn" onclick="loadMenuData()" style="padding: 8px 24px; font-size: 0.85rem;">إعادة المحاولة | Réessayer</button>
+    <div class="actions-grid">
+      <button class="btn-action primary" onclick="openMenu()">
+        <div class="btn-icon-wrapper">
+          <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm8-3h-3v14h-2V6h-3V4h8v2z"/></svg>
         </div>
-      `;
-    }
-  }
-
-  function renderMenu() {
-    const contentEl = document.getElementById('menuContent');
-    if (!menuData || !menuData.categories || menuData.categories.length === 0) {
-      contentEl.innerHTML = `
-        <div style="text-align:center; padding:40px 10px; color:var(--muted)">
-          <p>قائمة الطعام فارغة حالياً.</p>
+        <div class="btn-text-group">
+          <div>عرض قائمة الطعام</div>
+          <span class="btn-fr">Voir le Menu</span>
         </div>
-      `;
-      return;
-    }
+      </button>
 
-    let html = '';
-    menuData.categories.forEach(cat => {
-      html += `
-        <div class="cat-section">
-          <div class="cat-header">
-            <span>${escapeHtml(cat.name)}</span>
-          </div>
-          <div class="menu-items-list">
-      `;
-
-      cat.items.forEach(item => {
-        const qty = cart[item.id] || 0;
-        const hasQtyClass = qty > 0 ? 'has-qty' : '';
-        const showQtyClass = qty > 0 ? 'show' : '';
-        const hideBtnStyle = qty > 0 ? 'display:none' : '';
-
-        html += `
-          <div class="menu-item-card ${hasQtyClass}" id="item-card-${item.id}">
-            <div class="item-info">
-              <div class="item-title">${escapeHtml(item.name)}</div>
-              <div class="item-price-tag">${item.price} DA</div>
-            </div>
-            <div class="item-actions">
-              <button class="add-initial-btn" id="add-btn-${item.id}" style="${hideBtnStyle}" onclick="updateQty('${item.id}', 1)">
-                إضافة + | Ajouter
-              </button>
-              <div class="qty-controls ${showQtyClass}" id="qty-ctrl-${item.id}">
-                <button class="qty-btn minus" onclick="updateQty('${item.id}', -1)">-</button>
-                <span class="qty-num" id="qty-num-${item.id}">${qty}</span>
-                <button class="qty-btn plus" onclick="updateQty('${item.id}', 1)">+</button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-
-      html += `
-          </div>
+      <button class="btn-action" id="btn-call" onclick="handleAction('call')">
+        <div class="btn-icon-wrapper">
+          <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         </div>
-      `;
-    });
+        <div class="btn-text-group">
+          <div>استدعاء النادل</div>
+          <span class="btn-fr">Appeler le Serveur</span>
+        </div>
+        <div class="overlay-status"><div class="spinner"></div> جاري الإرسال...</div>
+      </button>
 
-    contentEl.innerHTML = html;
-  }
+      <button class="btn-action" id="btn-bill" onclick="handleAction('bill')">
+        <div class="btn-icon-wrapper">
+          <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+        <div class="btn-text-group">
+          <div>طلب الحساب</div>
+          <span class="btn-fr">Demander l'Addition</span>
+        </div>
+        <div class="overlay-status"><div class="spinner"></div> جاري الإرسال...</div>
+      </button>
+    </div>
+  </div>
 
-  function updateQty(itemId, change) {
-    const currentQty = cart[itemId] || 0;
-    let newQty = currentQty + change;
-    if (newQty < 0) newQty = 0;
+  <!-- Menu View -->
+  <div id="menuView">
+    <div class="menu-header">
+      <div class="menu-title-wrapper">
+        <div class="menu-title">قائمة الطعام</div>
+        <div class="menu-title-fr">Le Menu</div>
+      </div>
+      <button class="close-btn" onclick="closeMenu()">×</button>
+    </div>
 
-    if (newQty === 0) {
-      delete cart[itemId];
-    } else {
-      cart[itemId] = newQty;
-    }
+    <div class="categories-nav" id="catNav">
+      <!-- Categories dynamically injected here -->
+    </div>
 
-    // Update Card UI
-    const card = document.getElementById(`item-card-${itemId}`);
-    const addBtn = document.getElementById(`add-btn-${itemId}`);
-    const qtyCtrl = document.getElementById(`qty-ctrl-${itemId}`);
-    const qtyNum = document.getElementById(`qty-num-${itemId}`);
+    <div class="menu-list" id="menuList">
+      <div style="text-align:center; padding: 60px; color: var(--text-muted);">
+        <div class="spinner" style="margin: 0 auto 16px; border-color:rgba(207, 168, 83, 0.1); border-top-color:var(--gold)"></div>
+        جاري تحميل القائمة...
+      </div>
+    </div>
 
-    if (card) {
-      if (newQty > 0) {
-        card.classList.add('has-qty');
-        addBtn.style.display = 'none';
-        qtyCtrl.classList.add('show');
-        qtyNum.textContent = newQty;
-      } else {
-        card.classList.remove('has-qty');
-        addBtn.style.display = 'block';
-        qtyCtrl.classList.remove('show');
-      }
-    }
+    <!-- Floating Pill Cart Bar -->
+    <div class="cart-bar" id="cartBar">
+      <div class="cart-info">
+        <div class="cart-total" id="cartTotal">0 DA</div>
+        <div class="cart-items-count" id="cartCount">0 عناصر</div>
+      </div>
+      <button class="order-btn" id="btn-order" onclick="submitOrder()">
+        <span>إرسال الطلب</span> 🚀
+      </button>
+    </div>
+  </div>
 
-    updateCartSummary();
-  }
+  <!-- Notification Toast -->
+  <div class="toast" id="toast">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">تم الإرسال</span>
+  </div>
 
-  function getItemById(id) {
-    return itemsById[id] || null;
-  }
+  <script>
+    // ─── Params & Config ───
+    const p = new URLSearchParams(location.search);
+    const TABLE    = p.get('table')    || '?';
+    let NAME       = p.get('name')     || 'La Citadelle';
+    const TOPIC    = p.get('topic')    || '';
+    const TG_TOKEN = p.get('tg_token') || '';
+    const TG_CHAT  = p.get('tg_chat')  || '';
+    const WA_NUM   = p.get('wa')       || '';
 
-  function updateCartSummary() {
-    let totalItems = 0;
-    let totalPrice = 0;
+    document.getElementById('restName').textContent = NAME;
+    document.getElementById('tableNum').textContent = TABLE;
 
-    for (const id in cart) {
-      const qty = cart[id];
-      const item = getItemById(id);
-      if (item) {
-        totalItems += qty;
-        totalPrice += qty * item.price;
-      }
-    }
-
-    document.getElementById('cartSummary').textContent = `${totalItems} عناصر | ${totalItems} éléments`;
-    document.getElementById('cartTotal').textContent = `${totalPrice} DA`;
-
-    const sendBtn = document.getElementById('sendOrderBtn');
-    if (totalItems > 0) {
-      sendBtn.disabled = false;
-    } else {
-      sendBtn.disabled = true;
-    }
-  }
-
-  async function submitOrder(event) {
-    const sendBtn = document.getElementById('sendOrderBtn');
-    if (sendBtn.disabled) return;
-
-    let orderItems = [];
-    let orderTextLines = [];
-    let totalPrice = 0;
-
-    for (const id in cart) {
-      const qty = cart[id];
-      const item = getItemById(id);
-      if (item) {
-        orderItems.push({ id, name: item.name, qty, price: item.price });
-        orderTextLines.push(`• ${qty}x ${item.name} (${qty * item.price} DA)`);
-        totalPrice += qty * item.price;
-      }
-    }
-
-    const orderDetails = {
-      items: orderItems,
-      text: orderTextLines.join('\n'),
-      total: totalPrice
+    const ACTIONS = {
+      call: { ar: 'استدعاء النادل 🔔', fr: 'Appeler le Serveur', emoji: '🔔', ntfy: 'bell', prio: 4 },
+      bill: { ar: 'طلب الحساب 💳', fr: "Demander l'Addition", emoji: '💳', ntfy: 'credit_card', prio: 5 },
+      order: { ar: 'طلب جديد 🛒', fr: 'Nouvelle Commande', emoji: '🛒', ntfy: 'shopping_bags', prio: 4 }
     };
 
-    const origBtnHtml = sendBtn.innerHTML;
-    sendBtn.disabled = true;
-    sendBtn.innerHTML = `<div class="spinner" style="width:16px; height:16px; border-width:2px; border-top-color:#000;"></div> <span>جاري الإرسال...</span>`;
+    // ─── Notifications ───
+    async function notifyNtfy(actionKey, orderDetails) {
+      if (!TOPIC) return { ok: false, skipped: true };
+      const a = ACTIONS[actionKey];
+      let body = `الطاولة ${TABLE} — ${a.ar} | ${a.fr}`;
+      if (orderDetails) {
+        body = `طاولة ${TABLE}: ${orderDetails.items.map(i=>i.name+' x'+i.qty).join(', ')}\n[ORDER_DATA:${JSON.stringify({table:TABLE, total:orderDetails.total, items:orderDetails.items})}]`;
+      }
+      try {
+        const r = await fetch('https://ntfy.sh/', {
+          method: 'POST',
+          body: JSON.stringify({ topic: TOPIC, message: body, title: `${a.emoji} Table ${TABLE}`, priority: a.prio, tags: [a.ntfy] })
+        });
+        return { ok: r.ok };
+      } catch(e) { return { ok: false }; }
+    }
 
-    const [ntfyResult, tgResult] = await Promise.all([
-      sendNtfy('order', orderDetails),
-      sendTelegram('order', orderDetails)
-    ]);
+    async function notifyTg(actionKey, orderDetails) {
+      if (!TG_TOKEN || !TG_CHAT) return { ok: false, skipped: true };
+      const a = ACTIONS[actionKey];
+      let txt = `🏪 <b>${NAME}</b>\n📍 <b>الطاولة :</b> ${TABLE}\n${a.emoji} <b>الطلب :</b> ${a.ar}\n`;
+      if (orderDetails) txt += `\n📋 <b>تفاصيل :</b>\n${orderDetails.text}\n💵 <b>المجموع :</b> <b>${orderDetails.total} DA</b>`;
+      try {
+        const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ chat_id: TG_CHAT, text: txt, parse_mode: 'HTML' })
+        });
+        return { ok: (await r.json()).ok };
+      } catch(e) { return { ok: false }; }
+    }
 
-    const anyOk = ntfyResult.ok || tgResult.ok;
-    const allSkipped = ntfyResult.skipped && tgResult.skipped;
+    function notifyWa(actionKey, orderDetails) {
+      if (!WA_NUM) return;
+      const a = ACTIONS[actionKey];
+      let txt = `[${NAME}] الطاولة ${TABLE} — ${a.ar}`;
+      if (orderDetails) txt += `\n\nتفاصيل الطلب:\n${orderDetails.text}\n💵 المجموع: ${orderDetails.total} DA`;
+      window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(txt)}`, '_blank');
+    }
 
-    if (anyOk || allSkipped) {
-      sendBtn.innerHTML = `<span>✅ تم الإرسال !</span>`;
-      showToast('🛒', `تم إرسال الطلب بنجاح — Commande envoyée (Table ${TABLE})`);
+    function showToast(icon, msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-icon').textContent = icon;
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    async function handleAction(actionKey) {
+      const btn = document.getElementById(`btn-${actionKey}`);
+      if(btn.classList.contains('loading')) return;
       
-      cart = {};
-      renderMenu();
-      updateCartSummary();
+      btn.classList.remove('error','success');
+      btn.classList.add('loading');
+      btn.querySelector('.overlay-status').innerHTML = `<div class="spinner"></div> جاري الإرسال...`;
 
-      setTimeout(() => {
-        closeMenu();
-        sendBtn.innerHTML = origBtnHtml;
-      }, 2000);
-    } else {
-      sendBtn.innerHTML = `<span>⚠️ خطأ</span>`;
-      sendBtn.disabled = false;
-      showToast('⚠️', 'فشل إرسال الطلب. حاول مجدداً.');
-      if (WA_NUM) sendWhatsApp('order', orderDetails);
-      setTimeout(() => {
-        sendBtn.innerHTML = origBtnHtml;
-      }, 3000);
-    }
-  }
-
-  function openMenu(event) {
-    if (event) {
-      event.preventDefault();
-      addRipple(event, document.getElementById('btn-menu'));
-    }
-    document.getElementById('menuBackdrop').classList.add('show');
-    document.getElementById('menuSheet').classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeMenu() {
-    document.getElementById('menuBackdrop').classList.remove('show');
-    document.getElementById('menuSheet').classList.remove('show');
-    document.body.style.overflow = '';
-  }
-
-  // ─── 3D Culinary Fire Splash Logic ─────────────────────────────────────────
-  let fireParticles = [];
-  let animId = null;
-
-  function initFireCanvas() {
-    const canvas = document.getElementById('fireCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    class Ember {
-      constructor() {
-        this.reset(true);
+      const [r1, r2] = await Promise.all([notifyNtfy(actionKey), notifyTg(actionKey)]);
+      if (r1.ok || r2.ok || (r1.skipped && r2.skipped)) {
+        btn.classList.replace('loading', 'success');
+        btn.querySelector('.overlay-status').innerHTML = `✅ تم الإرسال`;
+        showToast('✅', 'تم تنبيه الفريق بنجاح');
+      } else {
+        btn.classList.replace('loading', 'error');
+        btn.querySelector('.overlay-status').innerHTML = `⚠️ خطأ`;
+        showToast('⚠️', 'خطأ في الاتصال');
+        if(WA_NUM) notifyWa(actionKey);
       }
-      reset(initAllY = false) {
-        this.x = (Math.random() - 0.5) * canvas.width * 1.2;
-        this.y = initAllY ? Math.random() * canvas.height : canvas.height + 20;
-        this.z = Math.random() * 300 + 50; // depth
-        this.vx = (Math.random() - 0.5) * 1.5;
-        this.vy = -(Math.random() * 2.5 + 1.5);
-        this.size = Math.random() * 4 + 1.5;
-        this.alpha = Math.random() * 0.5 + 0.5;
-        this.hue = Math.random() * 35 + 12; // warm orange/yellow/red hues
-        this.swirlFreq = Math.random() * 0.02 + 0.005;
-        this.swirlAmp = Math.random() * 1.5;
+      setTimeout(() => btn.classList.remove('success','error'), 3000);
+    }
+
+    // ─── Menu Logic ───
+    let menuData = [];
+    let itemsMap = {};
+    let cart = {};
+
+    function openMenu() {
+      const menuView = document.getElementById('menuView');
+      menuView.classList.add('show');
+      
+      // Motion API: Spring animation reveal for the menu panel
+      if (window.Motion) {
+        window.Motion.animate(menuView, { y: ["100%", "0%"] }, { type: "spring", damping: 25, stiffness: 180 });
       }
-      update() {
-        this.y += this.vy;
-        // swirl sway
-        this.x += this.vx + Math.sin(this.y * this.swirlFreq) * this.swirlAmp;
-        this.alpha -= 0.0035; // slowly fade out as they rise
-        if (this.y < -50 || this.alpha <= 0) {
-          this.reset(false);
+      
+      if (menuData.length === 0) fetchMenu();
+    }
+    
+    function closeMenu() {
+      const menuView = document.getElementById('menuView');
+      
+      if (window.Motion) {
+        window.Motion.animate(menuView, { y: "100%" }, { type: "spring", damping: 30, stiffness: 200 }).then(() => {
+          menuView.classList.remove('show');
+        });
+      } else {
+        menuView.classList.remove('show');
+      }
+    }
+
+    async function fetchMenu() {
+      try {
+        const res = await fetch('./menu.json');
+        const data = await res.json();
+        menuData = data.menu || data.categories || [];
+        renderMenu();
+      } catch(e) {
+        document.getElementById('menuList').innerHTML = `<div style="text-align:center;padding:60px;color:var(--red)">⚠️ خطأ في تحميل القائمة</div>`;
+      }
+    }
+
+    function renderMenu() {
+      const nav = document.getElementById('catNav');
+      const list = document.getElementById('menuList');
+      nav.innerHTML = '';
+      list.innerHTML = '';
+
+      let cardIndex = 0; // tracking index for cascade anim delays
+
+      menuData.forEach((cat, cIdx) => {
+        const catId = `cat-${cIdx}`;
+        // Nav Tab
+        const tab = document.createElement('div');
+        tab.className = `cat-tab ${cIdx===0?'active':''}`;
+        tab.textContent = cat.category_ar || cat.name;
+        tab.onclick = () => {
+          document.getElementById(catId).scrollIntoView({behavior:'smooth'});
+        };
+        nav.appendChild(tab);
+
+        // Section Container
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        section.id = catId;
+        
+        let sectionHtml = `<div class="category-title">${cat.category_ar || cat.name}</div>`;
+        
+        cat.items.forEach((item, iIdx) => {
+          const id = `item_${cIdx}_${iIdx}`;
+          itemsMap[id] = item;
+          const qty = cart[id] || 0;
+          
+          // Setup sequential animation delay style
+          const delayStyle = `style="animation-delay: ${cardIndex * 0.04}s;"`;
+          cardIndex++;
+
+          sectionHtml += `
+            <div class="dish-card ${qty>0?'in-cart':''}" id="card-${id}" ${delayStyle}>
+              <div class="dish-info">
+                <div>
+                  <div class="dish-name">${item.name_ar || item.name}</div>
+                  <div class="dish-name-fr">${item.name_fr || ''}</div>
+                </div>
+                <div class="dish-bottom">
+                  <span class="dish-price">${item.price} DA</span>
+                  <button class="add-btn" id="add-${id}" onclick="updateQty('${id}', 1)">إضافة +</button>
+                  <div class="qty-controls" id="ctrl-${id}">
+                    <button class="qty-btn" onclick="updateQty('${id}', -1)">-</button>
+                    <span class="qty-num" id="qty-${id}">${qty}</span>
+                    <button class="qty-btn" onclick="updateQty('${id}', 1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+        });
+        
+        section.innerHTML = sectionHtml;
+        list.appendChild(section);
+      });
+
+      // Scroll Spy for Tabs
+      list.addEventListener('scroll', () => {
+        let current = '';
+        const sections = document.querySelectorAll('.category-section');
+        sections.forEach(sec => {
+          if(list.scrollTop >= sec.offsetTop - 110) current = sec.id;
+        });
+        if(current) {
+          document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+          const idx = current.split('-')[1];
+          const activeTab = nav.children[idx];
+          if(activeTab) {
+            activeTab.classList.add('active');
+            activeTab.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+          }
+        }
+      });
+    }
+
+    function updateQty(id, change) {
+      let q = (cart[id] || 0) + change;
+      if (q < 0) q = 0;
+      if (q === 0) delete cart[id];
+      else cart[id] = q;
+
+      const card = document.getElementById(`card-${id}`);
+      if(card) {
+        if(q > 0) {
+          card.classList.add('in-cart');
+          const qtyText = document.getElementById(`qty-${id}`);
+          if (qtyText) qtyText.textContent = q;
+          
+          // Animate qty number pulse
+          if(window.Motion) {
+            window.Motion.animate(`#qty-${id}`, { scale: [1, 1.3, 1] }, { duration: 0.2 });
+          }
+        } else {
+          card.classList.remove('in-cart');
         }
       }
-      draw() {
-        const perspective = 250;
-        const scale = perspective / (perspective + this.z);
-        const screenX = canvas.width / 2 + this.x * scale;
-        const screenY = this.y;
-        const currentSize = this.size * scale;
+      updateCart();
+    }
 
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, this.alpha);
-        ctx.globalCompositeOperation = 'lighter';
-
-        // Glow effect
-        ctx.beginPath();
-        ctx.arc(screenX, screenY, currentSize, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.alpha})`;
-        ctx.shadowColor = `hsla(${this.hue}, 100%, 50%, 1)`;
-        ctx.shadowBlur = currentSize * 4;
-        ctx.fill();
-        ctx.restore();
+    function updateCart() {
+      let count = 0, total = 0;
+      for(let id in cart) {
+        count += cart[id];
+        total += cart[id] * itemsMap[id].price;
+      }
+      document.getElementById('cartTotal').textContent = `${total} DA`;
+      document.getElementById('cartCount').textContent = `${count} عناصر`;
+      
+      const bar = document.getElementById('cartBar');
+      if(count > 0) {
+        bar.classList.add('active');
+        if (window.Motion) {
+          window.Motion.animate(bar, { y: ["30px", "0px"], opacity: 1 }, { type: "spring", stiffness: 200, damping: 20 });
+        }
+      } else {
+        bar.classList.remove('active');
       }
     }
 
-    const maxParticles = Math.min(120, Math.floor(window.innerWidth / 4));
-    for (let i = 0; i < maxParticles; i++) {
-      fireParticles.push(new Ember());
-    }
+    async function submitOrder() {
+      const btn = document.getElementById('btn-order');
+      if(btn.disabled) return;
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<div class="spinner"></div> جاري الإرسال...`;
 
-    function loop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      fireParticles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      animId = requestAnimationFrame(loop);
-    }
-    loop();
-  }
-
-  function dismissSplash() {
-    const splash = document.getElementById('cuisineSplash');
-    if (!splash) return;
-    splash.classList.add('fade-out');
-    sessionStorage.setItem('splash_dismissed', 'true');
-    setTimeout(() => {
-      if (animId) cancelAnimationFrame(animId);
-      splash.remove();
-    }, 800);
-  }
-
-  // ─── 3D Scroll Parallax Background Logic ──────────────────────────────────
-  function initScrollParallax() {
-    const menuContent = document.getElementById('menuContent');
-    const layers = document.querySelectorAll('.parallax-layer');
-    if (!menuContent || layers.length === 0) return;
-
-    let ticking = false;
-
-    menuContent.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollTop = menuContent.scrollTop;
-
-          layers.forEach(layer => {
-            const depth = parseFloat(layer.getAttribute('data-depth')) || 0.2;
-
-            // Calculate parallax offset
-            const translateY = -(scrollTop * depth);
-
-            // Slight 2D/3D rotation and safe perspective zoom scaling
-            const rotateZ = (scrollTop * 0.08 * depth) % 360;
-            const rawTranslateZ = (scrollTop * 0.15 * depth) - 50;
-            const translateZ = Math.max(-100, Math.min(100, rawTranslateZ)); // Clamp to prevent clipping through viewport
-
-            // Apply high-performance 3D transform
-            layer.style.transform = `translate3d(0, ${translateY}px, ${translateZ}px) rotateZ(${rotateZ}deg)`;
-          });
-
-          ticking = false;
-        });
-        ticking = true;
+      let items = [], txtLines = [], total = 0;
+      for(let id in cart) {
+        const item = itemsMap[id];
+        const q = cart[id];
+        items.push({ name: item.name_ar||item.name, qty: q, price: item.price });
+        txtLines.push(`• ${q}x ${item.name_ar||item.name} (${q*item.price} DA)`);
+        total += q*item.price;
       }
-    });
-  }
+      const details = { items, text: txtLines.join('\n'), total };
 
-  window.addEventListener('DOMContentLoaded', () => {
-    loadMenuData();
-    initScrollParallax();
-    if (sessionStorage.getItem('splash_dismissed') !== 'true') {
-      initFireCanvas();
+      const [r1, r2] = await Promise.all([notifyNtfy('order', details), notifyTg('order', details)]);
+      if(r1.ok || r2.ok || (r1.skipped && r2.skipped)) {
+        btn.innerHTML = `✅ تم الإرسال`;
+        showToast('🛒', 'تم إرسال الطلب بنجاح');
+        cart = {};
+        renderMenu();
+        updateCart();
+        setTimeout(() => { closeMenu(); btn.innerHTML = orig; btn.disabled=false; }, 2000);
+      } else {
+        btn.innerHTML = `⚠️ خطأ`;
+        showToast('⚠️', 'فشل إرسال الطلب');
+        if(WA_NUM) notifyWa('order', details);
+        setTimeout(() => { btn.innerHTML = orig; btn.disabled=false; }, 2000);
+      }
     }
-  });
-</script>
-
-<div class="moncef-signature">
-  created and designed by :@Moncef Aissaoui
-</div>
-
+  </script>
 </body>
 </html>
