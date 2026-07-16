@@ -1036,6 +1036,7 @@ function renderLogs() {
     return;
   }
 
+  const fragment = document.createDocumentFragment();
   logsList.forEach(log => {
     const a = ACTION_MAP[log.actionKey];
     if (!a) return;
@@ -1071,8 +1072,9 @@ function renderLogs() {
     entry.appendChild(msgSpan);
     entry.appendChild(timeSpan);
 
-    feed.appendChild(entry);
+    fragment.appendChild(entry);
   });
+  feed.appendChild(fragment);
 }
 
 function addLog(tableNum, actionKey, time, orderData = null) {
@@ -1093,6 +1095,7 @@ function updateStats() {
 
 // ─── Sound ────────────────────────────────────────────────────────────────
 let audioCtx = null;
+let lastSoundTime = 0;
 
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1101,6 +1104,10 @@ function getAudioCtx() {
 
 function playBuzzer(type) {
   try {
+    const nowTime = Date.now();
+    if (nowTime - lastSoundTime < 1000) return; // Throttle to 1 second
+    lastSoundTime = nowTime;
+
     const ctx = getAudioCtx();
     const freqs = {
       bill: [880, 1100, 880, 1100],
@@ -1166,6 +1173,7 @@ function openReceiptModal(tableNum) {
   const itemsListEl = document.getElementById('rec-items-list');
   itemsListEl.innerHTML = '';
 
+  const fragment = document.createDocumentFragment();
   st.orderData.items.forEach(it => {
     const row = document.createElement('div');
     row.className = 'receipt-line';
@@ -1179,8 +1187,9 @@ function openReceiptModal(tableNum) {
     row.appendChild(nameSpan);
     row.appendChild(priceSpan);
 
-    itemsListEl.appendChild(row);
+    fragment.appendChild(row);
   });
+  itemsListEl.appendChild(fragment);
 
   document.getElementById('rec-total-lbl').textContent = `${st.orderData.total} DA`;
   document.getElementById('receiptModalOverlay').style.display = 'flex';
