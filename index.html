@@ -705,6 +705,94 @@
       pointer-events: none;
     }
 
+    /* Client Receipt Modal */
+    .receipt-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1050;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .receipt-modal {
+      background: #FFFFFF;
+      color: #000000;
+      border-radius: 12px;
+      max-width: 380px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-family: monospace;
+      font-size: 0.9rem;
+      direction: ltr;
+      text-align: left;
+      animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .receipt-modal .receipt-header {
+      text-align: center;
+      margin-bottom: 16px;
+      border-bottom: 2px dashed #000;
+      padding-bottom: 12px;
+    }
+    .receipt-modal .receipt-header h3 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      font-family: var(--font-sans);
+    }
+    .receipt-modal .receipt-header p {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 2px;
+    }
+    .receipt-modal .receipt-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .receipt-modal .receipt-items {
+      border-bottom: 2px dashed #000;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      min-height: 40px;
+    }
+    .receipt-modal .receipt-total-row {
+      font-size: 1.1rem;
+      font-weight: 900;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .receipt-modal .receipt-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .receipt-modal .receipt-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      background: transparent;
+      color: #000;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      font-family: var(--font-sans);
+      transition: var(--spring-transition);
+    }
+    .receipt-modal .receipt-btn.btn-pay {
+      background: #000;
+      color: #FFF;
+    }
+    .receipt-modal .receipt-btn:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
     /* Toast Notification */
     .toast {
       position: fixed;
@@ -821,6 +909,30 @@
     <span id="toast-msg">تم الإرسال</span>
   </div>
 
+  <!-- Client Receipt Modal -->
+  <div class="receipt-modal-overlay" id="clientReceiptOverlay" style="display:none" onclick="closeClientReceipt()">
+    <div class="receipt-modal" onclick="event.stopPropagation()">
+      <div class="receipt-header">
+        <h3 id="client-rec-rest-name">REST NAME</h3>
+        <p>ZERO BACKEND ORDERING SYSTEM</p>
+        <div class="receipt-line" style="margin-top:10px;">
+          <span id="client-rec-table-lbl" style="font-weight:900;">TABLE: -</span>
+          <span id="client-rec-time-lbl">TIME: --:--:--</span>
+        </div>
+      </div>
+      <div class="receipt-items" id="client-rec-items-list">
+        <!-- Items go here -->
+      </div>
+      <div class="receipt-total-row">
+        <span>TOTAL:</span>
+        <span id="client-rec-total-lbl">0 DA</span>
+      </div>
+      <div class="receipt-actions">
+        <button class="receipt-btn btn-pay" onclick="closeClientReceipt()">إغلاق | Fermer</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ─── Params & Config ───
     const p = new URLSearchParams(location.search);
@@ -891,6 +1003,15 @@
       const btn = document.getElementById(`btn-${actionKey}`);
       if(btn.classList.contains('loading')) return;
       
+      // If action is bill, show the receipt to the client
+      if (actionKey === 'bill') {
+        const opened = openClientReceipt();
+        if (!opened) {
+          // Optional: we can still let them call the waiter if no order is found in session,
+          // but if we show a popup, we might want to just proceed with the notification anyway.
+        }
+      }
+
       btn.classList.remove('error','success');
       btn.classList.add('loading');
       btn.querySelector('.overlay-status').innerHTML = `<div class="spinner"></div> جاري الإرسال...`;
@@ -1092,6 +1213,23 @@
       if(r1.ok || r2.ok || (r1.skipped && r2.skipped)) {
         btn.innerHTML = `✅ تم الإرسال`;
         showToast('🛒', 'تم إرسال الطلب بنجاح');
+
+        // Accumulate order in sessionStorage
+        let existingOrder = null;
+        try {
+          const stored = sessionStorage.getItem('current_order');
+          if (stored) existingOrder = JSON.parse(stored);
+        } catch(e) {}
+
+        if (!existingOrder) {
+          existingOrder = { items: [], total: 0 };
+        }
+
+        // Merge items (if the same item is ordered again, just push it as a new line for simplicity, or we could aggregate)
+        existingOrder.items = existingOrder.items.concat(items);
+        existingOrder.total += total;
+        sessionStorage.setItem('current_order', JSON.stringify(existingOrder));
+
         cart = {};
         renderMenu();
         updateCart();
@@ -1102,6 +1240,49 @@
         if(WA_NUM) notifyWa('order', details);
         setTimeout(() => { btn.innerHTML = orig; btn.disabled=false; }, 2000);
       }
+    }
+
+    function openClientReceipt() {
+      let orderData = null;
+      try {
+        const stored = sessionStorage.getItem('current_order');
+        if (stored) orderData = JSON.parse(stored);
+      } catch(e) {}
+
+      if (!orderData || orderData.items.length === 0) {
+        return false;
+      }
+
+      document.getElementById('client-rec-rest-name').textContent = NAME.toUpperCase();
+      document.getElementById('client-rec-table-lbl').textContent = `TABLE: ${TABLE}`;
+      document.getElementById('client-rec-time-lbl').textContent = `TIME: ${new Date().toLocaleTimeString('fr-DZ', { hour:'2-digit', minute:'2-digit', second:'2-digit' })}`;
+
+      const itemsListEl = document.getElementById('client-rec-items-list');
+      itemsListEl.innerHTML = '';
+
+      orderData.items.forEach(it => {
+        const row = document.createElement('div');
+        row.className = 'receipt-line';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = `${it.qty}x ${it.name}`;
+
+        const priceSpan = document.createElement('span');
+        priceSpan.textContent = `${it.qty * it.price} DA`;
+
+        row.appendChild(nameSpan);
+        row.appendChild(priceSpan);
+
+        itemsListEl.appendChild(row);
+      });
+
+      document.getElementById('client-rec-total-lbl').textContent = `${orderData.total} DA`;
+      document.getElementById('clientReceiptOverlay').style.display = 'flex';
+      return true;
+    }
+
+    function closeClientReceipt() {
+      document.getElementById('clientReceiptOverlay').style.display = 'none';
     }
   </script>
 </body>
